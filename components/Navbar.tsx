@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 
 const navLinks = [
@@ -55,6 +56,7 @@ const socialLinks = [
 ];
 
 export default function Navbar() {
+  const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -83,19 +85,25 @@ export default function Navbar() {
 
         {/* Navigation gauche */}
         <nav className="hidden md:flex items-center gap-5 lg:gap-7 w-1/3">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={`text-sm lg:text-base font-medium transition-colors duration-200 ${
-                link.href === "/"
-                  ? "text-orange-500"
-                  : "text-gray-800 hover:text-orange-500"
-              }`}
-            >
-              {link.label}
-            </Link>
-          ))}
+          {navLinks.map((link) => {
+            const isActive =
+              link.href === "/"
+                ? pathname === "/"
+                : pathname.startsWith(link.href);
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`text-sm lg:text-base font-medium transition-colors duration-200 ${
+                  isActive
+                    ? "text-orange-500"
+                    : "text-gray-800 hover:text-orange-500"
+                }`}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
         </nav>
 
         {/* Logo centré */}
@@ -150,16 +158,26 @@ export default function Navbar() {
             boxShadow: "0 8px 32px rgba(0, 0, 0, 0.08)",
           }}
         >
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              onClick={() => setMenuOpen(false)}
-              className="text-base font-medium text-gray-800 hover:text-orange-500 transition-colors"
-            >
-              {link.label}
-            </Link>
-          ))}
+          {navLinks.map((link) => {
+            const isActive =
+              link.href === "/"
+                ? pathname === "/"
+                : pathname.startsWith(link.href);
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={() => setMenuOpen(false)}
+                className={`text-base font-medium transition-colors ${
+                  isActive
+                    ? "text-orange-500"
+                    : "text-gray-800 hover:text-orange-500"
+                }`}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
           <div className="flex items-center gap-3 pt-2 border-t border-gray-100">
             {socialLinks.map(({ href, label, Icon }) => (
               <a

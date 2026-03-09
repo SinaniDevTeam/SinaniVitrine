@@ -65,7 +65,7 @@ export default function Team() {
             }}
           >
             {titleTyped ? (
-              <>L'équipe derrière <span style={{ color: "#E84010" }}>SINANI</span></>
+              <>L&apos;équipe derrière <span style={{ color: "#E84010" }}>SINANI</span></>
             ) : isInView ? (
               <TypeAnimation
                 sequence={["Les cerveaux derrière SINANI", () => setTitleTyped(true)]}
