@@ -17,7 +17,7 @@ export default function AboutHero() {
               transition={{ duration: 0.7, delay: 0.1 }}
               style={{
                 fontFamily: "Inter, sans-serif",
-                fontSize: "clamp(32px, 5vw, 64px)",
+                fontSize: "clamp(24px, 3.5vw, 48px)",
                 fontWeight: 700,
                 lineHeight: 1.1,
                 color: "#111111",
