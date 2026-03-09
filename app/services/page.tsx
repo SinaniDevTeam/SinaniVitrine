@@ -211,9 +211,6 @@ function ServiceCard({ s, i }: { s: typeof allServices[0]; i: number }) {
 }
 
 export default function ServicesPage() {
-  const [active, setActive] = useState("Tous");
-  const filtered = active === "Tous" ? allServices : allServices.filter(s => s.cat === active);
-
   return (
     <main>
       <Navbar />
@@ -240,37 +237,10 @@ export default function ServicesPage() {
             </motion.h2>
           </div>
 
-          {/* Tabs */}
-          <motion.div
-            className="flex flex-wrap gap-2 mb-10"
-            variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} custom={0.2}
-          >
-            {TABS.map(tab => (
-              <button
-                key={tab}
-                onClick={() => setActive(tab)}
-                style={{
-                  fontFamily: "Inter, sans-serif",
-                  fontSize: "14px",
-                  fontWeight: 600,
-                  padding: "8px 20px",
-                  borderRadius: "99px",
-                  border: "1.5px solid",
-                  borderColor: active === tab ? "#E84010" : "#E5E7EB",
-                  background: active === tab ? "#E84010" : "#ffffff",
-                  color: active === tab ? "#ffffff" : "#6B7280",
-                  cursor: "pointer",
-                  transition: "all 0.2s",
-                }}
-              >
-                {tab}
-              </button>
-            ))}
-          </motion.div>
 
-          {/* Grille 3 colonnes */}
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {filtered.map((s, i) => (
+            {allServices.map((s, i) => (
               <ServiceCard key={s.title} s={s} i={i} />
             ))}
           </div>
