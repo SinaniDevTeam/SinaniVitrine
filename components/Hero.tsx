@@ -207,7 +207,7 @@ export default function Hero() {
 
           {/* Bouton secondaire — outline */}
           <a
-            href="/about"
+            href="/contact"
             style={{
               position: "absolute",
               left: "339px",
@@ -228,7 +228,7 @@ export default function Hero() {
               whiteSpace: "nowrap",
             }}
           >
-            Notre mission
+            Nous contacter
           </a>
         </div>
       </div>
