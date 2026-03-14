@@ -25,11 +25,10 @@ const membres = [
   { nom: "Nafisa", role: "Responsable Marketing", photo: "/team/nafisa.jpeg" },
   { nom: "Saly", role: "Chef de Projet", photo: "/team/saly.jpeg" },
   { nom: "Tommy", role: "Réalisateur", photo: "/team/tommy.jpeg" },
-  { nom: "Membre 8", role: "Poste", photo: "/team/IMG_7243.JPG.jpeg" },
-  { nom: "Membre 9", role: "Poste", photo: "/team/IMG_7244.JPG.jpeg" },
   { nom: "Membre 10", role: "Poste", photo: "/team/IMG_7245.JPEG" },
   { nom: "Membre 11", role: "Poste", photo: "/team/IMG_7247.JPEG" },
   { nom: "Membre 12", role: "Poste", photo: "/team/IMG_7248.JPEG" },
+  { nom: "Membre 13", role: "Poste", photo: "/team/IMG_7239.JPG.jpeg" },
 ];
 
 const VISIBLE = 4;

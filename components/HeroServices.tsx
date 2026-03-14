@@ -1,55 +1,20 @@
 "use client";
 
 import Image from "next/image";
+import { useState } from "react";
 import { motion } from "framer-motion";
+import { TypeAnimation } from "react-type-animation";
 
 export default function HeroServices() {
+  const [titleTyped, setTitleTyped] = useState(false);
+
   return (
     <section className="bg-white pb-20">
       <div className="max-w-7xl mx-auto px-8 pt-36">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start">
 
           {/* ── Colonne gauche — Texte ── */}
           <div>
-            {/* Overline */}
-            <motion.span
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              style={{
-                display: "inline-block",
-                fontFamily: "'Courier New', monospace",
-                fontSize: "11px",
-                fontWeight: 700,
-                letterSpacing: "0.22em",
-                textTransform: "uppercase",
-                color: "#E84010",
-                borderBottom: "1px solid rgba(232,64,16,0.35)",
-                paddingBottom: "4px",
-                marginBottom: "24px",
-              }}
-            >
-              Nos services
-            </motion.span>
-
-            {/* Grand numéro décoratif */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.05 }}
-              style={{
-                fontFamily: "Inter, sans-serif",
-                fontSize: "clamp(80px, 14vw, 160px)",
-                fontWeight: 900,
-                lineHeight: 0.85,
-                color: "rgba(232,64,16,0.08)",
-                userSelect: "none",
-                marginBottom: "-12px",
-              }}
-            >
-              N°10
-            </motion.div>
-
             {/* Titre principal */}
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
@@ -61,11 +26,25 @@ export default function HeroServices() {
                 fontWeight: 700,
                 lineHeight: 1.1,
                 color: "#111111",
+                minHeight: "135px",
               }}
             >
-              Le numéro{" "}
-              <span style={{ color: "#E84010" }}>10</span>{" "}
-              de l&apos;écosystème audiovisuel
+              {titleTyped ? (
+                <>
+                  Notre <span style={{ color: "#E84010" }}>expertise</span>,<br />votre vision.
+                </>
+              ) : (
+                <TypeAnimation
+                  sequence={[
+                    "Notre expertise,\nvotre vision.",
+                    () => setTitleTyped(true),
+                  ]}
+                  speed={50}
+                  cursor={false}
+                  wrapper="span"
+                  style={{ whiteSpace: "pre-line" }}
+                />
+              )}
             </motion.h1>
 
             {/* Sous-titre */}
@@ -79,13 +58,11 @@ export default function HeroServices() {
                 fontWeight: 400,
                 fontSize: "clamp(16px, 1.6vw, 20px)",
                 lineHeight: 1.7,
-                color: "#6B7280",
+                color: "#4B5563",
                 maxWidth: "480px",
               }}
             >
-              Comme le 10 sur un terrain de foot, SINANI orchestre, crée et
-              diffuse — au service des marques, des talents et de la culture
-              guinéenne.
+              De la conception stratégique à la production finale, nous vous accompagnons sur l'ensemble de vos projets audiovisuels et digitaux avec une maîtrise totale de la chaîne de valeur.
             </motion.p>
 
             {/* Tags */}
@@ -124,16 +101,16 @@ export default function HeroServices() {
           >
             {/* Bloc image principal */}
             <div
-              className="relative overflow-hidden"
+              className="relative overflow-hidden w-full max-h-[600px]"
               style={{
                 borderRadius: "24px 4px 24px 4px",
-                aspectRatio: "4 / 5",
+                aspectRatio: "1 / 1.15",
                 boxShadow: "0 32px 80px rgba(0,0,0,0.12)",
               }}
             >
               <Image
                 src="/images/img6.jpeg"
-                alt="SINANI — Numéro 10 de l'audiovisuel guinéen"
+                alt="SINANI — Expertise audiovisuelle"
                 fill
                 className="object-cover object-center"
                 priority

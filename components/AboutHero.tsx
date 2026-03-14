@@ -1,46 +1,67 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
+import { TypeAnimation } from "react-type-animation";
 
 export default function AboutHero() {
+  const [titleTyped, setTitleTyped] = useState(false);
+
   return (
     <section className="bg-white pb-20">
       <div className="max-w-7xl mx-auto px-8 pt-36">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-14 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-14 items-start">
           {/* Colonne gauche — Texte */}
           <div>
            
-
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.1 }}
               style={{
                 fontFamily: "Inter, sans-serif",
-                fontSize: "clamp(24px, 3.5vw, 48px)",
+                fontSize: "clamp(32px, 5vw, 60px)",
                 fontWeight: 700,
                 lineHeight: 1.1,
                 color: "#111111",
+                minHeight: "135px",
               }}
             >
-              Une équipe créative dédiée à raconter la{" "}
-              <span style={{ color: "#E84010" }}>Guinée</span>
+              {titleTyped ? (
+                <>
+                  Une équipe créative dédiée à raconter la <span style={{ color: "#E84010" }}>Guinée</span>.
+                </>
+              ) : (
+                <TypeAnimation
+                  sequence={[
+                    "Une équipe créative\ndédiée à raconter la Guinée.",
+                    () => setTitleTyped(true),
+                  ]}
+                  speed={50}
+                  cursor={false}
+                  wrapper="span"
+                  style={{ whiteSpace: "pre-line" }}
+                />
+              )}
             </motion.h1>
 
             <motion.p
-              className="mt-2"
+              className="mt-5"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}
               style={{
                 fontFamily: "Inter, sans-serif",
-                fontWeight: 500,
-                fontSize: "clamp(24px, 3.5vw, 48px)",
-                lineHeight: 1.2,
-                color: "#111111",
+                fontWeight: 400,
+                fontSize: "clamp(16px, 1.6vw, 20px)",
+                lineHeight: 1.7,
+                color: "#4B5563",
+                maxWidth: "480px",
               }}
             >
-              Des professionnels passionnés par la culture guinéenne.
+              Plus qu'une agence, SINANI est un collectif de professionnels 
+              passionnés par l'image, le son et la stratégie digitale, 
+              engagés à propulser la créativité locale.
             </motion.p>
 
           </div>

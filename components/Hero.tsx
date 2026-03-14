@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { TypeAnimation } from "react-type-animation";
+import { motion } from "framer-motion";
 
 const FRAME_W = 1440;
 const FRAME_H = 1024;
@@ -180,9 +181,12 @@ export default function Hero() {
             </p>
           </div>
 
-          {/* Bouton primaire — orange */}
-          <a
+          {/* Bouton primaire — orange avec effet hover doux */}
+          <motion.a
             href="/about"
+            whileHover={{ scale: 1.02, backgroundColor: "#D0350A" }}
+            whileTap={{ scale: 0.98 }}
+            transition={{ type: "spring", stiffness: 400, damping: 25 }}
             style={{
               position: "absolute",
               left: "77px",
@@ -200,14 +204,19 @@ export default function Hero() {
               fontWeight: "700",
               textDecoration: "none",
               whiteSpace: "nowrap",
+              boxShadow: "0 10px 30px rgba(232,64,16,0.2)",
+              cursor: "pointer"
             }}
           >
             Découvrir l&apos;agence
-          </a>
+          </motion.a>
 
-          {/* Bouton secondaire — outline */}
-          <a
+          {/* Bouton secondaire — outline inversant la couleur au hover */}
+          <motion.a
             href="/contact"
+            whileHover={{ scale: 1.02, backgroundColor: "#111111", color: "#ffffff" }}
+            whileTap={{ scale: 0.98 }}
+            transition={{ type: "spring", stiffness: 400, damping: 25 }}
             style={{
               position: "absolute",
               left: "339px",
@@ -226,10 +235,11 @@ export default function Hero() {
               fontWeight: "700",
               textDecoration: "none",
               whiteSpace: "nowrap",
+              cursor: "pointer"
             }}
           >
             Nous contacter
-          </a>
+          </motion.a>
         </div>
       </div>
 
