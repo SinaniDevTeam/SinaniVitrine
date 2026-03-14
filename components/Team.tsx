@@ -18,14 +18,18 @@ const ChevronRight = () => (
 );
 
 const membres = [
-  { nom: "Rahim Sidibé", role: "Fondateur & Directeur Général", photo: "/images/team_membre_1.png" },
-  { nom: "Zaynab Camara", role: "Directrice des Ressources Humaines", photo: "/images/team_membre_2.png" },
-  { nom: "Zayatte", role: "Directeur des Opérations", photo: "/images/team_membre_3.png" },
-  { nom: "Saliou Dian Diaby", role: "Responsable Marketing Digital", photo: "/images/team_membre_4.png" },
-  { nom: "Mariama Diallo", role: "Coordinatrice Incubateur", photo: "/images/team_membre_5.png" },
-  { nom: "Oumar Traoré", role: "Réalisateur & Chef de Production", photo: "/images/team_membre_6.png" },
-  { nom: "Kadiatou Sylla", role: "Responsable Partenariats", photo: "/images/team_membre_1.png" },
-  { nom: "Sekou Barry", role: "Ingénieur du Son", photo: "/images/team_membre_3.png" },
+  { nom: "Rahim Sidibé", role: "Fondateur & Directeur Général", photo: "/team/rahim.jpeg" },
+  { nom: "Abass", role: "Directeur Artistique", photo: "/team/aba.jpeg" },
+  { nom: "Benjamin", role: "Directeur de la Photographie", photo: "/team/benji.jpeg" },
+  { nom: "Fayçal", role: "Monteur Vidéo", photo: "/team/fayçal.JPEG" },
+  { nom: "Nafisa", role: "Responsable Marketing", photo: "/team/nafisa.jpeg" },
+  { nom: "Saly", role: "Chef de Projet", photo: "/team/saly.jpeg" },
+  { nom: "Tommy", role: "Réalisateur", photo: "/team/tommy.jpeg" },
+  { nom: "Membre 8", role: "Poste", photo: "/team/IMG_7243.JPG.jpeg" },
+  { nom: "Membre 9", role: "Poste", photo: "/team/IMG_7244.JPG.jpeg" },
+  { nom: "Membre 10", role: "Poste", photo: "/team/IMG_7245.JPEG" },
+  { nom: "Membre 11", role: "Poste", photo: "/team/IMG_7247.JPEG" },
+  { nom: "Membre 12", role: "Poste", photo: "/team/IMG_7248.JPEG" },
 ];
 
 const VISIBLE = 4;
