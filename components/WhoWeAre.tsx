@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { motion, useInView } from "framer-motion";
 import { TypeAnimation } from "react-type-animation";
@@ -26,12 +26,7 @@ const CameraIcon = ({ active }: { active: boolean }) => (
   </svg>
 );
 
-const VideoIcon = ({ active }: { active: boolean }) => (
-  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke={active ? "#E84010" : "#9CA3AF"} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    <polygon points="23 7 16 12 23 17 23 7" />
-    <rect x="1" y="5" width="15" height="14" rx="2" />
-  </svg>
-);
+
 
 const sections = [
   {
@@ -40,7 +35,7 @@ const sections = [
     Icon: GraduationCapIcon,
     image: "/images/img3.jpeg",
     description:
-      "En partenariat avec l'ISIC de Kountia et les Beaux-Arts de Dubréka, SINANI sélectionne chaque année les meilleurs diplômés en audiovisuel. Pendant 2 ans, ils bénéficient d'équipements de pointe, d'une direction artistique et de formations encadrées par des professionnels nationaux et internationaux. Les projets réalisés — documentaires, reportages, contenus sociétaux — sont diffusés gratuitement sur les réseaux sociaux et les chaînes partenaires.",
+      "En partenariat avec l'ISIC de Kountia et les Beaux-Arts de Dubréka, SINANI sélectionne chaque deux ans les meilleurs diplômés en audiovisuel. Pendant 2 ans, ils bénéficient d'équipements de pointe, d'une direction artistique et de formations encadrées par des professionnels nationaux et internationaux. Les projets réalisés — documentaires, reportages, contenus sociétaux — sont diffusés gratuitement sur les réseaux sociaux et les chaînes partenaires.",
   },
   {
     id: 2,
@@ -52,27 +47,32 @@ const sections = [
   },
   {
     id: 3,
-    title: "Le Studio",
+    title: "Nos Studios",
     Icon: CameraIcon,
     image: "/images/im1.jpeg",
+    images: ["/images/im1.jpeg", "/images/img5.jpeg", "/images/img6.jpeg"],
+    imageLabels: ["Studio photo", "Studio podcast", "Studio audio"],
     description:
-      "Une salle de production multifonctionnelle équipée de matériel professionnel haut de gamme : éclairages, fonds, trépieds, studio d'enregistrement audio. Conçu pour la photographie, les podcasts, les vidéos avec incrustations et le montage en postproduction. Un espace pensé pour produire des contenus visuels de qualité internationale, directement sur place.",
-  },
-  {
-    id: 4,
-    title: "Production Audiovisuelle",
-    Icon: VideoIcon,
-    image: "/images/img2.jpeg",
-    description:
-      "Un système de chaîne de valeur intégré : de la réalisation au montage, du traitement audio à la diffusion. Chaque projet mobilise une équipe complète — réalisateurs, monteurs, graphistes, ingénieurs du son, community managers — travaillant en réseau centralisé. Les sujets portent sur la vie guinéenne, ses coutumes et la promotion de la destination Guinée.",
+      "Notre agence dispose de studios entièrement équipés pour donner vie à tous vos projets :\n• Studio photo : pour des shootings professionnels et créatifs.\n• Studio podcast : un espace moderne pour enregistrer et produire vos émissions et contenus audio.\n• Studio audio : conçu pour l'enregistrement, le mixage et la postproduction de vos projets sonores.\n\nChaque espace est pensé pour offrir qualité, confort et performance, permettant à nos talents de produire des contenus professionnels et impactants.",
   },
 ];
 
 export default function WhoWeAre() {
   const [active, setActive] = useState(0);
   const [titleTyped, setTitleTyped] = useState(false);
+  const [studioImgIndex, setStudioImgIndex] = useState(0);
   const titleRef = useRef(null);
   const isInView = useInView(titleRef, { once: true, margin: "-80px" });
+
+  // Auto-rotate studio images when studio section is active
+  useEffect(() => {
+    const studioIndex = sections.findIndex((s) => s.images);
+    if (active !== studioIndex) return;
+    const interval = setInterval(() => {
+      setStudioImgIndex((prev) => (prev + 1) % (sections[studioIndex].images?.length ?? 1));
+    }, 2500);
+    return () => clearInterval(interval);
+  }, [active]);
 
   return (
     <section className="w-full bg-white py-16 md:py-24 px-6 md:px-8">
@@ -130,7 +130,7 @@ export default function WhoWeAre() {
         </motion.div>
 
         {/* Layout — liste à gauche, image à droite */}
-        <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-stretch">
+        <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-start">
 
           {/* Gauche — liste avec icônes */}
           <motion.div
@@ -179,10 +179,11 @@ export default function WhoWeAre() {
                   </p>
 
                   <div
-                    className="overflow-hidden transition-all duration-500"
+                    className="transition-all duration-500"
                     style={{
-                      maxHeight: active === index ? "300px" : "0px",
+                      maxHeight: active === index ? "220px" : "0px",
                       opacity: active === index ? 1 : 0,
+                      overflowY: active === index ? "auto" : "hidden",
                     }}
                   >
                     <p
@@ -193,6 +194,7 @@ export default function WhoWeAre() {
                         fontWeight: "400",
                         lineHeight: "1.7",
                         color: "#4B5563",
+                        whiteSpace: "pre-line",
                       }}
                     >
                       {section.description}
@@ -210,39 +212,71 @@ export default function WhoWeAre() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.7, delay: 0.2 }}
+            style={{ position: "sticky", top: "120px" }}
           >
             {/* Image */}
             <div
               className="relative overflow-hidden"
               style={{
-                height: "clamp(300px, 42vw, 560px)",
+                height: "clamp(200px, 28vw, 360px)",
                 borderRadius: "24px 4px 24px 4px",
               }}
             >
-              {sections.map((section, index) => (
-                <div
-                  key={section.id}
-                  className="absolute inset-0 transition-all duration-700"
-                  style={{
-                    opacity: active === index ? 1 : 0,
-                    transform: active === index ? "scale(1)" : "scale(1.05)",
-                  }}
-                >
-                  <Image
-                    src={section.image}
-                    alt={section.title}
-                    fill
-                    className="object-cover"
-                  />
+              {sections.map((section, index) => {
+                const imgs = section.images ?? [section.image];
+                const labels = section.imageLabels ?? [];
+                const currentImg = section.images ? imgs[studioImgIndex] : imgs[0];
+                const currentLabel = section.images ? labels[studioImgIndex] : "";
+                return (
                   <div
-                    className="absolute inset-0"
+                    key={section.id}
+                    className="absolute inset-0 transition-all duration-700"
                     style={{
-                      background:
-                        "linear-gradient(to top, rgba(0,0,0,0.35) 0%, transparent 50%)",
+                      opacity: active === index ? 1 : 0,
+                      transform: active === index ? "scale(1)" : "scale(1.05)",
                     }}
-                  />
-                </div>
-              ))}
+                  >
+                    <Image
+                      src={currentImg}
+                      alt={section.title}
+                      fill
+                      className="object-cover transition-all duration-700"
+                    />
+                    <div
+                      className="absolute inset-0"
+                      style={{
+                        background:
+                          "linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 55%)",
+                      }}
+                    />
+                    {/* Label + dots for studios */}
+                    {section.images && active === index && (
+                      <div className="absolute bottom-4 left-0 right-0 flex flex-col items-center gap-2">
+                        <span style={{ color: "#fff", fontSize: "13px", fontWeight: 600, letterSpacing: "0.05em", textTransform: "uppercase", opacity: 0.9 }}>
+                          {currentLabel}
+                        </span>
+                        <div className="flex gap-2">
+                          {imgs.map((_, i) => (
+                            <button
+                              key={i}
+                              onClick={() => setStudioImgIndex(i)}
+                              style={{
+                                width: i === studioImgIndex ? "20px" : "8px",
+                                height: "8px",
+                                borderRadius: "4px",
+                                background: i === studioImgIndex ? "#E84010" : "rgba(255,255,255,0.5)",
+                                border: "none",
+                                cursor: "pointer",
+                                transition: "all 0.3s",
+                              }}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
 
             </div>
 

@@ -20,7 +20,7 @@ export default function AboutHero() {
               transition={{ duration: 0.7, delay: 0.1 }}
               style={{
                 fontFamily: "Inter, sans-serif",
-                fontSize: "clamp(32px, 5vw, 60px)",
+                fontSize: "clamp(26px, 3.5vw, 44px)",
                 fontWeight: 700,
                 lineHeight: 1.1,
                 color: "#111111",
@@ -29,12 +29,12 @@ export default function AboutHero() {
             >
               {titleTyped ? (
                 <>
-                  Une équipe créative dédiée à raconter la <span style={{ color: "#E84010" }}>Guinée</span>.
+                  <>La nouvelle génération qui réinvente l&apos;audiovisuel en <span style={{ color: "#E84010" }}>Guinée</span>.</>
                 </>
               ) : (
                 <TypeAnimation
                   sequence={[
-                    "Une équipe créative\ndédiée à raconter la Guinée.",
+                    "La nouvelle génération qui réinvente l'audiovisuel en Guinée.",
                     () => setTitleTyped(true),
                   ]}
                   speed={50}

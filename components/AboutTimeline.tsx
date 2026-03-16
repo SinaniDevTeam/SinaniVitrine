@@ -53,13 +53,13 @@ export default function AboutTimeline() {
         >
           {titleTyped ? (
             <>
-              D&apos;un constat sur le terrain à une vision pour{" "}
-              <span style={{ color: "#E84010" }}>l&apos;audiovisuel guinéen</span>
+              D&apos;un constat sur le terrain à une vision pour l&apos;audiovisuel de{" "}
+              <span style={{ color: "#E84010" }}> notre pays</span>
             </>
           ) : titleInView ? (
             <TypeAnimation
               sequence={[
-                "D'un constat sur le terrain à une vision pour l'audiovisuel guinéen",
+                "D'un constat sur le terrain à une vision pour l'audiovisuel de notre pays",
                 () => setTitleTyped(true),
               ]}
               speed={50}

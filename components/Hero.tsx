@@ -176,8 +176,9 @@ export default function Hero() {
                 color: "#111111",
               }}
             >
-              Un hub de création audiovisuelle et de marketing digital pour former
-              les talents, produire des contenus et promouvoir la destination Guinée.
+              Sinani est un incubateur audiovisuel et une agence de publicité qui
+              forme de jeunes talents à créer des contenus inspirants, valorisant la
+              Guinée et ses richesses culturelles.
             </p>
           </div>
 
@@ -339,8 +340,9 @@ export default function Hero() {
               color: "#333333",
             }}
           >
-            Un hub de création audiovisuelle et de marketing digital pour former
-            les talents, produire des contenus et promouvoir la destination Guinée.
+            Sinani est un incubateur audiovisuel et une agence de publicité qui
+            forme de jeunes talents à créer des contenus inspirants, valorisant la
+            Guinée et ses richesses culturelles.
           </p>
 
           {/* Boutons */}

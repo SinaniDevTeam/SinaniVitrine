@@ -1,5 +1,6 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
+import InfiniteCarousel from "@/components/InfiniteCarousel";
 import VisionSection from "@/components/VisionSection";
 import WhoWeAre from "@/components/WhoWeAre";
 import Team from "@/components/Team";
