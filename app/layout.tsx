@@ -19,9 +19,26 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "SINANI — Agence Audiovisuelle & Publicité | Guinée",
+  title: "SINANI",
   description:
     "SINANI est un incubateur audiovisuel et une agence de publicité basée en Guinée. Raconter la Guinée, inspirer le Monde.",
+  icons: {
+    icon: "/FAVICON/Noir_2.png",
+    shortcut: "/FAVICON/Noir_2.png",
+    apple: "/FAVICON/Noir_2.png",
+    other: [
+      {
+        rel: "icon",
+        url: "/FAVICON/Noir_2.png",
+        media: "(prefers-color-scheme: light)",
+      },
+      {
+        rel: "icon",
+        url: "/FAVICON/Blanc_2.png",
+        media: "(prefers-color-scheme: dark)",
+      },
+    ],
+  },
 };
 
 export default function RootLayout({
