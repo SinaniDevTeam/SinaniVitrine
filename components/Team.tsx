@@ -18,17 +18,19 @@ const ChevronRight = () => (
 );
 
 const membres = [
-  { nom: "Rahim Sidibé", role: "Fondateur & Directeur Général", photo: "/team/rahim.jpeg" },
-  { nom: "Abass", role: "Directeur Artistique", photo: "/team/aba.jpeg" },
-  { nom: "Benjamin", role: "Directeur de la Photographie", photo: "/team/benji.jpeg" },
-  { nom: "Fayçal", role: "Monteur Vidéo", photo: "/team/fayçal.JPEG" },
-  { nom: "Nafisa", role: "Responsable Marketing", photo: "/team/nafisa.jpeg" },
-  { nom: "Saly", role: "Chef de Projet", photo: "/team/saly.jpeg" },
-  { nom: "Tommy", role: "Réalisateur", photo: "/team/tommy.jpeg" },
-  { nom: "Membre 10", role: "Poste", photo: "/team/IMG_7245.JPEG" },
-  { nom: "Membre 11", role: "Poste", photo: "/team/IMG_7247.JPEG" },
-  { nom: "Membre 12", role: "Poste", photo: "/team/IMG_7248.JPEG" },
-  { nom: "Membre 13", role: "Poste", photo: "/team/IMG_7239.JPG.jpeg" },
+  { nom: "Mohamed Rahim SIDIBÉ", role: "Directeur Général", photo: "/team/rahim.jpeg" },
+  { nom: "Fayçal ZAYATTE", role: "Directeur des Opérations", photo: "/team/fayçal.JPEG" },
+  { nom: "Néné Hawa DIALLO", role: "Administratrice Générale", photo: "/team/IMG_7239.JPG.jpeg" },
+  { nom: "Saliou Djan DIABY", role: "Responsable Commerciale", photo: "/team/saly.jpeg" },
+  { nom: "Nafissa KOROMA", role: "Responsable Marketing", photo: "/team/nafisa.jpeg" },
+  { nom: "Benjamin CAMARA", role: "Infographe Designer", photo: "/team/benji.jpeg" },
+  { nom: "Cheick Ahmed SIDIBÉ", role: "Responsable Photographe", photo: "/team/aba.jpeg" },
+  { nom: "Abdoulaye KABA", role: "Assistant Photographe", photo: "/team/IMG_7242.JPG.jpeg" },
+  { nom: "Tommy NZEBO", role: "Réalisateur / Vidéographe", photo: "/team/tommy.jpeg" },
+  { nom: "Ousmane CAMARA", role: "Responsable Logistique", photo: "/team/IMG_7245.JPEG" },
+  { nom: "Fatoumata BAH", role: "Community Manager", photo: "/team/IMG_7247.JPEG" },
+  { nom: "Mamadou Alpha BALDÉ", role: "Responsable Digital", photo: "/team/IMG_7248.JPEG" },
+  { nom: "George SULTAN", role: "Réalisateur / Vidéographe", photo: "/team/IMG_7246.JPEG" }
 ];
 
 const VISIBLE = 4;
@@ -172,15 +174,6 @@ export default function Team() {
           </div>
         </div>
 
-        {/* Barre de progression */}
-        <div className="mt-8 h-[2px] w-full rounded-full overflow-hidden" style={{ background: "#E5E7EB" }}>
-          <motion.div
-            className="h-full rounded-full"
-            style={{ background: "#E84010" }}
-            animate={{ width: `${((current + VISIBLE) / membres.length) * 100}%` }}
-            transition={{ type: "spring", stiffness: 300, damping: 35 }}
-          />
-        </div>
 
       </div>
     </section>

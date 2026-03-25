@@ -50,7 +50,7 @@ const sections = [
     title: "Nos Studios",
     Icon: CameraIcon,
     image: "/images/im1.jpeg",
-    images: ["/images/im1.jpeg", "/images/img5.jpeg", "/images/img6.jpeg"],
+    images: ["/images/im1.jpeg", "/images/studio-podcast.webp", "/images/studio-audio.jpg"],
     imageLabels: ["Studio photo", "Studio podcast", "Studio audio"],
     description:
       "Notre agence dispose de studios entièrement équipés pour donner vie à tous vos projets :\n• Studio photo : pour des shootings professionnels et créatifs.\n• Studio podcast : un espace moderne pour enregistrer et produire vos émissions et contenus audio.\n• Studio audio : conçu pour l'enregistrement, le mixage et la postproduction de vos projets sonores.\n\nChaque espace est pensé pour offrir qualité, confort et performance, permettant à nos talents de produire des contenus professionnels et impactants.",
