@@ -1,18 +1,17 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
+import { useState, useCallback } from "react";
 import Image from "next/image";
-import { motion, useInView } from "framer-motion";
-import { TypeAnimation } from "react-type-animation";
+import { motion, AnimatePresence } from "framer-motion";
 
 const ChevronLeft = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
     <polyline points="15 18 9 12 15 6" />
   </svg>
 );
 
 const ChevronRight = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
     <polyline points="9 18 15 12 9 6" />
   </svg>
 );
@@ -36,146 +35,403 @@ const membres = [
 const VISIBLE = 4;
 
 export default function Team() {
-  const [titleTyped, setTitleTyped] = useState(false);
-  const titleRef = useRef(null);
-  const isInView = useInView(titleRef, { once: true, margin: "-80px" });
-
   const [current, setCurrent] = useState(0);
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const maxIndex = membres.length - VISIBLE;
 
-  const prev = useCallback(() => setCurrent((c) => Math.max(c - 1, 0)), []);
-  const next = useCallback(() => setCurrent((c) => Math.min(c + 1, maxIndex)), [maxIndex]);
+  const prev = useCallback(() => {
+    setCurrent((c) => Math.max(c - 1, 0));
+  }, []);
+
+  const next = useCallback(() => {
+    setCurrent((c) => Math.min(c + 1, maxIndex));
+  }, [maxIndex]);
 
   return (
-    <section className="w-full bg-white pt-10 md:pt-16 pb-16 md:pb-24 px-6 md:px-8">
-      <div className="max-w-7xl mx-auto">
+    <section className="relative w-full overflow-hidden bg-white py-20 md:py-32 px-6 md:px-8">
+      
+      {/* Grain texture overlay */}
+      <div 
+        className="absolute inset-0 opacity-[0.02] pointer-events-none mix-blend-overlay"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' /%3E%3C/svg%3E")`,
+        }}
+      />
 
-        {/* ── Titre ── */}
+      <div className="relative max-w-[1600px] mx-auto">
+
+        {/* ── Header avec animations ── */}
         <motion.div
-          className="mb-6 md:mb-10"
+          className="mb-16 md:mb-20"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.6 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
         >
+
+
+          {/* Titre principal */}
           <h2
-            ref={titleRef}
             style={{
               fontFamily: "Inter, sans-serif",
-              fontWeight: "700",
-              fontSize: "clamp(32px, 5vw, 64px)",
-              lineHeight: "1.1",
+              fontWeight: "300",
+              fontSize: "clamp(36px, 5.5vw, 72px)",
+              lineHeight: "1",
               color: "#111111",
-              minHeight: "1.2em",
+              letterSpacing: "-0.03em",
             }}
           >
-            {titleTyped ? (
-              <>L&apos;équipe derrière <span style={{ color: "#E84010" }}>SINANI</span></>
-            ) : isInView ? (
-              <TypeAnimation
-                sequence={["Les cerveaux derrière SINANI", () => setTitleTyped(true)]}
-                speed={50}
-                cursor={false}
-                wrapper="span"
-              />
-            ) : null}
+            Les cerveaux derrière{" "}
+            <motion.span
+              style={{
+                fontWeight: "700",
+                fontStyle: "italic",
+                background: "linear-gradient(135deg, #E84010 0%, #FF6B3D 100%)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+                paddingRight: "0.1em"
+              }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+            >
+              SINANI
+            </motion.span>
           </h2>
         </motion.div>
 
         {/* ── Carousel ── */}
         <div className="relative">
 
-          {/* Bouton ◀ */}
-          <button
+          {/* Bouton Précédent */}
+          <motion.button
             onClick={prev}
             disabled={current === 0}
             aria-label="Précédent"
-            className="absolute left-0 top-1/2 z-10 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200"
+            className="absolute left-0 top-1/2 z-20 w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 backdrop-blur-md"
             style={{
               transform: "translate(-50%, -50%)",
               border: "1.5px solid",
               borderColor: current === 0 ? "#E5E7EB" : "#111111",
               color: current === 0 ? "#D1D5DB" : "#111111",
-              background: "#ffffff",
-              cursor: current === 0 ? "default" : "pointer",
+              background: current === 0 ? "rgba(255,255,255,0.6)" : "rgba(255,255,255,0.95)",
+              cursor: current === 0 ? "not-allowed" : "pointer",
+              boxShadow: current === 0 ? "none" : "0 4px 12px rgba(0,0,0,0.08)",
             }}
+            whileHover={current !== 0 ? { scale: 1.1, backgroundColor: "#111111", color: "#ffffff" } : {}}
+            whileTap={current !== 0 ? { scale: 0.95 } : {}}
           >
             <ChevronLeft />
-          </button>
+          </motion.button>
 
-          {/* Bouton ▶ */}
-          <button
+          {/* Bouton Suivant */}
+          <motion.button
             onClick={next}
             disabled={current === maxIndex}
             aria-label="Suivant"
-            className="absolute right-0 top-1/2 z-10 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200"
+            className="absolute right-0 top-1/2 z-20 w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 backdrop-blur-md"
             style={{
               transform: "translate(50%, -50%)",
               border: "1.5px solid",
               borderColor: current === maxIndex ? "#E5E7EB" : "#111111",
               color: current === maxIndex ? "#D1D5DB" : "#111111",
-              background: "#ffffff",
-              cursor: current === maxIndex ? "default" : "pointer",
+              background: current === maxIndex ? "rgba(255,255,255,0.6)" : "rgba(255,255,255,0.95)",
+              cursor: current === maxIndex ? "not-allowed" : "pointer",
+              boxShadow: current === maxIndex ? "none" : "0 4px 12px rgba(0,0,0,0.08)",
             }}
+            whileHover={current !== maxIndex ? { scale: 1.1, backgroundColor: "#111111", color: "#ffffff" } : {}}
+            whileTap={current !== maxIndex ? { scale: 0.95 } : {}}
           >
             <ChevronRight />
-          </button>
+          </motion.button>
 
-          {/* Piste */}
+          {/* Piste du carousel */}
           <div className="overflow-hidden">
             <motion.div
-              className="flex gap-6"
-              animate={{ x: `calc(-${current} * (100% / ${VISIBLE} + (${VISIBLE - 1} * 24px / ${VISIBLE})))` }}
-              transition={{ type: "spring", stiffness: 300, damping: 35 }}
+              className="flex gap-6 md:gap-8"
+              animate={{ 
+                x: `calc(-${current} * (100% / ${VISIBLE} + ${24 * (VISIBLE - 1) / VISIBLE}px))` 
+              }}
+              transition={{ 
+                type: "spring", 
+                stiffness: 280, 
+                damping: 32,
+                mass: 0.8
+              }}
             >
               {membres.map((membre, i) => (
                 <motion.div
                   key={`${membre.nom}-${i}`}
-                  className="group flex flex-col shrink-0"
-                  style={{ width: `calc((100% - ${(VISIBLE - 1) * 24}px) / ${VISIBLE})` }}
-                  initial={{ opacity: 0, y: 20 }}
+                  className="group flex flex-col shrink-0 cursor-pointer"
+                  style={{ 
+                    width: `calc((100% - ${(VISIBLE - 1) * 24}px) / ${VISIBLE})` 
+                  }}
+                  initial={{ opacity: 0, y: 40 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.4, delay: (i % VISIBLE) * 0.08 }}
+                  transition={{ 
+                    duration: 0.6, 
+                    delay: (i % VISIBLE) * 0.1,
+                    ease: [0.22, 1, 0.36, 1]
+                  }}
+                  whileHover={{ y: -12 }}
+                  onHoverStart={() => setHoveredIndex(i)}
+                  onHoverEnd={() => setHoveredIndex(null)}
                 >
-                  {/* Photo */}
-                  <div
-                    className="relative overflow-hidden w-full"
-                    style={{ aspectRatio: "3 / 4", borderRadius: "8px", background: "#111111" }}
-                  >
-                    <Image
-                      src={membre.photo}
-                      alt={membre.nom}
-                      fill
-                      className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
-                    />
+                  {/* Container photo */}
+                  <div className="relative overflow-hidden rounded-2xl shadow-lg">
                     <div
-                      className="absolute inset-0 transition-opacity duration-300 opacity-0 group-hover:opacity-100"
-                      style={{ background: "linear-gradient(to top, rgba(232,64,16,0.22) 0%, transparent 60%)" }}
-                    />
-                    <div
-                      className="absolute bottom-0 left-0 right-0 h-[3px] transition-transform duration-300 origin-left scale-x-0 group-hover:scale-x-100"
-                      style={{ backgroundColor: "#E84010" }}
-                    />
+                      className="relative w-full"
+                      style={{ aspectRatio: "3 / 4" }}
+                    >
+                      {/* Image */}
+                      <div className="relative w-full h-full">
+                        <Image
+                          src={membre.photo}
+                          alt={membre.nom}
+                          fill
+                          className="object-cover object-top"
+                        />
+                      </div>
+                    </div>
                   </div>
 
-                  {/* Nom + Rôle */}
-                  <div className="mt-4 flex flex-col gap-1">
-                    <p style={{ fontFamily: "Inter, sans-serif", fontSize: "16px", fontWeight: "700", color: "#111111", lineHeight: "1.3" }}>
+                  {/* Info membre avec animations */}
+                  <motion.div
+                    className="mt-5 flex flex-col gap-2.5"
+                    initial={{ opacity: 0, y: 15 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: 0.15 }}
+                  >
+                    {/* Nom */}
+                    <motion.h3
+                      style={{
+                        fontFamily: "Inter, sans-serif",
+                        fontSize: "17px",
+                        fontWeight: "600",
+                        color: "#2c2c2c",
+                        lineHeight: "1.3",
+                        letterSpacing: "-0.02em"
+                      }}
+                      animate={{
+                        color: hoveredIndex === i ? "#111111" : "#2c2c2c"
+                      }}
+                      transition={{ duration: 0.3 }}
+                    >
                       {membre.nom}
-                    </p>
-                    <p style={{ fontFamily: "Inter, sans-serif", fontSize: "13px", fontWeight: "700", color: "#E84010", letterSpacing: "0.3px" }}>
-                      {membre.role}
-                    </p>
-                  </div>
+                    </motion.h3>
+
+                    {/* Rôle avec ligne animée */}
+                    <div className="flex items-center gap-2.5">
+                      <motion.div
+                        className="h-[1.5px] bg-gradient-to-r from-orange-500 to-orange-400"
+                        initial={{ width: 0 }}
+                        whileInView={{ width: 24 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.7, delay: 0.35 }}
+                        animate={{
+                          width: hoveredIndex === i ? 32 : 24,
+                          opacity: hoveredIndex === i ? 1 : 0.8
+                        }}
+                      />
+                      <motion.p
+                        style={{
+                          fontFamily: "Inter, sans-serif",
+                          fontSize: "11px",
+                          fontWeight: "600",
+                          color: "#E84010",
+                          letterSpacing: "0.08em",
+                          textTransform: "uppercase"
+                        }}
+                        animate={{
+                          x: hoveredIndex === i ? 4 : 0,
+                          color: hoveredIndex === i ? "#FF6B3D" : "#E84010"
+                        }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        {membre.role}
+                      </motion.p>
+                    </div>
+                  </motion.div>
                 </motion.div>
               ))}
             </motion.div>
           </div>
         </div>
 
-
+        {/* Indicateurs de pagination avec animation */}
+        <motion.div 
+          className="flex justify-center items-center gap-2 mt-12"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+        >
+          {Array.from({ length: maxIndex + 1 }).map((_, index) => (
+            <motion.button
+              key={index}
+              onClick={() => setCurrent(index)}
+              className="rounded-full transition-all duration-300"
+              style={{
+                width: current === index ? "32px" : "8px",
+                height: "8px",
+                background: current === index 
+                  ? "linear-gradient(90deg, #E84010 0%, #FF6B3D 100%)"
+                  : "#E5E7EB",
+              }}
+              whileHover={{ 
+                scale: 1.2,
+                backgroundColor: current === index ? undefined : "#d1d5db"
+              }}
+              whileTap={{ scale: 0.9 }}
+              aria-label={`Aller à la page ${index + 1}`}
+            />
+          ))}
+        </motion.div>
       </div>
+
+      <style dangerouslySetInnerHTML={{ __html: `
+        /* Animations custom pour le composant Team */
+
+        /* Animation de brillance (shine effect) */
+        @keyframes shine {
+          0% {
+            transform: translateX(-100%) skewX(-15deg);
+          }
+          100% {
+            transform: translateX(200%) skewX(-15deg);
+          }
+        }
+
+        .animate-shine {
+          animation: shine 1.5s ease-in-out;
+        }
+
+        /* Animation de pulsation subtile */
+        @keyframes pulse-subtle {
+          0%, 100% {
+            opacity: 1;
+          }
+          50% {
+            opacity: 0.8;
+          }
+        }
+
+        .animate-pulse-subtle {
+          animation: pulse-subtle 2s ease-in-out infinite;
+        }
+
+        /* Animation de fade-in progressif */
+        @keyframes fade-in-up {
+          from {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        .animate-fade-in-up {
+          animation: fade-in-up 0.8s ease-out forwards;
+        }
+
+        /* Animation de slide depuis la gauche */
+        @keyframes slide-in-left {
+          from {
+            opacity: 0;
+            transform: translateX(-40px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+
+        .animate-slide-in-left {
+          animation: slide-in-left 0.6s ease-out forwards;
+        }
+
+        /* Animation de ligne qui se dessine */
+        @keyframes draw-line {
+          from {
+            width: 0;
+          }
+          to {
+            width: 100%;
+          }
+        }
+
+        .animate-draw-line {
+          animation: draw-line 0.8s ease-out forwards;
+        }
+
+        /* Amélioration du backdrop-blur pour Safari */
+        @supports (backdrop-filter: blur(0)) or (-webkit-backdrop-filter: blur(0)) {
+          .backdrop-blur-md {
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+          }
+          
+          .backdrop-blur-lg {
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+          }
+        }
+
+        /* Effet de glassmorphism */
+        .glass-effect {
+          background: rgba(255, 255, 255, 0.7);
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
+          border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        /* Effet de glow subtil */
+        .glow-orange {
+          box-shadow: 0 0 20px rgba(232, 64, 16, 0.1);
+        }
+
+        .glow-orange-hover:hover {
+          box-shadow: 0 0 30px rgba(232, 64, 16, 0.2);
+        }
+
+        /* Transition smooth premium */
+        .transition-premium {
+          transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        /* Grain texture optimisé */
+        .grain-texture {
+          background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' /%3E%3C/svg%3E");
+          opacity: 0.02;
+          mix-blend-mode: overlay;
+          pointer-events: none;
+        }
+
+        /* Responsive utilities */
+        @media (max-width: 768px) {
+          .animate-fade-in-up,
+          .animate-slide-in-left {
+            animation-duration: 0.6s;
+          }
+        }
+
+        /* Prevent layout shift */
+        .aspect-ratio-3-4 {
+          aspect-ratio: 3 / 4;
+        }
+
+        @supports not (aspect-ratio: 3 / 4) {
+          .aspect-ratio-3-4 {
+            padding-bottom: 133.33%;
+          }
+        }
+      `}} />
     </section>
   );
 }

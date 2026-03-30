@@ -67,15 +67,42 @@ export default function ContactPage() {
     message: "",
   });
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const titleRef = useRef(null);
   const titleInView = useInView(titleRef, { once: true });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setSubmitted(true);
-    setTimeout(() => setSubmitted(false), 4000);
-  };
+  const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setIsSubmitting(true);
+
+  try {
+    const res = await fetch("/api/contact", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    });
+
+    if (res.ok) {
+      setSubmitted(true);
+      setFormData({
+        name: "",
+        email: "",
+        subject: "",
+        message: "",
+      });
+    }
+
+  } catch (error) {
+    console.error("Erreur envoi message:", error);
+  } finally {
+    setIsSubmitting(false);
+  }
+
+  setTimeout(() => setSubmitted(false), 4000);
+};
 
   const inputStyle: React.CSSProperties = {
     fontFamily: "Inter, sans-serif",
@@ -228,13 +255,14 @@ export default function ContactPage() {
                 </div>
 
                 <button type="submit"
-                  className="w-full py-4 rounded-xl font-bold text-white transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+                  disabled={isSubmitting}
+                  className="w-full py-4 rounded-xl font-bold text-white transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-70 disabled:hover:scale-100 disabled:cursor-not-allowed"
                   style={{
                     fontFamily: "Inter, sans-serif", fontSize: "16px",
                     background: submitted ? "linear-gradient(135deg, #059669, #10B981)" : "linear-gradient(135deg, #E84010, #d63a0e)",
                     boxShadow: "0 4px 20px rgba(232,64,16,0.25)",
                   }}>
-                  {submitted ? "Message envoyé !" : "Envoyer le message"}
+                  {submitted ? "Message envoyé !" : isSubmitting ? "Envoi en cours..." : "Envoyer le message"}
                 </button>
               </form>
             </motion.div>
