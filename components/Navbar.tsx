@@ -53,12 +53,12 @@ export default function Navbar() {
       style={
         scrolled
           ? {
-              background: "rgba(255, 255, 255, 0.15)",
-              backdropFilter: "blur(16px)",
-              WebkitBackdropFilter: "blur(16px)",
-              borderBottom: "1px solid rgba(255, 255, 255, 0.2)",
-              boxShadow: "0 4px 24px rgba(0, 0, 0, 0.06)",
-            }
+            background: "rgba(255, 255, 255, 0.15)",
+            backdropFilter: "blur(16px)",
+            WebkitBackdropFilter: "blur(16px)",
+            borderBottom: "1px solid rgba(255, 255, 255, 0.2)",
+            boxShadow: "0 4px 24px rgba(0, 0, 0, 0.06)",
+          }
           : { background: "transparent" }
       }
     >
@@ -75,11 +75,10 @@ export default function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`text-sm lg:text-base font-medium transition-colors duration-200 ${
-                  isActive
+                className={`text-sm lg:text-base font-medium transition-colors duration-200 ${isActive
                     ? "text-orange-500"
                     : "text-gray-800 hover:text-orange-500"
-                }`}
+                  }`}
               >
                 {link.label}
               </Link>
@@ -149,11 +148,10 @@ export default function Navbar() {
                 key={link.href}
                 href={link.href}
                 onClick={() => setMenuOpen(false)}
-                className={`text-base font-medium transition-colors ${
-                  isActive
+                className={`text-base font-medium transition-colors ${isActive
                     ? "text-orange-500"
                     : "text-gray-800 hover:text-orange-500"
-                }`}
+                  }`}
               >
                 {link.label}
               </Link>
