@@ -212,12 +212,6 @@ export default function Footer() {
             }}>
               contact@sinani.gn
             </a>
-            <p style={{
-              fontFamily: "Inter, sans-serif", fontSize: "12px",
-              color: "rgba(255,255,255,0.22)",
-            }}>
-              Conakry, République de Guinée
-            </p>
           </div>
         </motion.div>
 

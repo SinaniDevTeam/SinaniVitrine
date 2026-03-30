@@ -26,7 +26,7 @@ const contactInfo = [
       </svg>
     ),
     title: "Adresse",
-    lines: ["Conakry, Guinée"],
+    lines: ["Nongo 2ème pont au carrefour Idiamine."],
   },
   {
     icon: (
@@ -179,21 +179,6 @@ export default function ContactPage() {
                   </motion.div>
                 ))}
               </div>
-
-              <motion.div className="mt-12" variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} custom={0.5}>
-                <p style={{ fontFamily: "Inter, sans-serif", fontSize: "13px", fontWeight: 700, color: "#111111", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: "12px" }}>
-                  Suivez-nous
-                </p>
-                <div className="flex gap-3 flex-wrap">
-                  {["Instagram", "Facebook", "LinkedIn", "YouTube"].map((name) => (
-                    <a key={name} href="#"
-                      className="px-4 py-2 rounded-full transition-all duration-200 hover:bg-[#E84010] hover:text-white hover:border-[#E84010]"
-                      style={{ fontFamily: "Inter, sans-serif", fontSize: "13px", fontWeight: 500, color: "#6B7280", border: "1px solid #E5E7EB", textDecoration: "none" }}>
-                      {name}
-                    </a>
-                  ))}
-                </div>
-              </motion.div>
             </div>
 
             {/* Colonne droite — Formulaire */}
