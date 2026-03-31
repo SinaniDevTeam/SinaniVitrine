@@ -3,8 +3,9 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import HeroContact from "@/components/HeroContact";
-import { motion } from "framer-motion";
-import { useState, useRef } from "react";
+import FAQ from "@/components/FAQ";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState, useRef, useEffect } from "react";
 import { useInView } from "framer-motion";
 import { TypeAnimation } from "react-type-animation";
 
@@ -58,6 +59,110 @@ const subjects = [
   "Partenariat",
   "Autre",
 ];
+
+function CustomSelect({ 
+  value, 
+  onChange, 
+  options, 
+  placeholder 
+}: { 
+  value: string; 
+  onChange: (val: string) => void; 
+  options: string[]; 
+  placeholder: string;
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  return (
+    <div ref={containerRef} className="relative w-full">
+      <div
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex items-center justify-between cursor-pointer transition-all duration-200"
+        style={{
+          fontFamily: "Inter, sans-serif",
+          fontSize: "15px",
+          fontWeight: 400,
+          color: value ? "#111111" : "#9CA3AF",
+          background: "#FAFAF9",
+          border: `1px solid ${isOpen ? "#E84010" : "#E5E7EB"}`,
+          borderRadius: "12px",
+          padding: "14px 16px",
+          width: "100%",
+          outline: "none",
+        }}
+      >
+        <span>{value || placeholder}</span>
+        <motion.svg
+          animate={{ rotate: isOpen ? 180 : 0 }}
+          transition={{ duration: 0.3 }}
+          width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={isOpen ? "#E84010" : "#9CA3AF"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+        >
+          <path d="m6 9 6 6 6-6" />
+        </motion.svg>
+      </div>
+
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -10, scale: 0.98 }}
+            animate={{ opacity: 1, y: 5, scale: 1 }}
+            exit={{ opacity: 0, y: -10, scale: 0.98 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+            className="absolute z-50 left-0 right-0 overflow-hidden"
+            style={{
+              background: "#FFFFFF",
+              border: "1px solid #F0F0F0",
+              borderRadius: "12px",
+              boxShadow: "0 10px 40px rgba(0,0,0,0.08)",
+              padding: "4px",
+            }}
+          >
+            {options.map((option) => (
+              <div
+                key={option}
+                onClick={() => {
+                  onChange(option);
+                  setIsOpen(false);
+                }}
+                className="px-4 py-3 rounded-lg cursor-pointer transition-colors duration-150 text-[14px]"
+                style={{
+                  fontFamily: "Inter, sans-serif",
+                  color: value === option ? "#E84010" : "#4B5563",
+                  background: value === option ? "rgba(232,64,16,0.06)" : "transparent",
+                }}
+                onMouseEnter={(e) => {
+                  if (value !== option) {
+                    e.currentTarget.style.background = "#F9FAFB";
+                    e.currentTarget.style.color = "#111111";
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (value !== option) {
+                    e.currentTarget.style.background = "transparent";
+                    e.currentTarget.style.color = "#4B5563";
+                  }
+                }}
+              >
+                {option}
+              </div>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -215,15 +320,12 @@ export default function ContactPage() {
                   <label style={{ fontFamily: "Inter, sans-serif", fontSize: "13px", fontWeight: 600, color: "#374151", marginBottom: "6px", display: "block" }}>
                     Sujet
                   </label>
-                  <select value={formData.subject}
-                    onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                    style={{ ...inputStyle, cursor: "pointer" }}
-                    onFocus={(e) => { e.target.style.borderColor = "#E84010"; }}
-                    onBlur={(e) => { e.target.style.borderColor = "#E5E7EB"; }}
-                    required>
-                    <option value="">Choisir un sujet</option>
-                    {subjects.map((s) => (<option key={s} value={s}>{s}</option>))}
-                  </select>
+                  <CustomSelect 
+                    value={formData.subject}
+                    onChange={(val) => setFormData({ ...formData, subject: val })}
+                    options={subjects}
+                    placeholder="Choisir un sujet"
+                  />
                 </div>
 
                 <div className="mb-6">
@@ -256,45 +358,10 @@ export default function ContactPage() {
       </section>
 
       {/* ── FAQ ── */}
-      <section className="py-24" style={{ background: "#FAFAF9" }}>
-        <div className="max-w-3xl mx-auto px-8">
-          <motion.h2 className="text-center mb-16"
-            variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} custom={0}
-            style={{ fontFamily: "Inter, sans-serif", fontSize: "clamp(28px, 4vw, 40px)", fontWeight: 700, color: "#111111", lineHeight: 1.15 }}>
-            Questions fréquentes
-          </motion.h2>
-          {[
-            { q: "Comment postuler à l'incubateur ?", a: "Envoyez-nous votre CV, un portfolio (si disponible) et une lettre de motivation via le formulaire ci-dessus en sélectionnant \"Candidature incubateur\". Nous contactons les candidats retenus sous 2 semaines." },
-            { q: "Combien coûte la location du studio ?", a: "Les tarifs varient selon la durée et le type d'utilisation. Contactez-nous pour un devis personnalisé." },
-            { q: "Travaillez-vous avec des clients hors de Guinée ?", a: "Absolument. Nous accompagnons tout projet qui souhaite raconter l'Afrique ou toucher le marché guinéen, où que soit le client." },
-            { q: "L'incubation est-elle payante ?", a: "Non. L'incubateur est une structure non lucrative. Les incubés bénéficient gratuitement de la formation, du matériel et reçoivent une allocation mensuelle." },
-          ].map((faq, i) => (
-            <FAQItem key={i} question={faq.q} answer={faq.a} index={i} />
-          ))}
-        </div>
-      </section>
+     
+      <FAQ />
 
       <Footer />
     </main>
-  );
-}
-
-function FAQItem({ question, answer, index }: { question: string; answer: string; index: number }) {
-  const [open, setOpen] = useState(false);
-  return (
-    <motion.div className="mb-4" variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} custom={index * 0.1}>
-      <button onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between py-5 px-6 rounded-xl text-left transition-colors duration-200"
-        style={{ background: open ? "rgba(232,64,16,0.04)" : "white", border: `1px solid ${open ? "rgba(232,64,16,0.15)" : "#F0F0F0"}` }}>
-        <span style={{ fontFamily: "Inter, sans-serif", fontSize: "16px", fontWeight: 600, color: "#111111" }}>{question}</span>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={open ? "#E84010" : "#9CA3AF"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
-          className="shrink-0 ml-4 transition-transform duration-300" style={{ transform: open ? "rotate(180deg)" : "rotate(0deg)" }}>
-          <path d="m6 9 6 6 6-6" />
-        </svg>
-      </button>
-      <motion.div initial={false} animate={{ height: open ? "auto" : 0, opacity: open ? 1 : 0 }} transition={{ duration: 0.3 }} className="overflow-hidden">
-        <p className="px-6 pt-3 pb-4" style={{ fontFamily: "Inter, sans-serif", fontSize: "15px", color: "#6B7280", lineHeight: 1.7 }}>{answer}</p>
-      </motion.div>
-    </motion.div>
   );
 }

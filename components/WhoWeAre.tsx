@@ -33,7 +33,7 @@ const sections = [
     id: 1,
     title: "L'Incubateur",
     Icon: GraduationCapIcon,
-    image: "/images/img3.jpeg",
+    image: "/images/img2.jpeg", 
     description:
       "En partenariat avec l'ISIC de Kountia et les Beaux-Arts de Dubréka, SINANI sélectionne chaque deux ans les meilleurs diplômés en audiovisuel. Pendant 2 ans, ils bénéficient d'équipements de pointe, d'une direction artistique et de formations encadrées par des professionnels nationaux et internationaux. Les projets réalisés — documentaires, reportages, contenus sociétaux — sont diffusés gratuitement sur les réseaux sociaux et les chaînes partenaires.",
   },
@@ -41,7 +41,7 @@ const sections = [
     id: 2,
     title: "L'Agence de Publicité",
     Icon: MegaphoneIcon,
-    image: "/images/img4.jpeg",
+    image: "/images/img3.jpeg",
     description:
       "Le pilier commercial qui assure la viabilité de l'incubateur. Spécialisée en production audiovisuelle et marketing digital, l'agence travaille sur des campagnes publicitaires sur-mesure, du community management et de la création de contenu. Les incubés participent directement aux projets commerciaux, ce qui complète leur formation par une expérience concrète du fonctionnement d'une agence.",
   },
@@ -218,7 +218,7 @@ export default function WhoWeAre() {
             <div
               className="relative overflow-hidden"
               style={{
-                height: "clamp(200px, 28vw, 360px)",
+                height: "clamp(250px, 35vw, 480px)",
                 borderRadius: "24px 4px 24px 4px",
               }}
             >
