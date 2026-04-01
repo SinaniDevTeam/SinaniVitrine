@@ -230,7 +230,7 @@ export default function ContactPage() {
       <HeroContact />
 
       {/* ── Formulaire + Infos ── */}
-      <section className="py-24 bg-white">
+      <section id="contact-form" className="py-24 bg-white">
         <div className="max-w-6xl mx-auto px-8">
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-16">
 

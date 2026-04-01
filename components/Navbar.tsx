@@ -87,14 +87,14 @@ export default function Navbar() {
         </nav>
 
         {/* Logo centré */}
-        <div className="absolute left-1/2 -translate-x-1/2">
+        <div className="absolute left-1/2 -translate-x-1/2 flex items-center justify-center">
           <Link href="/" className="flex items-center select-none">
             <Image
               src="/images/Noir.png"
               alt="SINANI — Agence"
               width={100}
               height={48}
-              className="object-contain w-20 md:w-24 lg:w-[120px]"
+              className="object-contain w-16 sm:w-20 md:w-24 lg:w-[120px]"
               priority
             />
           </Link>
@@ -127,17 +127,24 @@ export default function Navbar() {
       </div>
 
       {/* Menu mobile déroulant — glassmorphism */}
-      {menuOpen && (
-        <div
-          className="md:hidden px-6 py-6 flex flex-col gap-5"
-          style={{
-            background: "rgba(255, 255, 255, 0.75)",
-            backdropFilter: "blur(16px)",
-            WebkitBackdropFilter: "blur(16px)",
-            borderTop: "1px solid rgba(255, 255, 255, 0.3)",
-            boxShadow: "0 8px 32px rgba(0, 0, 0, 0.08)",
-          }}
-        >
+      <div
+        className={`md:hidden fixed inset-0 z-[60] flex flex-col transition-all duration-300 ${
+          menuOpen ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-full"
+        }`}
+        style={{
+          background: "rgba(255, 255, 255, 0.98)",
+          backdropFilter: "blur(20px)",
+          WebkitBackdropFilter: "blur(20px)",
+        }}
+      >
+        <div className="flex items-center justify-between h-20 px-8 border-b border-gray-100">
+          <span className="text-[10px] font-bold tracking-widest uppercase text-gray-400">Menu</span>
+          <button onClick={() => setMenuOpen(false)} className="text-gray-800 p-2">
+            <CloseIcon />
+          </button>
+        </div>
+        
+        <nav className="flex flex-col gap-6 p-10 pt-16">
           {navLinks.map((link) => {
             const isActive =
               link.href === "/"
@@ -148,31 +155,33 @@ export default function Navbar() {
                 key={link.href}
                 href={link.href}
                 onClick={() => setMenuOpen(false)}
-                className={`text-base font-medium transition-colors ${isActive
-                    ? "text-orange-500"
-                    : "text-gray-800 hover:text-orange-500"
-                  }`}
+                className={`text-4xl font-bold transition-colors ${
+                  isActive ? "text-orange-500" : "text-gray-900 hover:text-orange-500"
+                }`}
               >
                 {link.label}
               </Link>
             );
           })}
-          <div className="flex items-center gap-3 pt-2 border-t border-gray-100">
+        </nav>
+
+        <div className="mt-auto p-10 border-t border-gray-100 flex items-center justify-between">
+          <div className="flex gap-4">
             {socialLinks.map(({ href, label, Icon }) => (
               <a
                 key={label}
                 href={href}
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label={label}
-                className="w-9 h-9 rounded-full border border-gray-400 flex items-center justify-center text-gray-700 hover:border-orange-500 hover:text-orange-500 transition-colors"
+                className="w-12 h-12 rounded-full bg-gray-50 flex items-center justify-center text-gray-700 hover:text-orange-500 transition-colors"
               >
-                <Icon />
+                <Icon size={20} />
               </a>
             ))}
           </div>
+          <p className="text-[9px] uppercase tracking-widest text-gray-300 font-bold">Sinani © 2026</p>
         </div>
-      )}
+      </div>
     </header>
   );
 }

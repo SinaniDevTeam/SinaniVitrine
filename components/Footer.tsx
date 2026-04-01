@@ -107,12 +107,12 @@ export default function Footer() {
       <div style={{
         background: "linear-gradient(90deg, #0f0d0b 0%, #1a100a 50%, #0f0d0b 100%)",
         borderBottom: "1px solid rgba(232,64,16,0.15)",
-        padding: "22px 60px",
+        padding: "24px 20px md:60px",
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
         flexWrap: "wrap",
-        gap: "16px",
+        gap: "20px",
       }}>
         <div>
           <p style={{
@@ -136,7 +136,7 @@ export default function Footer() {
           </p>
         </div>
         <Link
-          href="/contact"
+          href="/contact#contact-form"
           style={{
             fontFamily: "Inter, sans-serif",
             fontSize: "12px",
@@ -163,14 +163,7 @@ export default function Footer() {
       </div>
 
       {/* Main grid */}
-      <div style={{
-        maxWidth: "1280px", margin: "0 auto",
-        padding: "28px 60px 0",
-        display: "grid",
-        gridTemplateColumns: "1.8fr 1fr 1fr",
-        gap: "0",
-        borderBottom: "1px solid rgba(255,255,255,0.05)",
-      }}>
+      <div className="max-w-[1280px] mx-auto px-6 md:px-[60px] pb-8 pt-7 grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-0 border-b border-white/5">
 
         {/* COL 1 — Identité */}
         <motion.div
@@ -179,10 +172,11 @@ export default function Footer() {
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
           style={{
-            paddingRight: "52px",
-            borderRight: "1px solid rgba(255,255,255,0.05)",
+            paddingRight: "0 md:52px",
+            borderRight: "none md:1px solid rgba(255,255,255,0.05)",
             paddingBottom: "32px",
           }}
+          className="border-b border-white/5 md:border-b-0"
         >
           <div style={{
             display: "inline-block", marginBottom: "12px",
@@ -221,7 +215,8 @@ export default function Footer() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.12 }}
-          style={{ padding: "0 36px 32px", borderRight: "1px solid rgba(255,255,255,0.05)" }}
+          style={{ padding: "0 md:36px 32px", borderRight: "none md:1px solid rgba(255,255,255,0.05)" }}
+          className="border-b border-white/5 md:border-b-0"
         >
           <ColTitle>Agence</ColTitle>
           <ul style={{ listStyle: "none", padding: 0, display: "flex", flexDirection: "column", gap: "11px" }}>
@@ -247,9 +242,9 @@ export default function Footer() {
       {/* Bottom bar */}
       <div style={{
         maxWidth: "1280px", margin: "0 auto",
-        padding: "16px 60px",
+        padding: "24px 20px",
         display: "flex", justifyContent: "space-between", alignItems: "center",
-        flexWrap: "wrap", gap: "10px",
+        flexWrap: "wrap", gap: "16px",
       }}>
         <p style={{
           fontFamily: "'Courier New', monospace", fontSize: "10px",

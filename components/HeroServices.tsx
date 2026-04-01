@@ -10,8 +10,8 @@ export default function HeroServices() {
 
   return (
     <section className="bg-white pb-20">
-      <div className="max-w-7xl mx-auto px-8 pt-36">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start">
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 pt-24 md:pt-36">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">
 
           {/* ── Colonne gauche — Texte ── */}
           <div>
@@ -22,11 +22,10 @@ export default function HeroServices() {
               transition={{ duration: 0.7, delay: 0.1 }}
               style={{
                 fontFamily: "Inter, sans-serif",
-                fontSize: "clamp(32px, 5vw, 60px)",
+                fontSize: "clamp(34px, 8vw, 60px)",
                 fontWeight: 700,
                 lineHeight: 1.1,
                 color: "#111111",
-                minHeight: "135px",
               }}
             >
               {titleTyped ? (

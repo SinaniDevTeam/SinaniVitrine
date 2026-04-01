@@ -10,8 +10,8 @@ export default function HeroContact() {
 
   return (
     <section className="bg-white pb-20">
-      <div className="max-w-7xl mx-auto px-8 pt-36">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start">
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 pt-24 md:pt-36">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">
 
           {/* ── Colonne gauche — Texte & Légende ── */}
           <div>
@@ -23,11 +23,10 @@ export default function HeroContact() {
               transition={{ duration: 0.7, delay: 0.1 }}
               style={{
                 fontFamily: "Inter, sans-serif",
-                fontSize: "clamp(32px, 5vw, 60px)",
+                fontSize: "clamp(34px, 8vw, 60px)",
                 fontWeight: 700,
                 lineHeight: 1.1,
                 color: "#111111",
-                minHeight: "135px", /* Empêche le saut de layout pendant la frappe */
               }}
             >
               {titleTyped ? (
@@ -60,7 +59,7 @@ export default function HeroContact() {
                 fontSize: "clamp(15px, 1.5vw, 18px)",
                 lineHeight: 1.75,
                 color: "#4B5563",
-                maxWidth: "480px",
+                maxWidth: "100%",
               }}
             >
               Ici, à l'agence, nous avons un mur brut où talents, collaborateurs et 

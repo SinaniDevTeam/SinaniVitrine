@@ -27,10 +27,9 @@ export default function VisionSection() {
           style={{
             fontFamily: "Inter, sans-serif",
             fontWeight: "700",
-            fontSize: "clamp(32px, 5vw, 64px)",
+            fontSize: "clamp(30px, 8vw, 64px)",
             lineHeight: "1.1",
             color: "#111111",
-            whiteSpace: "nowrap",
             minHeight: "1.2em",
           }}
         >

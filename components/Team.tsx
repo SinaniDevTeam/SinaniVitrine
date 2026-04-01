@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -32,12 +32,23 @@ const membres = [
   { nom: "George SULTAN", role: "Réalisateur / Vidéographe", photo: "/team/IMG_7246.JPEG" }
 ];
 
-const VISIBLE = 4;
-
 export default function Team() {
   const [current, setCurrent] = useState(0);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-  const maxIndex = membres.length - VISIBLE;
+  const [visibleCount, setVisibleCount] = useState(4);
+
+  useEffect(() => {
+    const updateCount = () => {
+      if (window.innerWidth < 640) setVisibleCount(1);
+      else if (window.innerWidth < 1024) setVisibleCount(2);
+      else setVisibleCount(4);
+    };
+    updateCount();
+    window.addEventListener("resize", updateCount);
+    return () => window.removeEventListener("resize", updateCount);
+  }, []);
+
+  const maxIndex = Math.max(0, membres.length - visibleCount);
 
   const prev = useCallback(() => {
     setCurrent((c) => Math.max(c - 1, 0));
@@ -152,7 +163,7 @@ export default function Team() {
             <motion.div
               className="flex gap-6 md:gap-8"
               animate={{ 
-                x: `calc(-${current} * (100% / ${VISIBLE} + ${24 * (VISIBLE - 1) / VISIBLE}px))` 
+                x: `calc(-${current} * (100% / ${visibleCount} + ${24 * (visibleCount - 1) / visibleCount}px))` 
               }}
               transition={{ 
                 type: "spring", 
@@ -166,14 +177,14 @@ export default function Team() {
                   key={`${membre.nom}-${i}`}
                   className="group flex flex-col shrink-0 cursor-pointer"
                   style={{ 
-                    width: `calc((100% - ${(VISIBLE - 1) * 24}px) / ${VISIBLE})` 
+                    width: `calc((100% - ${(visibleCount - 1) * 24}px) / ${visibleCount})` 
                   }}
                   initial={{ opacity: 0, y: 40 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ 
                     duration: 0.6, 
-                    delay: (i % VISIBLE) * 0.1,
+                    delay: (i % 4) * 0.1,
                     ease: [0.22, 1, 0.36, 1]
                   }}
                   whileHover={{ y: -12 }}

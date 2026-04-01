@@ -293,15 +293,15 @@ export default function Hero() {
           >
             {mobileTyped ? (
               <>
-                <span style={{ fontSize: "clamp(38px, 11vw, 52px)" }}>Raconter</span>
+                <span style={{ fontSize: "clamp(34px, 10vw, 48px)" }}>Raconter</span>
                 <br />
-                <span style={{ fontSize: "clamp(38px, 11vw, 52px)" }}>
+                <span style={{ fontSize: "clamp(34px, 10vw, 48px)" }}>
                   la <span style={{ color: "#E84010" }}>Guinée</span>,
                 </span>
                 <br />
-                <span style={{ fontSize: "clamp(26px, 8vw, 36px)" }}>inspirer le</span>
+                <span style={{ fontSize: "clamp(24px, 7vw, 32px)" }}>inspirer le</span>
                 <br />
-                <span style={{ fontSize: "clamp(26px, 8vw, 36px)" }}>Monde.</span>
+                <span style={{ fontSize: "clamp(24px, 7vw, 32px)" }}>Monde.</span>
               </>
             ) : (
               <TypeAnimation
@@ -319,7 +319,7 @@ export default function Hero() {
 
           {/* Portrait */}
           <div
-            style={{ position: "relative", width: "100%", height: "300px" }}
+            style={{ position: "relative", width: "100%", height: "40vh", maxHeight: "400px", minHeight: "250px" }}
           >
             <Image
               src="/images/image%201.png"
