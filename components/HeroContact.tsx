@@ -91,7 +91,7 @@ export default function HeroContact() {
                 }}>
                   hello@sinani.gn
                 </a>
-                <a href="tel:+22400000000" style={{
+                <a href="tel:+224612414171" style={{
                   fontFamily: "Inter, sans-serif",
                   fontSize: "16px",
                   fontWeight: 400,
@@ -99,7 +99,7 @@ export default function HeroContact() {
                   textDecoration: "none",
                   display: "inline-block"
                 }}>
-                  +224 620 00 00 00
+                  +224 612 41 41 71
                 </a>
               </div>
             </motion.div>
