@@ -200,11 +200,11 @@ export default function Footer() {
 
           {/* Contact */}
           <div style={{ marginTop: "24px", display: "flex", flexDirection: "column", gap: "6px" }}>
-            <a href="mailto:contact@sinani.gn" style={{
+            <a href="mailto:contact@agencesinani.com" style={{
               fontFamily: "Inter, sans-serif", fontSize: "13px",
               color: "rgba(255,255,255,0.4)", textDecoration: "none",
             }}>
-              contact@sinani.gn
+              contact@agencesinani.com
             </a>
           </div>
         </motion.div>

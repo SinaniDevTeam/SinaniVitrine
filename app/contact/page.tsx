@@ -37,8 +37,8 @@ const contactInfo = [
       </svg>
     ),
     title: "Email",
-    lines: ["contact@sinani.gn"],
-    href: "mailto:contact@sinani.gn",
+    lines: ["contact@agencesinani.com"],
+    href: "mailto:contact@agencesinani.com",
   },
   {
     icon: (
@@ -47,7 +47,8 @@ const contactInfo = [
       </svg>
     ),
     title: "Téléphone",
-    lines: ["+224 XX XX XX XX"],
+    lines: ["+224 612 41 41 71"],
+    href: "tel:+224612414171",
   },
 ];
 

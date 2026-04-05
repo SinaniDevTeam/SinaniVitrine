@@ -80,7 +80,7 @@ export default function HeroContact() {
               }}
             >
               <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                <a href="mailto:contact@sinani.com" style={{
+                <a href="mailto:contact@agencesinani.com" style={{
                   fontFamily: "Inter, sans-serif",
                   fontSize: "16px",
                   fontWeight: 600,
@@ -88,7 +88,7 @@ export default function HeroContact() {
                   textDecoration: "none",
                   display: "inline-block"
                 }}>
-                  hello@sinani.gn
+                  contact@agencesinani.com
                 </a>
                 <a href="tel:+224612414171" style={{
                   fontFamily: "Inter, sans-serif",
