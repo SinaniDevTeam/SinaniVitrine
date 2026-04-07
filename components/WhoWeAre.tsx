@@ -158,7 +158,7 @@ export default function WhoWeAre() {
             transition={{ duration: 0.6, delay: 0.15 }}
           >
             {sections.map((section, index) => (
-              <button
+              <motion.button
                 key={section.id}
                 onClick={() => setActive(index)}
                 className="flex items-start gap-5 text-left py-7 transition-all duration-300"
@@ -222,7 +222,7 @@ export default function WhoWeAre() {
                     </p>
                   </div>
                 </div>
-              </button>
+              </motion.button>
             ))}
           </motion.div>
 
