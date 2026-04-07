@@ -16,20 +16,28 @@ const ChevronRight = () => (
   </svg>
 );
 
-const membres = [
-  { nom: "Mohamed Rahim SIDIBÉ", role: "Directeur Général", photo: "/team/rahim.jpeg" },
-  { nom: "Fayçal ZAYATTE", role: "Directeur des Opérations", photo: "/team/fayçal.JPEG" },
-  { nom: "Néné Hawa DIALLO", role: "Administratrice Générale", photo: "/team/IMG_7239.JPG.jpeg" },
-  { nom: "Saliou Djan DIABY", role: "Responsable Commerciale", photo: "/team/saly.jpeg" },
-  { nom: "Nafissa KOROMA", role: "Responsable Marketing", photo: "/team/nafisa.jpeg" },
-  { nom: "Benjamin CAMARA", role: "Infographe Designer", photo: "/team/benji.jpeg" },
-  { nom: "Cheick Ahmed SIDIBÉ", role: "Responsable Photographe", photo: "/team/aba.jpeg" },
-  { nom: "Abdoulaye KABA", role: "Assistant Photographe", photo: "/team/IMG_7242.JPG.jpeg" },
-  { nom: "Tommy NZEBO", role: "Réalisateur / Vidéographe", photo: "/team/tommy.jpeg" },
-  { nom: "Ousmane CAMARA", role: "Responsable Logistique", photo: "/team/IMG_7245.JPEG" },
-  { nom: "Fatoumata BAH", role: "Community Manager", photo: "/team/IMG_7247.JPEG" },
-  { nom: "Mamadou Alpha BALDÉ", role: "Responsable Digital", photo: "/team/IMG_7248.JPEG" },
-  { nom: "George SULTAN", role: "Réalisateur / Vidéographe", photo: "/team/IMG_7246.JPEG" }
+interface Membre {
+  nom: string;
+  role: string;
+  photo: string;
+  scale: number;
+  translate?: string;
+}
+
+const membres: Membre[] = [
+  { nom: "Mohamed Rahim SIDIBÉ", role: "Directeur Général", photo: "/team/rahim.png", scale: 1 },
+  { nom: "Fayçal ZAYATTE", role: "Directeur des Opérations", photo: "/team/fayçal.png", scale: 1 },
+  { nom: "Néné Hawa DIALLO", role: "Administratrice Générale", photo: "/team/nene.png", scale: 1 },
+  { nom: "Saliou Djan DIABY", role: "Responsable Commerciale", photo: "/team/saly.png", scale: 1 },
+  { nom: "Nafissa KOROMA", role: "Responsable Marketing", photo: "/team/nafisa.png", scale: 1 },
+  { nom: "Benjamin CAMARA", role: "Infographe Designer", photo: "/team/benji.png", scale: 1 },
+  { nom: "Cheick Ahmed SIDIBÉ", role: "Responsable Photographe", photo: "/team/aba.png", scale: 1.15, translate: "22%, -12%" },
+  { nom: "Abdoulaye KABA", role: "Assistant Photographe", photo: "/team/AK.png", scale: 1 },
+  { nom: "Tommy NZEBO", role: "Réalisateur / Vidéographe", photo: "/team/tommy.png", scale: 1 },
+  { nom: "Ousmane CAMARA", role: "Responsable Logistique", photo: "/team/ousmane.png", scale: 1.2 },
+  { nom: "Fatoumata BAH", role: "Community Manager", photo: "/team/fatoumata.png", scale: 1, translate: "0%, -5%" },
+  { nom: "Mamadou Alpha BALDÉ", role: "Responsable Digital", photo: "/team/mamadou.png", scale: 1 },
+  { nom: "George SULTAN", role: "Réalisateur / Vidéographe", photo: "/team/IMG_7246-removebg-preview.png", scale: 1 }
 ];
 
 export default function Team() {
@@ -187,86 +195,111 @@ export default function Team() {
                     delay: (i % 4) * 0.1,
                     ease: [0.22, 1, 0.36, 1]
                   }}
-                  whileHover={{ y: -12 }}
+                  whileHover={{ scale: 1.02 }}
                   onHoverStart={() => setHoveredIndex(i)}
                   onHoverEnd={() => setHoveredIndex(null)}
                 >
-                  {/* Container photo */}
-                  <div className="relative overflow-hidden rounded-2xl shadow-lg">
+                  {/* Glassmorphism Card */}
+                  <div
+                    className="relative overflow-hidden rounded-2xl"
+                    style={{
+                      background: "linear-gradient(145deg, rgba(255,255,255,0.85) 0%, rgba(245,240,235,0.7) 100%)",
+                      backdropFilter: "blur(16px)",
+                      WebkitBackdropFilter: "blur(16px)",
+                      border: "1px solid rgba(255,255,255,0.6)",
+                      boxShadow: hoveredIndex === i
+                        ? "0 20px 60px rgba(232,64,16,0.12), 0 8px 24px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.8)"
+                        : "0 8px 32px rgba(0,0,0,0.06), 0 2px 8px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255,255,255,0.8)",
+                      transition: "box-shadow 0.4s ease",
+                    }}
+                  >
+                    {/* Photo zone */}
                     <div
                       className="relative w-full"
                       style={{ aspectRatio: "3 / 4" }}
                     >
-                      {/* Image */}
-                      <div className="relative w-full h-full">
-                        <Image
-                          src={membre.photo}
-                          alt={membre.nom}
-                          fill
-                          className="object-cover object-top"
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Info membre avec animations */}
-                  <motion.div
-                    className="mt-5 flex flex-col gap-2.5"
-                    initial={{ opacity: 0, y: 15 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.5, delay: 0.15 }}
-                  >
-                    {/* Nom */}
-                    <motion.h3
-                      style={{
-                        fontFamily: "Inter, sans-serif",
-                        fontSize: "17px",
-                        fontWeight: "600",
-                        color: "#2c2c2c",
-                        lineHeight: "1.3",
-                        letterSpacing: "-0.02em"
-                      }}
-                      animate={{
-                        color: hoveredIndex === i ? "#111111" : "#2c2c2c"
-                      }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      {membre.nom}
-                    </motion.h3>
-
-                    {/* Rôle avec ligne animée */}
-                    <div className="flex items-center gap-2.5">
-                      <motion.div
-                        className="h-[1.5px] bg-gradient-to-r from-orange-500 to-orange-400"
-                        initial={{ width: 0 }}
-                        whileInView={{ width: 24 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.7, delay: 0.35 }}
-                        animate={{
-                          width: hoveredIndex === i ? 32 : 24,
-                          opacity: hoveredIndex === i ? 1 : 0.8
+                      <Image
+                        src={membre.photo}
+                        alt={membre.nom}
+                        fill
+                        className="object-contain"
+                        style={{ 
+                          objectFit: "contain", 
+                          objectPosition: "center center",
+                          transform: `scale(${membre.scale || 1}) translate(${membre.translate || "0, 0"})`,
+                          transformOrigin: "center center"
                         }}
                       />
-                      <motion.p
+                    </div>
+
+                    {/* Info overlay at the bottom */}
+                    <div
+                      style={{
+                        position: "absolute",
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        padding: "20px 16px 16px",
+                        background: "linear-gradient(to top, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.8) 60%, transparent 100%)",
+                        backdropFilter: "blur(8px)",
+                        WebkitBackdropFilter: "blur(8px)",
+                      }}
+                    >
+                      {/* Nom */}
+                      <motion.h3
                         style={{
                           fontFamily: "Inter, sans-serif",
-                          fontSize: "11px",
-                          fontWeight: "600",
-                          color: "#E84010",
-                          letterSpacing: "0.08em",
-                          textTransform: "uppercase"
+                          fontSize: "15px",
+                          fontWeight: "700",
+                          color: "#1a1a1a",
+                          lineHeight: "1.3",
+                          letterSpacing: "-0.02em",
                         }}
                         animate={{
-                          x: hoveredIndex === i ? 4 : 0,
-                          color: hoveredIndex === i ? "#FF6B3D" : "#E84010"
+                          color: "#1a1a1a"
                         }}
                         transition={{ duration: 0.3 }}
                       >
-                        {membre.role}
-                      </motion.p>
+                        {membre.nom}
+                      </motion.h3>
+
+                      {/* Rôle */}
+                      <div className="flex items-center gap-2 mt-1.5">
+                        <motion.div
+                          style={{
+                            height: "1.5px",
+                            background: "linear-gradient(90deg, #E84010, #FF6B3D)",
+                            borderRadius: "1px",
+                          }}
+                          initial={{ width: 0 }}
+                          whileInView={{ width: 18 }}
+                          viewport={{ once: true }}
+                          transition={{ duration: 0.7, delay: 0.35 }}
+                          animate={{
+                            width: hoveredIndex === i ? 26 : 18,
+                            opacity: hoveredIndex === i ? 1 : 0.7
+                          }}
+                        />
+                        <motion.p
+                          style={{
+                            fontFamily: "Inter, sans-serif",
+                            fontSize: "10px",
+                            fontWeight: "600",
+                            color: "#E84010",
+                            letterSpacing: "0.08em",
+                            textTransform: "uppercase",
+                          }}
+                          animate={{
+                            x: hoveredIndex === i ? 2 : 0,
+                            color: hoveredIndex === i ? "#FF6B3D" : "#E84010"
+                          }}
+                          transition={{ duration: 0.3 }}
+                        >
+                          {membre.role}
+                        </motion.p>
+                      </div>
                     </div>
-                  </motion.div>
+                  </div>
                 </motion.div>
               ))}
             </motion.div>

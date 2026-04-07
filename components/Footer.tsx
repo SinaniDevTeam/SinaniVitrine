@@ -104,16 +104,13 @@ export default function Footer() {
       <FilmTicker />
 
       {/* ── CTA Banner ── */}
-      <div style={{
-        background: "linear-gradient(90deg, #0f0d0b 0%, #1a100a 50%, #0f0d0b 100%)",
-        borderBottom: "1px solid rgba(232,64,16,0.15)",
-        padding: "24px 20px md:60px",
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        flexWrap: "wrap",
-        gap: "20px",
-      }}>
+      <div 
+        className="px-6 md:px-[60px] py-6 md:py-8 flex flex-wrap justify-between items-center gap-5"
+        style={{
+          background: "linear-gradient(90deg, #0f0d0b 0%, #1a100a 50%, #0f0d0b 100%)",
+          borderBottom: "1px solid rgba(232,64,16,0.15)",
+        }}
+      >
         <div>
           <p style={{
             fontFamily: "'Playfair Display', Georgia, serif",
@@ -156,14 +153,14 @@ export default function Footer() {
       </div>
 
       {/* ── Logo centré ── */}
-      <div style={{ display: "flex", justifyContent: "center", padding: "28px 0 0" }}>
+      <div className="flex justify-center py-4">
         <Link href="/">
           <Image src="/images/Blanc.png" alt="SINANI" width={130} height={52} style={{ objectFit: "contain" }} />
         </Link>
       </div>
 
       {/* Main grid */}
-      <div className="max-w-[1280px] mx-auto px-6 md:px-[60px] pb-8 pt-7 grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-0 border-b border-white/5">
+      <div className="max-w-[1280px] mx-auto px-6 md:px-[60px] py-6 grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-0 border-b border-white/5">
 
         {/* COL 1 — Identité */}
         <motion.div
@@ -171,12 +168,7 @@ export default function Footer() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          style={{
-            paddingRight: "0 md:52px",
-            borderRight: "none md:1px solid rgba(255,255,255,0.05)",
-            paddingBottom: "32px",
-          }}
-          className="border-b border-white/5 md:border-b-0"
+          className="border-b border-white/5 md:border-b-0 md:border-r md:pr-[52px] pb-4 md:pb-0"
         >
           <div style={{
             display: "inline-block", marginBottom: "12px",
@@ -215,8 +207,7 @@ export default function Footer() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.12 }}
-          style={{ padding: "0 md:36px 32px", borderRight: "none md:1px solid rgba(255,255,255,0.05)" }}
-          className="border-b border-white/5 md:border-b-0"
+          className="border-b border-white/5 md:border-b-0 md:border-r md:px-[36px] pb-4 md:pb-0"
         >
           <ColTitle>Agence</ColTitle>
           <ul style={{ listStyle: "none", padding: 0, display: "flex", flexDirection: "column", gap: "11px" }}>
@@ -230,7 +221,7 @@ export default function Footer() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.24 }}
-          style={{ padding: "0 0 32px 36px" }}
+          className="pb-4 md:pb-0 md:pl-9"
         >
           <ColTitle>Incubateur</ColTitle>
           <ul style={{ listStyle: "none", padding: 0, display: "flex", flexDirection: "column", gap: "11px" }}>
@@ -240,12 +231,7 @@ export default function Footer() {
       </div>
 
       {/* Bottom bar */}
-      <div style={{
-        maxWidth: "1280px", margin: "0 auto",
-        padding: "24px 20px",
-        display: "flex", justifyContent: "space-between", alignItems: "center",
-        flexWrap: "wrap", gap: "16px",
-      }}>
+      <div className="max-w-[1280px] mx-auto px-6 md:px-[60px] py-5 flex flex-wrap justify-between items-center gap-4">
         <p style={{
           fontFamily: "'Courier New', monospace", fontSize: "10px",
           color: "rgba(255,255,255,0.55)", letterSpacing: "0.05em",

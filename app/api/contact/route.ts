@@ -9,7 +9,7 @@ export async function POST(req: Request) {
 
     const data = await resend.emails.send({
       from: "Contact Form <onboarding@resend.dev>",
-      to: ["ontact@agencesinani.com"],
+      to: ["contact@agencesinani.com"],
       subject: `Nouveau message : ${subject || "Contact depuis le site"}`,
       html: `
         <h2>Nouveau message de contact</h2>

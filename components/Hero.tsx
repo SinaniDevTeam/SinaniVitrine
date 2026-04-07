@@ -70,7 +70,7 @@ export default function Hero() {
               position: "absolute",
               left: "50%",
               transform: "translateX(-50%)",
-              top: "-54px",
+              top: "20px",
               width: "1161px",
               height: "472px",
               zIndex: 2,
@@ -259,7 +259,7 @@ export default function Hero() {
         <div
           style={{
             position: "absolute",
-            top: "-10px",
+            top: "40px",
             left: "50%",
             transform: "translateX(-50%)",
             width: "130%",
@@ -267,6 +267,7 @@ export default function Hero() {
             zIndex: 1,
             pointerEvents: "none",
             mixBlendMode: "screen" as const,
+            opacity: 0.1,
           }}
         >
           <Image
@@ -279,7 +280,7 @@ export default function Hero() {
         </div>
 
         {/* Contenu */}
-        <div className="relative flex flex-col px-6 pt-28 pb-12 gap-6" style={{ zIndex: 2 }}>
+        <div className="relative flex flex-col px-6 pt-20 pb-12 gap-5" style={{ zIndex: 2 }}>
 
           {/* Titre */}
           <h1
@@ -288,7 +289,7 @@ export default function Hero() {
               fontWeight: "700",
               lineHeight: "1.05",
               color: "#111111",
-              minHeight: "180px",
+              minHeight: "120px",
             }}
           >
             {mobileTyped ? (
@@ -312,14 +313,14 @@ export default function Hero() {
                 speed={50}
                 cursor={false}
                 wrapper="span"
-                style={{ fontSize: "clamp(38px, 11vw, 52px)", whiteSpace: "pre-line" }}
+                style={{ fontSize: "clamp(28px, 8.5vw, 36px)", whiteSpace: "pre-line" }}
               />
             )}
           </h1>
 
           {/* Portrait */}
           <div
-            style={{ position: "relative", width: "100%", height: "40vh", maxHeight: "400px", minHeight: "250px" }}
+            style={{ position: "relative", width: "100%", height: "30vh", maxHeight: "350px", minHeight: "200px" }}
           >
             <Image
               src="/images/image%201.png"
@@ -365,7 +366,7 @@ export default function Hero() {
               Découvrir l&apos;agence
             </a>
             <a
-              href="/about"
+              href="/contact"
               style={{
                 display: "flex",
                 alignItems: "center",
@@ -380,7 +381,7 @@ export default function Hero() {
                 textDecoration: "none",
               }}
             >
-              Notre mission
+              Nous contacter
             </a>
           </div>
         </div>

@@ -26,6 +26,23 @@ const CameraIcon = ({ active }: { active: boolean }) => (
   </svg>
 );
 
+const ChevronIcon = ({ active }: { active: boolean }) => (
+  <motion.svg
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke={active ? "#E84010" : "#9CA3AF"}
+    strokeWidth="2.5"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    animate={{ rotate: active ? 90 : 0 }}
+    transition={{ duration: 0.3 }}
+  >
+    <polyline points="9 18 15 12 9 6" />
+  </motion.svg>
+);
+
 
 
 const sections = [
@@ -145,10 +162,13 @@ export default function WhoWeAre() {
                 key={section.id}
                 onClick={() => setActive(index)}
                 className="flex items-start gap-5 text-left py-7 transition-all duration-300"
+                whileHover={{ x: 8, backgroundColor: "rgba(232, 64, 16, 0.03)" }}
                 style={{
-                  paddingLeft: "20px",
+                  paddingLeft: "24px",
+                  paddingRight: "20px",
                   position: "relative",
                   backgroundColor: "transparent",
+                  borderRadius: "0 12px 12px 0",
                 }}
               >
                 {/* Barre gauche */}
@@ -166,17 +186,18 @@ export default function WhoWeAre() {
 
                 {/* Titre + description */}
                 <div>
-                  <p
-                    className="transition-colors duration-300"
-                    style={{
-                      fontFamily: "Inter, sans-serif",
-                      fontSize: "clamp(16px, 2vw, 20px)",
-                      fontWeight: "700",
-                      color: active === index ? "#E84010" : "#6B7280",
-                    }}
-                  >
-                    {section.title}
-                  </p>
+                    <p
+                      className="transition-colors duration-300 flex items-center gap-3"
+                      style={{
+                        fontFamily: "Inter, sans-serif",
+                        fontSize: "clamp(16px, 2vw, 20px)",
+                        fontWeight: "700",
+                        color: active === index ? "#E84010" : "#6B7280",
+                      }}
+                    >
+                      {section.title}
+                      <ChevronIcon active={active === index} />
+                    </p>
 
                   <div
                     className="transition-all duration-500"

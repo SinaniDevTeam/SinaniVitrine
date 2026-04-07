@@ -75,10 +75,14 @@ export default function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`text-sm lg:text-base font-medium transition-colors duration-200 ${isActive
+                className={`text-sm lg:text-base font-semibold transition-colors duration-200 ${isActive
                     ? "text-orange-500"
                     : "text-gray-800 hover:text-orange-500"
                   }`}
+                style={{
+                  fontFamily: "Inter, sans-serif",
+                  letterSpacing: "-0.01em",
+                }}
               >
                 {link.label}
               </Link>
@@ -92,9 +96,9 @@ export default function Navbar() {
             <Image
               src="/images/Noir.png"
               alt="SINANI — Agence"
-              width={100}
-              height={48}
-              className="object-contain w-16 sm:w-20 md:w-24 lg:w-[120px]"
+              width={160}
+              height={64}
+              className="object-contain w-24 sm:w-28 md:w-32 lg:w-[124px]"
               priority
             />
           </Link>
@@ -118,7 +122,7 @@ export default function Navbar() {
 
         {/* Bouton menu mobile */}
         <button
-          className="md:hidden text-gray-800 ml-auto"
+          className="md:hidden text-gray-800 ml-auto p-2 -mr-2"
           onClick={() => setMenuOpen(!menuOpen)}
           aria-label="Menu"
         >
@@ -138,7 +142,12 @@ export default function Navbar() {
         }}
       >
         <div className="flex items-center justify-between h-20 px-8 border-b border-gray-100">
-          <span className="text-[10px] font-bold tracking-widest uppercase text-gray-400">Menu</span>
+          <span 
+            className="text-[10px] font-bold tracking-[0.2em] uppercase text-gray-400"
+            style={{ fontFamily: "Inter, sans-serif" }}
+          >
+            Menu
+          </span>
           <button onClick={() => setMenuOpen(false)} className="text-gray-800 p-2">
             <CloseIcon />
           </button>
@@ -158,6 +167,10 @@ export default function Navbar() {
                 className={`text-4xl font-bold transition-colors ${
                   isActive ? "text-orange-500" : "text-gray-900 hover:text-orange-500"
                 }`}
+                style={{
+                  fontFamily: "Inter, sans-serif",
+                  letterSpacing: "-0.02em",
+                }}
               >
                 {link.label}
               </Link>
@@ -179,7 +192,12 @@ export default function Navbar() {
               </a>
             ))}
           </div>
-          <p className="text-[9px] uppercase tracking-widest text-gray-300 font-bold">Sinani © 2026</p>
+          <p 
+            className="text-[9px] uppercase tracking-[0.2em] text-gray-300 font-bold"
+            style={{ fontFamily: "Inter, sans-serif" }}
+          >
+            Sinani © 2026
+          </p>
         </div>
       </div>
     </header>
