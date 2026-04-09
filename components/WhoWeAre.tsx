@@ -26,25 +26,6 @@ const CameraIcon = ({ active }: { active: boolean }) => (
   </svg>
 );
 
-const ChevronIcon = ({ active }: { active: boolean }) => (
-  <motion.svg
-    width="16"
-    height="16"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke={active ? "#E84010" : "#9CA3AF"}
-    strokeWidth="2.5"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    animate={{ rotate: active ? 90 : 0 }}
-    transition={{ duration: 0.3 }}
-  >
-    <polyline points="9 18 15 12 9 6" />
-  </motion.svg>
-);
-
-
-
 const sections = [
   {
     id: 1,
@@ -81,7 +62,6 @@ export default function WhoWeAre() {
   const titleRef = useRef(null);
   const isInView = useInView(titleRef, { once: true, margin: "-80px" });
 
-  // Auto-rotate studio images when studio section is active
   useEffect(() => {
     const studioIndex = sections.findIndex((s) => s.images);
     if (active !== studioIndex) return;
@@ -92,228 +72,219 @@ export default function WhoWeAre() {
   }, [active]);
 
   return (
-    <section className="w-full bg-white py-16 md:py-24 px-6 md:px-8">
+    <section className="w-full bg-white py-16 md:py-32 px-6 md:px-8 overflow-hidden">
       <div className="max-w-7xl mx-auto">
 
-        {/* Header */}
+        {/* Header - Commun Desktop/Mobile */}
         <motion.div
-          className="mb-12 md:mb-16"
+          className="mb-16 md:mb-24"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.6 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
         >
           <h2
             ref={titleRef}
             style={{
               fontFamily: "Inter, sans-serif",
-              fontWeight: "700",
-              fontSize: "clamp(30px, 8vw, 64px)",
-              lineHeight: "1.1",
+              fontWeight: "900",
+              fontSize: "clamp(34px, 8vw, 84px)",
+              lineHeight: "0.95",
               color: "#111111",
-              minHeight: "1.2em",
+              letterSpacing: "-0.04em",
             }}
           >
             {titleTyped ? (
               <>
-                Un incubateur pour{" "}
-                <span style={{ color: "#E84010" }}>former</span>, une agence
-                pour <span style={{ color: "#E84010" }}>produire</span>
+                Un incubateur pour <span style={{ color: "#E84010" }}>former</span>,<br className="hidden md:block" /> une agence pour <span style={{ color: "#E84010" }}>produire</span>
               </>
             ) : isInView ? (
               <TypeAnimation
                 sequence={[
-                  "Un incubateur pour former, une agence pour produire",
+                  "Un incubateur pour former,\nune agence pour produire",
                   () => setTitleTyped(true),
                 ]}
                 speed={40}
                 cursor={false}
                 wrapper="span"
+                style={{ whiteSpace: "pre-line" }}
               />
             ) : null}
           </h2>
-          <p
-            className="mt-2"
-            style={{
-              fontFamily: "Inter, sans-serif",
-              fontWeight: "500",
-              fontSize: "clamp(24px, 3.5vw, 48px)",
-              lineHeight: "1.2",
-              color: "#111111",
-            }}
-          >
-            Former les talents, raconter la Guinée
-          </p>
+          <div className="mt-8 flex items-center gap-4">
+            <div className="w-12 h-0.5 bg-[#E84010]" />
+            <p
+              style={{
+                fontFamily: "Inter, sans-serif",
+                fontWeight: "600",
+                fontSize: "clamp(16px, 2vw, 20px)",
+                color: "#6B7280",
+                textTransform: "uppercase",
+                letterSpacing: "0.1em",
+              }}
+            >
+              L&apos;excellence audiovisuelle en Guinée
+            </p>
+          </div>
         </motion.div>
 
-        {/* Tab Navigation */}
-        <div className="mb-16 md:mb-20 border-b border-gray-100 px-4 overflow-x-auto no-scrollbar">
-          <div className="flex flex-row gap-10 md:gap-16 lg:gap-24 min-w-max md:justify-center">
-            {sections.map((section, index) => (
-              <button
-                key={section.id}
-                onClick={() => setActive(index)}
-                className="group relative pb-8 flex flex-col items-center transition-all duration-300"
-                style={{ cursor: "pointer" }}
-              >
-                <div className="flex items-center gap-4 px-4 py-2 rounded-xl group-hover:bg-gray-50 transition-colors">
-                  <div className="transform group-hover:scale-110 transition-transform duration-300">
-                    <section.Icon active={active === index} />
+        {/* ─── VERSION MOBILE (Stacked Layout - Comme capture) ─── */}
+        <div className="lg:hidden flex flex-col gap-24">
+          {sections.map((section, index) => (
+            <motion.div 
+              key={section.id}
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.7, delay: index * 0.1 }}
+              className="relative pl-8"
+            >
+              <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-gradient-to-b from-[#E84010] to-transparent rounded-full" />
+              
+              <div className="flex flex-col gap-6 mb-10">
+                <div className="flex items-center gap-4">
+                  <div className="p-3 bg-gray-50 rounded-xl">
+                    <section.Icon active={true} />
                   </div>
-                  <span
-                    className="whitespace-nowrap transition-colors duration-300"
-                    style={{
-                      fontFamily: "Inter, sans-serif",
-                      fontSize: "clamp(16px, 1.5vw, 20px)",
-                      fontWeight: active === index ? "700" : "600",
-                      color: active === index ? "#E84010" : "#6B7280",
+                  <h3 
+                    style={{ 
+                      fontFamily: "Inter, sans-serif", 
+                      fontSize: "28px", 
+                      fontWeight: "800", 
+                      color: "#E84010",
+                      letterSpacing: "-0.02em"
                     }}
                   >
                     {section.title}
-                  </span>
+                  </h3>
                 </div>
                 
-                {/* Active Indicator Bar */}
-                {active === index && (
-                  <motion.div
-                    layoutId="activeTab"
-                    className="absolute bottom-0 left-0 right-0 h-[3px] rounded-t-full bg-[#E84010]"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                  />
-                )}
-              </button>
-            ))}
-          </div>
+                <p 
+                  style={{ 
+                    fontFamily: "Inter, sans-serif", 
+                    fontSize: "18px", 
+                    lineHeight: "1.7", 
+                    color: "#374151",
+                    fontWeight: "500",
+                    whiteSpace: "pre-line"
+                  }}
+                >
+                  {section.description}
+                </p>
+              </div>
+
+              <div 
+                className="relative overflow-hidden shadow-2xl"
+                style={{ 
+                  height: "350px", 
+                  borderRadius: "24px 4px 24px 4px",
+                }}
+              >
+                <Image
+                  src={section.image}
+                  alt={section.title}
+                  fill
+                  className="object-cover"
+                />
+              </div>
+            </motion.div>
+          ))}
         </div>
 
-        {/* Content Area — Text on left, Image on right */}
-        <div className="min-h-[550px] flex items-center">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={active}
-              initial={{ opacity: 0, x: 30 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -30 }}
-              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-              className="flex flex-col lg:flex-row gap-16 lg:gap-28 items-center justify-between w-full"
-            >
-              {/* Text Content */}
-              <div className="w-full lg:w-[48%] flex flex-col justify-center py-8">
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3, duration: 0.5 }}
+        {/* ─── VERSION DESKTOP (Tabbed Layout - Gardé intact) ─── */}
+        <div className="hidden lg:block">
+          <div className="mb-20 border-b border-gray-100 flex justify-center">
+            <div className="flex flex-row gap-24">
+              {sections.map((section, index) => (
+                <button
+                  key={section.id}
+                  onClick={() => setActive(index)}
+                  className="group relative pb-8 flex flex-col items-center transition-all duration-300"
+                  style={{ cursor: "pointer" }}
                 >
-                  <span className="inline-block px-4 py-1.5 rounded-full bg-[#E84010]/10 text-[#E84010] text-sm font-bold tracking-widest uppercase mb-8">
+                  <div className="flex items-center gap-4 px-6 py-3 rounded-xl group-hover:bg-gray-50 transition-colors">
+                    <section.Icon active={active === index} />
+                    <span
+                      style={{
+                        fontFamily: "Inter, sans-serif",
+                        fontSize: "20px",
+                        fontWeight: active === index ? "700" : "600",
+                        color: active === index ? "#E84010" : "#6B7280",
+                      }}
+                    >
+                      {section.title}
+                    </span>
+                  </div>
+                  {active === index && (
+                    <motion.div
+                      layoutId="activeTab"
+                      className="absolute bottom-0 left-0 right-0 h-[4px] rounded-t-full bg-[#E84010]"
+                      transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                    />
+                  )}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="min-h-[600px] flex items-center">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={active}
+                initial={{ opacity: 0, x: 40 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -40 }}
+                transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                className="flex flex-row gap-28 items-center justify-between w-full"
+              >
+                <div className="w-[45%]">
+                  <span className="inline-block px-5 py-2 rounded-full bg-[#E84010]/10 text-[#E84010] text-sm font-black tracking-[0.2em] uppercase mb-10">
                     {sections[active].title}
                   </span>
                   <p
                     style={{
                       fontFamily: "Inter, sans-serif",
-                      fontSize: "clamp(19px, 1.4vw, 24px)",
+                      fontSize: "24px",
                       fontWeight: "450",
                       lineHeight: "1.7",
                       color: "#111827",
                       letterSpacing: "-0.01em",
                       whiteSpace: "pre-line",
                     }}
-                    className="leading-relaxed drop-shadow-sm"
                   >
                     {sections[active].description}
                   </p>
-                  
-                  {/* Decorative underline for text area */}
-                  <div className="mt-10 w-24 h-1.5 bg-[#E84010]/20 rounded-full" />
-                </motion.div>
-              </div>
+                  <div className="mt-12 w-32 h-2 bg-[#E84010]/20 rounded-full" />
+                </div>
 
-              {/* Image Content */}
-              <div className="w-full lg:w-[46%]">
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.2, duration: 0.6 }}
-                  className="relative group"
-                >
+                <div className="w-[45%]">
                   <div
-                    className="relative overflow-hidden shadow-[0_32px_64px_-16px_rgba(0,0,0,0.2)] group-hover:shadow-[0_45px_80px_-20px_rgba(232,64,16,0.15)] transition-all duration-700"
+                    className="relative overflow-hidden shadow-[0_45px_100px_-20px_rgba(0,0,0,0.3)]"
                     style={{
-                      height: "clamp(400px, 45vw, 600px)",
-                      borderRadius: "40px 8px 40px 8px",
+                      height: "600px",
+                      borderRadius: "60px 10px 60px 10px",
                     }}
                   >
-                  {(() => {
-                    const section = sections[active];
-                    const imgs = section.images ?? [section.image];
-                    const labels = section.imageLabels ?? [];
-                    const currentImg = section.images ? imgs[studioImgIndex] : imgs[0];
-                    const currentLabel = section.images ? labels[studioImgIndex] : "";
-                    
-                    return (
-                      <div className="relative w-full h-full">
+                    {(() => {
+                      const section = sections[active];
+                      const currentImg = section.images ? section.images[studioImgIndex] : section.image;
+                      return (
                         <Image
                           src={currentImg}
                           alt={section.title}
                           fill
-                          className="object-cover transition-all duration-700"
+                          className="object-cover"
                           priority
                         />
-                        <div
-                          className="absolute inset-0"
-                          style={{
-                            background:
-                              "linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 55%)",
-                          }}
-                        />
-                        
-                        {/* Label + dots for studios */}
-                        {section.images && (
-                          <div className="absolute bottom-6 left-0 right-0 flex flex-col items-center gap-3">
-                            <span style={{ 
-                              color: "#fff", 
-                              fontSize: "14px", 
-                              fontWeight: 600, 
-                              letterSpacing: "0.05em", 
-                              textTransform: "uppercase", 
-                              opacity: 0.9,
-                              textShadow: "0 2px 4px rgba(0,0,0,0.3)"
-                            }}>
-                              {currentLabel}
-                            </span>
-                            <div className="flex gap-2">
-                              {imgs.map((_, i) => (
-                                <button
-                                  key={i}
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    setStudioImgIndex(i);
-                                  }}
-                                  style={{
-                                    width: i === studioImgIndex ? "24px" : "10px",
-                                    height: "10px",
-                                    borderRadius: "5px",
-                                    background: i === studioImgIndex ? "#E84010" : "rgba(255,255,255,0.6)",
-                                    border: "none",
-                                    cursor: "pointer",
-                                    transition: "all 0.4s",
-                                  }}
-                                />
-                              ))}
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })()}
+                      );
+                    })()}
+                  </div>
                 </div>
               </motion.div>
-            </div>
-          </motion.div>
-        </AnimatePresence>
+            </AnimatePresence>
+          </div>
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
   );
-}
+}

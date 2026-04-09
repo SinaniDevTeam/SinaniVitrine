@@ -131,9 +131,9 @@ export default function Hero() {
             >
               {heroTyped ? (
                 <>
-                  <span style={{ fontSize: "100px" }}>Raconter</span>
+                  <span style={{ fontSize: "98px" }}>Raconter</span>
                   <br />
-                  <span style={{ fontSize: "100px" }}>
+                  <span style={{ fontSize: "98px" }}>
                     la <span style={{ color: "#E84010" }}>Guinée</span>,
                   </span>
                   <br />
@@ -339,9 +339,9 @@ export default function Hero() {
                     transition={{ delay: 0.3 }}
                     style={{ marginTop: "8px" }}
                   >
-                    <span style={{ fontSize: "clamp(28px, 7vw, 36px)", fontWeight: 700, color: "#444444" }}>inspirer le</span>
+                    <span style={{ fontSize: "clamp(28px, 7vw, 36px)", fontWeight: 700, color: "#111111" }}>inspirer le</span>
                     <br />
-                    <span style={{ fontSize: "clamp(28px, 7vw, 36px)", fontWeight: 700, color: "#444444" }}>Monde.</span>
+                    <span style={{ fontSize: "clamp(28px, 7vw, 36px)", fontWeight: 700, color: "#111111" }}>Monde.</span>
                   </motion.div>
                 </>
               ) : (
