@@ -69,9 +69,9 @@ export default function Team() {
   return (
     <section className="relative w-full overflow-hidden bg-white py-20 md:py-32 px-6 md:px-8">
       
-      {/* Grain texture overlay */}
+      {/* Grain texture overlay - Masqué ou très léger sur mobile pour perf */}
       <div 
-        className="absolute inset-0 opacity-[0.02] pointer-events-none mix-blend-overlay"
+        className="absolute inset-0 opacity-[0.01] md:opacity-[0.02] pointer-events-none mix-blend-overlay"
         style={{
           backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' /%3E%3C/svg%3E")`,
         }}
@@ -84,11 +84,9 @@ export default function Team() {
           className="mb-16 md:mb-20"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
+          viewport={{ once: true, margin: "-50px" }}
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
         >
-
-
           {/* Titre principal */}
           <h2
             style={{
@@ -129,7 +127,7 @@ export default function Team() {
             onClick={prev}
             disabled={current === 0}
             aria-label="Précédent"
-            className="absolute left-0 top-1/2 z-20 w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 backdrop-blur-md"
+            className="absolute left-0 top-1/2 z-20 w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300"
             style={{
               transform: "translate(-50%, -50%)",
               border: "1.5px solid",
@@ -138,6 +136,7 @@ export default function Team() {
               background: current === 0 ? "rgba(255,255,255,0.6)" : "rgba(255,255,255,0.95)",
               cursor: current === 0 ? "not-allowed" : "pointer",
               boxShadow: current === 0 ? "none" : "0 4px 12px rgba(0,0,0,0.08)",
+              touchAction: "manipulation"
             }}
             whileHover={current !== 0 ? { scale: 1.1, backgroundColor: "#111111", color: "#ffffff" } : {}}
             whileTap={current !== 0 ? { scale: 0.95 } : {}}
@@ -150,7 +149,7 @@ export default function Team() {
             onClick={next}
             disabled={current === maxIndex}
             aria-label="Suivant"
-            className="absolute right-0 top-1/2 z-20 w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 backdrop-blur-md"
+            className="absolute right-0 top-1/2 z-20 w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300"
             style={{
               transform: "translate(50%, -50%)",
               border: "1.5px solid",
@@ -159,6 +158,7 @@ export default function Team() {
               background: current === maxIndex ? "rgba(255,255,255,0.6)" : "rgba(255,255,255,0.95)",
               cursor: current === maxIndex ? "not-allowed" : "pointer",
               boxShadow: current === maxIndex ? "none" : "0 4px 12px rgba(0,0,0,0.08)",
+              touchAction: "manipulation"
             }}
             whileHover={current !== maxIndex ? { scale: 1.1, backgroundColor: "#111111", color: "#ffffff" } : {}}
             whileTap={current !== maxIndex ? { scale: 0.95 } : {}}
@@ -175,8 +175,8 @@ export default function Team() {
               }}
               transition={{ 
                 type: "spring", 
-                stiffness: 280, 
-                damping: 32,
+                stiffness: 200, 
+                damping: 25,
                 mass: 0.8
               }}
             >
@@ -187,30 +187,30 @@ export default function Team() {
                   style={{ 
                     width: `calc((100% - ${(visibleCount - 1) * 24}px) / ${visibleCount})` 
                   }}
-                  initial={{ opacity: 0, y: 40 }}
+                  initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
+                  viewport={{ once: true, margin: "0px 0px -50px 0px" }}
                   transition={{ 
-                    duration: 0.6, 
-                    delay: (i % 4) * 0.1,
+                    duration: 0.5, 
+                    delay: (i % visibleCount) * 0.1,
                     ease: [0.22, 1, 0.36, 1]
                   }}
-                  whileHover={{ scale: 1.02 }}
+                  whileHover={visibleCount > 1 ? { scale: 1.02 } : {}}
                   onHoverStart={() => setHoveredIndex(i)}
                   onHoverEnd={() => setHoveredIndex(null)}
                 >
-                  {/* Glassmorphism Card */}
+                  {/* Glassmorphism Card - Optimisée pour mobile (blur réduit) */}
                   <div
                     className="relative overflow-hidden rounded-2xl"
                     style={{
                       background: "linear-gradient(145deg, rgba(255,255,255,0.85) 0%, rgba(245,240,235,0.7) 100%)",
-                      backdropFilter: "blur(16px)",
-                      WebkitBackdropFilter: "blur(16px)",
+                      backdropFilter: "blur(8px)",
+                      WebkitBackdropFilter: "blur(8px)",
                       border: "1px solid rgba(255,255,255,0.6)",
                       boxShadow: hoveredIndex === i
-                        ? "0 20px 60px rgba(232,64,16,0.12), 0 8px 24px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.8)"
-                        : "0 8px 32px rgba(0,0,0,0.06), 0 2px 8px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255,255,255,0.8)",
-                      transition: "box-shadow 0.4s ease",
+                        ? "0 20px 60px rgba(232,64,16,0.12), 0 8px 24px rgba(0,0,0,0.08)"
+                        : "0 8px 32px rgba(0,0,0,0.06)",
+                      transition: "box-shadow 0.3s ease",
                     }}
                   >
                     {/* Photo zone */}
@@ -222,12 +222,12 @@ export default function Team() {
                         src={membre.photo}
                         alt={membre.nom}
                         fill
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                         className="object-contain"
                         style={{ 
                           objectFit: "contain", 
                           objectPosition: "center center",
                           transform: `scale(${membre.scale || 1}) translate(${membre.translate || "0, 0"})`,
-                          transformOrigin: "center center"
                         }}
                       />
                     </div>
@@ -239,14 +239,14 @@ export default function Team() {
                         bottom: 0,
                         left: 0,
                         right: 0,
-                        padding: "20px 16px 16px",
+                        padding: "16px 12px 12px",
                         background: "linear-gradient(to top, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.8) 60%, transparent 100%)",
-                        backdropFilter: "blur(8px)",
-                        WebkitBackdropFilter: "blur(8px)",
+                        backdropFilter: "blur(4px)",
+                        WebkitBackdropFilter: "blur(4px)",
                       }}
                     >
                       {/* Nom */}
-                      <motion.h3
+                      <h3
                         style={{
                           fontFamily: "Inter, sans-serif",
                           fontSize: "15px",
@@ -255,13 +255,9 @@ export default function Team() {
                           lineHeight: "1.3",
                           letterSpacing: "-0.02em",
                         }}
-                        animate={{
-                          color: "#1a1a1a"
-                        }}
-                        transition={{ duration: 0.3 }}
                       >
                         {membre.nom}
-                      </motion.h3>
+                      </h3>
 
                       {/* Rôle */}
                       <div className="flex items-center gap-2 mt-1.5">
@@ -277,10 +273,9 @@ export default function Team() {
                           transition={{ duration: 0.7, delay: 0.35 }}
                           animate={{
                             width: hoveredIndex === i ? 26 : 18,
-                            opacity: hoveredIndex === i ? 1 : 0.7
                           }}
                         />
-                        <motion.p
+                        <p
                           style={{
                             fontFamily: "Inter, sans-serif",
                             fontSize: "10px",
@@ -289,14 +284,9 @@ export default function Team() {
                             letterSpacing: "0.08em",
                             textTransform: "uppercase",
                           }}
-                          animate={{
-                            x: hoveredIndex === i ? 2 : 0,
-                            color: hoveredIndex === i ? "#FF6B3D" : "#E84010"
-                          }}
-                          transition={{ duration: 0.3 }}
                         >
                           {membre.role}
-                        </motion.p>
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -309,13 +299,13 @@ export default function Team() {
         {/* Indicateurs de pagination avec animation */}
         <motion.div 
           className="flex justify-center items-center gap-2 mt-12"
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 15 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.4 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
         >
           {Array.from({ length: maxIndex + 1 }).map((_, index) => (
-            <motion.button
+            <button
               key={index}
               onClick={() => setCurrent(index)}
               className="rounded-full transition-all duration-300"
@@ -325,12 +315,8 @@ export default function Team() {
                 background: current === index 
                   ? "linear-gradient(90deg, #E84010 0%, #FF6B3D 100%)"
                   : "#E5E7EB",
+                touchAction: "manipulation"
               }}
-              whileHover={{ 
-                scale: 1.2,
-                backgroundColor: current === index ? undefined : "#d1d5db"
-              }}
-              whileTap={{ scale: 0.9 }}
               aria-label={`Aller à la page ${index + 1}`}
             />
           ))}

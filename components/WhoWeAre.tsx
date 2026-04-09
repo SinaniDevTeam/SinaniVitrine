@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
-import { motion, useInView } from "framer-motion";
+import { motion, useInView, AnimatePresence } from "framer-motion";
 import { TypeAnimation } from "react-type-animation";
 
 const GraduationCapIcon = ({ active }: { active: boolean }) => (
@@ -146,165 +146,174 @@ export default function WhoWeAre() {
           </p>
         </motion.div>
 
-        {/* Layout — liste à gauche, image à droite */}
-        <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-start">
-
-          {/* Gauche — liste avec icônes */}
-          <motion.div
-            className="w-full lg:w-2/5 flex flex-col justify-center"
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.6, delay: 0.15 }}
-          >
+        {/* Tab Navigation */}
+        <div className="mb-16 md:mb-20 border-b border-gray-100 px-4 overflow-x-auto no-scrollbar">
+          <div className="flex flex-row gap-10 md:gap-16 lg:gap-24 min-w-max md:justify-center">
             {sections.map((section, index) => (
-              <motion.button
+              <button
                 key={section.id}
                 onClick={() => setActive(index)}
-                className="flex items-start gap-5 text-left py-7 transition-all duration-300"
-                whileHover={{ x: 8, backgroundColor: "rgba(232, 64, 16, 0.03)" }}
-                style={{
-                  paddingLeft: "24px",
-                  paddingRight: "20px",
-                  position: "relative",
-                  backgroundColor: "transparent",
-                  borderRadius: "0 12px 12px 0",
-                }}
+                className="group relative pb-8 flex flex-col items-center transition-all duration-300"
+                style={{ cursor: "pointer" }}
               >
-                {/* Barre gauche */}
-                <div
-                  className="absolute left-0 top-0 bottom-0 w-[3px] rounded-full transition-colors duration-300"
-                  style={{
-                    backgroundColor: active === index ? "#E84010" : "#D1D5DB",
-                  }}
-                />
-
-                {/* Icône */}
-                <div className="shrink-0">
-                  <section.Icon active={active === index} />
-                </div>
-
-                {/* Titre + description */}
-                <div>
-                    <p
-                      className="transition-colors duration-300 flex items-center gap-3"
-                      style={{
-                        fontFamily: "Inter, sans-serif",
-                        fontSize: "clamp(16px, 2vw, 20px)",
-                        fontWeight: "700",
-                        color: active === index ? "#E84010" : "#6B7280",
-                      }}
-                    >
-                      {section.title}
-                      <ChevronIcon active={active === index} />
-                    </p>
-
-                  <div
-                    className="transition-all duration-500"
+                <div className="flex items-center gap-4 px-4 py-2 rounded-xl group-hover:bg-gray-50 transition-colors">
+                  <div className="transform group-hover:scale-110 transition-transform duration-300">
+                    <section.Icon active={active === index} />
+                  </div>
+                  <span
+                    className="whitespace-nowrap transition-colors duration-300"
                     style={{
-                      maxHeight: active === index ? "500px" : "0px",
-                      opacity: active === index ? 1 : 0,
-                      overflowY: "hidden",
+                      fontFamily: "Inter, sans-serif",
+                      fontSize: "clamp(16px, 1.5vw, 20px)",
+                      fontWeight: active === index ? "700" : "600",
+                      color: active === index ? "#E84010" : "#6B7280",
                     }}
                   >
-                    <p
-                      className="mt-3"
-                      style={{
-                        fontFamily: "Inter, sans-serif",
-                        fontSize: "16px",
-                        fontWeight: "400",
-                        lineHeight: "1.7",
-                        color: "#4B5563",
-                        whiteSpace: "pre-line",
-                      }}
-                    >
-                      {section.description}
-                    </p>
-                  </div>
+                    {section.title}
+                  </span>
                 </div>
-              </motion.button>
+                
+                {/* Active Indicator Bar */}
+                {active === index && (
+                  <motion.div
+                    layoutId="activeTab"
+                    className="absolute bottom-0 left-0 right-0 h-[3px] rounded-t-full bg-[#E84010]"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                  />
+                )}
+              </button>
             ))}
-          </motion.div>
+          </div>
+        </div>
 
-          {/* Droite — image + description */}
-          <motion.div
-            className="w-full lg:w-3/5"
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.7, delay: 0.2 }}
-            style={{ position: "sticky", top: "120px" }}
-          >
-            {/* Image */}
-            <div
-              className="relative overflow-hidden"
-              style={{
-                height: "clamp(250px, 35vw, 480px)",
-                borderRadius: "24px 4px 24px 4px",
-              }}
+        {/* Content Area — Text on left, Image on right */}
+        <div className="min-h-[550px] flex items-center">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={active}
+              initial={{ opacity: 0, x: 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -30 }}
+              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+              className="flex flex-col lg:flex-row gap-16 lg:gap-28 items-center justify-between w-full"
             >
-              {sections.map((section, index) => {
-                const imgs = section.images ?? [section.image];
-                const labels = section.imageLabels ?? [];
-                const currentImg = section.images ? imgs[studioImgIndex] : imgs[0];
-                const currentLabel = section.images ? labels[studioImgIndex] : "";
-                return (
-                  <div
-                    key={section.id}
-                    className="absolute inset-0 transition-all duration-700"
+              {/* Text Content */}
+              <div className="w-full lg:w-[48%] flex flex-col justify-center py-8">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3, duration: 0.5 }}
+                >
+                  <span className="inline-block px-4 py-1.5 rounded-full bg-[#E84010]/10 text-[#E84010] text-sm font-bold tracking-widest uppercase mb-8">
+                    {sections[active].title}
+                  </span>
+                  <p
                     style={{
-                      opacity: active === index ? 1 : 0,
-                      transform: active === index ? "scale(1)" : "scale(1.05)",
+                      fontFamily: "Inter, sans-serif",
+                      fontSize: "clamp(19px, 1.4vw, 24px)",
+                      fontWeight: "450",
+                      lineHeight: "1.7",
+                      color: "#111827",
+                      letterSpacing: "-0.01em",
+                      whiteSpace: "pre-line",
+                    }}
+                    className="leading-relaxed drop-shadow-sm"
+                  >
+                    {sections[active].description}
+                  </p>
+                  
+                  {/* Decorative underline for text area */}
+                  <div className="mt-10 w-24 h-1.5 bg-[#E84010]/20 rounded-full" />
+                </motion.div>
+              </div>
+
+              {/* Image Content */}
+              <div className="w-full lg:w-[46%]">
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.2, duration: 0.6 }}
+                  className="relative group"
+                >
+                  <div
+                    className="relative overflow-hidden shadow-[0_32px_64px_-16px_rgba(0,0,0,0.2)] group-hover:shadow-[0_45px_80px_-20px_rgba(232,64,16,0.15)] transition-all duration-700"
+                    style={{
+                      height: "clamp(400px, 45vw, 600px)",
+                      borderRadius: "40px 8px 40px 8px",
                     }}
                   >
-                    <Image
-                      src={currentImg}
-                      alt={section.title}
-                      fill
-                      className="object-cover transition-all duration-700"
-                    />
-                    <div
-                      className="absolute inset-0"
-                      style={{
-                        background:
-                          "linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 55%)",
-                      }}
-                    />
-                    {/* Label + dots for studios */}
-                    {section.images && active === index && (
-                      <div className="absolute bottom-4 left-0 right-0 flex flex-col items-center gap-2">
-                        <span style={{ color: "#fff", fontSize: "13px", fontWeight: 600, letterSpacing: "0.05em", textTransform: "uppercase", opacity: 0.9 }}>
-                          {currentLabel}
-                        </span>
-                        <div className="flex gap-2">
-                          {imgs.map((_, i) => (
-                            <button
-                              key={i}
-                              onClick={() => setStudioImgIndex(i)}
-                              style={{
-                                width: i === studioImgIndex ? "20px" : "8px",
-                                height: "8px",
-                                borderRadius: "4px",
-                                background: i === studioImgIndex ? "#E84010" : "rgba(255,255,255,0.5)",
-                                border: "none",
-                                cursor: "pointer",
-                                transition: "all 0.3s",
-                              }}
-                            />
-                          ))}
-                        </div>
+                  {(() => {
+                    const section = sections[active];
+                    const imgs = section.images ?? [section.image];
+                    const labels = section.imageLabels ?? [];
+                    const currentImg = section.images ? imgs[studioImgIndex] : imgs[0];
+                    const currentLabel = section.images ? labels[studioImgIndex] : "";
+                    
+                    return (
+                      <div className="relative w-full h-full">
+                        <Image
+                          src={currentImg}
+                          alt={section.title}
+                          fill
+                          className="object-cover transition-all duration-700"
+                          priority
+                        />
+                        <div
+                          className="absolute inset-0"
+                          style={{
+                            background:
+                              "linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 55%)",
+                          }}
+                        />
+                        
+                        {/* Label + dots for studios */}
+                        {section.images && (
+                          <div className="absolute bottom-6 left-0 right-0 flex flex-col items-center gap-3">
+                            <span style={{ 
+                              color: "#fff", 
+                              fontSize: "14px", 
+                              fontWeight: 600, 
+                              letterSpacing: "0.05em", 
+                              textTransform: "uppercase", 
+                              opacity: 0.9,
+                              textShadow: "0 2px 4px rgba(0,0,0,0.3)"
+                            }}>
+                              {currentLabel}
+                            </span>
+                            <div className="flex gap-2">
+                              {imgs.map((_, i) => (
+                                <button
+                                  key={i}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setStudioImgIndex(i);
+                                  }}
+                                  style={{
+                                    width: i === studioImgIndex ? "24px" : "10px",
+                                    height: "10px",
+                                    borderRadius: "5px",
+                                    background: i === studioImgIndex ? "#E84010" : "rgba(255,255,255,0.6)",
+                                    border: "none",
+                                    cursor: "pointer",
+                                    transition: "all 0.4s",
+                                  }}
+                                />
+                              ))}
+                            </div>
+                          </div>
+                        )}
                       </div>
-                    )}
-                  </div>
-                );
-              })}
-
+                    );
+                  })()}
+                </div>
+              </motion.div>
             </div>
-
           </motion.div>
-
-        </div>
+        </AnimatePresence>
       </div>
-    </section>
+    </div>
+  </section>
   );
-}
+}

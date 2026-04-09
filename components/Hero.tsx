@@ -206,7 +206,8 @@ export default function Hero() {
               textDecoration: "none",
               whiteSpace: "nowrap",
               boxShadow: "0 10px 30px rgba(232,64,16,0.2)",
-              cursor: "pointer"
+              cursor: "pointer",
+              touchAction: "manipulation"
             }}
           >
             Découvrir l&apos;agence
@@ -236,7 +237,8 @@ export default function Hero() {
               fontWeight: "700",
               textDecoration: "none",
               whiteSpace: "nowrap",
-              cursor: "pointer"
+              cursor: "pointer",
+              touchAction: "manipulation"
             }}
           >
             Nous contacter
@@ -246,28 +248,30 @@ export default function Hero() {
 
       {/* ─── MOBILE (< md) ─── */}
       <section
-        className="md:hidden relative flex flex-col overflow-hidden"
+        className="md:hidden relative flex flex-col justify-between overflow-hidden"
         style={{
           minHeight: "100svh",
-          background: "linear-gradient(to bottom, #aaaaaa, #ffffff)",
+          background: "linear-gradient(to bottom, #d1d1d1, #ffffff)",
+          paddingTop: "60px",
+          paddingBottom: "40px",
         }}
       >
-        {/* Noise */}
-        <div style={{ ...noiseOverlay, zIndex: 0 }} />
+        {/* Noise Layer */}
+        <div style={{ ...noiseOverlay, zIndex: 0, opacity: 0.15 }} />
 
-        {/* sinani! watermark */}
+        {/* sinani! watermark - Plus subtil et pro */}
         <div
           style={{
             position: "absolute",
-            top: "40px",
-            left: "50%",
-            transform: "translateX(-50%)",
-            width: "130%",
-            height: "200px",
+            top: "5%",
+            left: "-20%",
+            width: "140%",
+            height: "250px",
             zIndex: 1,
             pointerEvents: "none",
-            mixBlendMode: "screen" as const,
-            opacity: 0.1,
+            mixBlendMode: "overlay" as const,
+            opacity: 0.08,
+            transform: "rotate(-5deg)"
           }}
         >
           <Image
@@ -279,99 +283,149 @@ export default function Hero() {
           />
         </div>
 
-        {/* Contenu */}
-        <div className="relative flex flex-col px-6 pt-20 pb-12 gap-5" style={{ zIndex: 2 }}>
-
-          {/* Titre */}
-          <h1
-            style={{
-              fontFamily: "Inter, sans-serif",
-              fontWeight: "700",
-              lineHeight: "1.05",
-              color: "#111111",
-              minHeight: "120px",
+        {/* Zone Supérieure : Portrait (Droite) + Titre (Gauche) */}
+        <div className="relative flex-1 flex items-center px-6" style={{ zIndex: 5, minHeight: "45vh" }}>
+          
+          {/* Portrait - Ajusté (Zoom réduit + Position haut-droite) */}
+          <motion.div
+            initial={{ opacity: 0, scale: 1.1, x: 50 }}
+            animate={{ opacity: 1, scale: 1, x: 0 }}
+            transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
+            style={{ 
+              position: "absolute", 
+              top: "20px", 
+              right: "-15%", 
+              width: "110%", 
+              height: "85vh", 
+              zIndex: 2, 
+              pointerEvents: "none",
+              filter: "drop-shadow(-40px 50px 80px rgba(0,0,0,0.15))"
             }}
-          >
-            {mobileTyped ? (
-              <>
-                <span style={{ fontSize: "clamp(34px, 10vw, 48px)" }}>Raconter</span>
-                <br />
-                <span style={{ fontSize: "clamp(34px, 10vw, 48px)" }}>
-                  la <span style={{ color: "#E84010" }}>Guinée</span>,
-                </span>
-                <br />
-                <span style={{ fontSize: "clamp(24px, 7vw, 32px)" }}>inspirer le</span>
-                <br />
-                <span style={{ fontSize: "clamp(24px, 7vw, 32px)" }}>Monde.</span>
-              </>
-            ) : (
-              <TypeAnimation
-                sequence={[
-                  "Raconter\nla Guinée,\ninspirer le\nMonde.",
-                  () => setMobileTyped(true),
-                ]}
-                speed={50}
-                cursor={false}
-                wrapper="span"
-                style={{ fontSize: "clamp(28px, 8.5vw, 36px)", whiteSpace: "pre-line" }}
-              />
-            )}
-          </h1>
-
-          {/* Portrait */}
-          <div
-            style={{ position: "relative", width: "100%", height: "30vh", maxHeight: "350px", minHeight: "200px" }}
           >
             <Image
               src="/images/image%201.png"
               alt="Portrait SINANI"
               fill
-              className="object-contain object-top"
+              className="object-contain object-right"
+              style={{ filter: "contrast(1.08) brightness(0.92)" }}
               priority
             />
-          </div>
+          </motion.div>
 
-          {/* Description */}
-          <p
-            style={{
-              fontFamily: "Satoshi, sans-serif",
-              fontSize: "16px",
-              fontWeight: "400",
-              lineHeight: "1.6",
-              color: "#333333",
+          {/* Titre - Positionné DEVANT l'image */}
+          <div className="relative w-full pr-[30%]" style={{ zIndex: 5 }}>
+            <h1
+              style={{
+                fontFamily: "Inter, sans-serif",
+                fontWeight: "900",
+                lineHeight: "0.95",
+                color: "#111111",
+                letterSpacing: "-0.04em",
+                minHeight: "140px",
+                textShadow: "0 2px 20px rgba(255,255,255,0.8)" // Ombre pour la lisibilité
+              }}
+            >
+              {mobileTyped ? (
+                <>
+                  <span style={{ fontSize: "clamp(48px, 12vw, 64px)" }}>Raconter</span>
+                  <br />
+                  <span style={{ fontSize: "clamp(48px, 12vw, 64px)" }}>
+                    la <span style={{ color: "#E84010" }}>Guinée</span>,
+                  </span>
+                  <br />
+                  <motion.div 
+                    initial={{ opacity: 0 }} 
+                    animate={{ opacity: 1 }} 
+                    transition={{ delay: 0.3 }}
+                    style={{ marginTop: "8px" }}
+                  >
+                    <span style={{ fontSize: "clamp(28px, 7vw, 36px)", fontWeight: 700, color: "#444444" }}>inspirer le</span>
+                    <br />
+                    <span style={{ fontSize: "clamp(28px, 7vw, 36px)", fontWeight: 700, color: "#444444" }}>Monde.</span>
+                  </motion.div>
+                </>
+              ) : (
+                <TypeAnimation
+                  sequence={[
+                    "Raconter\nla Guinée,\ninspirer le\nMonde.",
+                    () => setMobileTyped(true),
+                  ]}
+                  speed={50}
+                  cursor={false}
+                  wrapper="span"
+                  style={{ fontSize: "clamp(42px, 11vw, 56px)", whiteSpace: "pre-line" }}
+                />
+              )}
+            </h1>
+          </div>
+        </div>
+
+        {/* Zone Inférieure : Description + Boutons */}
+        <motion.div 
+          className="relative px-6 flex flex-col gap-8" 
+          style={{ zIndex: 10 }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4, duration: 0.6 }}
+        >
+          {/* Description - Lisibilité améliorée sur l'image */}
+          <div 
+            className="w-full"
+            style={{ 
+              backgroundColor: "rgba(255, 255, 255, 0.3)", 
+              backdropFilter: "blur(8px)", 
+              padding: "16px",
+              margin: "0 -8px",
+              borderRadius: "12px",
+              border: "1px solid rgba(255, 255, 255, 0.2)"
             }}
           >
-            Sinani est un incubateur audiovisuel et une agence de publicité qui
-            forme de jeunes talents à créer des contenus inspirants, valorisant la
-            Guinée et ses richesses culturelles.
-          </p>
+            <div className="w-12 h-1 bg-[#E84010] mb-4" />
+            <p
+              style={{
+                fontFamily: "Satoshi, sans-serif",
+                fontSize: "17px",
+                fontWeight: "500",
+                lineHeight: "1.6",
+                color: "#111111",
+                maxWidth: "100%",
+                textShadow: "0 2px 15px rgba(255,255,255,0.5)"
+              }}
+            >
+              Sinani est un <span style={{ color: "#E84010", fontWeight: "600" }}>incubateur audiovisuel</span> et une agence de publicité qui forme de jeunes talents à créer des contenus inspirants, valorisant la Guinée et ses richesses culturelles.
+            </p>
+          </div>
 
-          {/* Boutons */}
-          <div className="flex flex-col gap-3 mt-2">
-            <a
+          {/* Boutons - Actions de Pro */}
+          <div className="flex flex-col gap-4">
+            <motion.a
               href="/about"
+              whileTap={{ scale: 0.96 }}
               style={{
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                height: "56px",
+                height: "64px",
                 backgroundColor: "#E84010",
                 color: "#ffffff",
                 fontFamily: "Inter, sans-serif",
                 fontSize: "16px",
                 fontWeight: "700",
                 textDecoration: "none",
+                boxShadow: "0 10px 30px rgba(232,64,16,0.2)",
+                touchAction: "manipulation"
               }}
             >
               Découvrir l&apos;agence
-            </a>
-            <a
+            </motion.a>
+            <motion.a
               href="/contact"
+              whileTap={{ scale: 0.96 }}
               style={{
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                height: "56px",
+                height: "64px",
                 backgroundColor: "transparent",
                 border: "1.5px solid #111111",
                 color: "#111111",
@@ -379,12 +433,13 @@ export default function Hero() {
                 fontSize: "16px",
                 fontWeight: "700",
                 textDecoration: "none",
+                touchAction: "manipulation"
               }}
             >
               Nous contacter
-            </a>
+            </motion.a>
           </div>
-        </div>
+        </motion.div>
       </section>
     </>
   );

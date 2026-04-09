@@ -54,8 +54,8 @@ export default function Navbar() {
         scrolled
           ? {
             background: "rgba(255, 255, 255, 0.15)",
-            backdropFilter: "blur(16px)",
-            WebkitBackdropFilter: "blur(16px)",
+            backdropFilter: "blur(8px)",
+            WebkitBackdropFilter: "blur(8px)",
             borderBottom: "1px solid rgba(255, 255, 255, 0.2)",
             boxShadow: "0 4px 24px rgba(0, 0, 0, 0.06)",
           }
@@ -125,6 +125,7 @@ export default function Navbar() {
           className="md:hidden text-gray-800 ml-auto p-2 -mr-2"
           onClick={() => setMenuOpen(!menuOpen)}
           aria-label="Menu"
+          style={{ touchAction: "manipulation" }}
         >
           {menuOpen ? <CloseIcon /> : <MenuIcon />}
         </button>
@@ -137,8 +138,8 @@ export default function Navbar() {
         }`}
         style={{
           background: "rgba(255, 255, 255, 0.98)",
-          backdropFilter: "blur(20px)",
-          WebkitBackdropFilter: "blur(20px)",
+          backdropFilter: "blur(12px)",
+          WebkitBackdropFilter: "blur(12px)",
         }}
       >
         <div className="flex items-center justify-between h-20 px-8 border-b border-gray-100">
