@@ -87,16 +87,16 @@ export default function WhoWeAre() {
             ref={titleRef}
             style={{
               fontFamily: "Inter, sans-serif",
-              fontWeight: "900",
-              fontSize: "clamp(34px, 8vw, 84px)",
-              lineHeight: "0.95",
+              fontWeight: "700",
+              fontSize: "clamp(30px, 8vw, 64px)",
+              lineHeight: "1.1",
               color: "#111111",
-              letterSpacing: "-0.04em",
+              minHeight: "1.2em",
             }}
           >
             {titleTyped ? (
               <>
-                Un incubateur pour <span style={{ color: "#E84010" }}>former</span>,<br className="hidden md:block" /> une agence pour <span style={{ color: "#E84010" }}>produire</span>
+                Un incubateur pour <span style={{ color: "#E84010" }}>former</span>, une agence pour <span style={{ color: "#E84010" }}>produire</span>
               </>
             ) : isInView ? (
               <TypeAnimation
@@ -111,21 +111,7 @@ export default function WhoWeAre() {
               />
             ) : null}
           </h2>
-          <div className="mt-8 flex items-center gap-4">
-            <div className="w-12 h-0.5 bg-[#E84010]" />
-            <p
-              style={{
-                fontFamily: "Inter, sans-serif",
-                fontWeight: "600",
-                fontSize: "clamp(16px, 2vw, 20px)",
-                color: "#6B7280",
-                textTransform: "uppercase",
-                letterSpacing: "0.1em",
-              }}
-            >
-              L&apos;excellence audiovisuelle en Guinée
-            </p>
-          </div>
+          
         </motion.div>
 
         {/* ─── VERSION MOBILE (Stacked Layout - Comme capture) ─── */}

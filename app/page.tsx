@@ -1,8 +1,8 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
-import InfiniteCarousel from "@/components/InfiniteCarousel";
 import VisionSection from "@/components/VisionSection";
 import WhoWeAre from "@/components/WhoWeAre";
+import Realisations from "@/components/Realisations";
 import Team from "@/components/Team";
 import FAQ from "@/components/FAQ";
 import Partners from "@/components/Partners";
@@ -16,6 +16,7 @@ export default function Home() {
       <Hero />
       <VisionSection />
       <WhoWeAre />
+      <Realisations />
       <Team />
       <FAQ />
       
