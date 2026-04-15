@@ -1,28 +1,31 @@
 "use client";
 
 import { useRef, useState } from "react";
-import Image from "next/image";
 import { motion, useInView } from "framer-motion";
 import { TypeAnimation } from "react-type-animation";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { EffectCoverflow, Autoplay } from "swiper/modules";
+import Image from "next/image";
 
 import "swiper/css";
 import "swiper/css/effect-coverflow";
 
+// Nous avons sélectionné les 15 images les moins lourdes pour garantir la fluidité.
 const carouselImages = [
-  "/carousel/IMG_8189.JPG (1).jpeg",
-  "/carousel/IMG_8230.JPG.jpeg",
-  "/carousel/IMG_8263.JPG.jpeg",
-  "/carousel/IMG_8277.JPG.jpeg",
-  "/carousel/IMG_8278.JPG.jpeg",
-  "/carousel/IMG_8281.JPG.jpeg",
-  "/carousel/IMG_8288.JPG.jpeg",
   "/carousel/IMG_8289.JPEG",
-  "/carousel/IMG_8290.JPG.jpeg",
-  "/carousel/IMG_8294.JPG.jpeg",
-  "/carousel/IMG_8318.JPG.jpeg",
+  "/carousel/IMG_8230.JPG.jpeg",
   "/carousel/IMG_8323.JPG.jpeg",
+  "/carousel/IMG_8247.JPG.jpeg",
+  "/carousel/IMG_8271.JPG.jpeg",
+  "/carousel/IMG_8294.JPG.jpeg",
+  "/carousel/IMG_8226.JPG.jpeg",
+  "/carousel/IMG_8301.JPG.jpeg",
+  "/carousel/IMG_8191.JPG.jpeg",
+  "/carousel/IMG_8278.JPG.jpeg",
+  "/carousel/IMG_8290.JPG.jpeg",
+  "/carousel/IMG_8306.JPG.jpeg",
+  "/carousel/IMG_8318.JPG.jpeg",
+  "/carousel/IMG_8316.JPG.jpeg",
   "/carousel/IMG_8342.JPG.jpeg",
 ];
 
@@ -89,9 +92,9 @@ export default function Realisations() {
           centeredSlides={true}
           slidesPerView={1.2}
           loop={true}
-          speed={1000}
+          speed={800}
           autoplay={{
-            delay: 2000,
+            delay: 1500,
             disableOnInteraction: false,
           }}
           coverflowEffect={{
@@ -120,9 +123,10 @@ export default function Realisations() {
                   src={src}
                   alt={`Sinani Studio Réalisation ${index + 1}`}
                   fill
-                  className="object-cover object-center"
                   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  priority={index < 3}
+                  className="object-cover object-center"
+                  priority={index < 2}
+                  quality={70}
                 />
                 {/* Overlay au survol */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />

@@ -29,7 +29,7 @@ const membres: Membre[] = [
   { nom: "Fayçal ZAYATTE", role: "Directeur des Opérations", photo: "/team/fayçal.png", scale: 1 },
   { nom: "Néné Hawa DIALLO", role: "Administratrice Générale", photo: "/team/nene.png", scale: 1 },
   { nom: "Saliou Djan DIABY", role: "Responsable Commerciale", photo: "/team/saly.png", scale: 1 },
-  { nom: "Nafissa KOROMA", role: "Responsable Marketing", photo: "/team/nafisa.png", scale: 1 },
+  { nom: "Nafissa KOROMA", role: "Assistante Artistique", photo: "/team/nafisa.png", scale: 1 },
   { nom: "Benjamin CAMARA", role: "Infographe Designer", photo: "/team/benji.png", scale: 1 },
   { nom: "Cheick Ahmed SIDIBÉ", role: "Responsable Photographe", photo: "/team/aba.png", scale: 1.15, translate: "22%, -12%" },
   { nom: "Abdoulaye KABA", role: "Assistant Photographe", photo: "/team/AK.png", scale: 1 },
@@ -122,12 +122,12 @@ export default function Team() {
         {/* ── Carousel ── */}
         <div className="relative">
 
-          {/* Bouton Précédent */}
+          {/* Bouton Précédent (Masqué sur mobile, on utilise le swipe) */}
           <motion.button
             onClick={prev}
             disabled={current === 0}
             aria-label="Précédent"
-            className="absolute left-0 top-1/2 z-20 w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300"
+            className="hidden md:flex absolute left-0 top-1/2 z-20 w-12 h-12 rounded-full items-center justify-center transition-all duration-300"
             style={{
               transform: "translate(-50%, -50%)",
               border: "1.5px solid",
@@ -144,12 +144,12 @@ export default function Team() {
             <ChevronLeft />
           </motion.button>
 
-          {/* Bouton Suivant */}
+          {/* Bouton Suivant (Masqué sur mobile, on utilise le swipe) */}
           <motion.button
             onClick={next}
             disabled={current === maxIndex}
             aria-label="Suivant"
-            className="absolute right-0 top-1/2 z-20 w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300"
+            className="hidden md:flex absolute right-0 top-1/2 z-20 w-12 h-12 rounded-full items-center justify-center transition-all duration-300"
             style={{
               transform: "translate(50%, -50%)",
               border: "1.5px solid",
@@ -167,9 +167,9 @@ export default function Team() {
           </motion.button>
 
           {/* Piste du carousel */}
-          <div className="overflow-hidden">
+          <div className="overflow-hidden touch-pan-y">
             <motion.div
-              className="flex gap-6 md:gap-8"
+              className="flex gap-6 md:gap-8 cursor-grab active:cursor-grabbing"
               animate={{ 
                 x: `calc(-${current} * (100% / ${visibleCount} + ${24 * (visibleCount - 1) / visibleCount}px))` 
               }}
@@ -178,6 +178,16 @@ export default function Team() {
                 stiffness: 200, 
                 damping: 25,
                 mass: 0.8
+              }}
+              drag="x"
+              dragConstraints={{ left: 0, right: 0 }}
+              dragElastic={0.2}
+              onDragEnd={(e, { offset }) => {
+                if (offset.x < -40) {
+                  next();
+                } else if (offset.x > 40) {
+                  prev();
+                }
               }}
             >
               {membres.map((membre, i) => (
