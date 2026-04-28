@@ -10,6 +10,7 @@ const navLinks = [
   { label: "Accueil", href: "/" },
   { label: "À propos", href: "/about" },
   { label: "Services", href: "/services" },
+  { label: "Candidature", href: "/candidature" },
   { label: "Contact", href: "/contact" },
 ];
 
@@ -75,7 +76,7 @@ export default function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`text-sm lg:text-base font-semibold transition-colors duration-200 ${isActive
+                className={`text-sm lg:text-base font-semibold whitespace-nowrap transition-colors duration-200 ${isActive
                     ? "text-orange-500"
                     : "text-gray-800 hover:text-orange-500"
                   }`}

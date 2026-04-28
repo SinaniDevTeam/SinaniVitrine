@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Geist, Geist_Mono, Playfair_Display } from "next/font/google";
+import { Inter, Geist, Geist_Mono, Playfair_Display, Bebas_Neue } from "next/font/google";
 import "./globals.css";
 
 const inter = Inter({
@@ -21,6 +21,12 @@ const playfair = Playfair_Display({
   variable: "--font-playfair",
   subsets: ["latin"],
   weight: ["400", "600", "700"],
+});
+
+const bebasNeue = Bebas_Neue({
+  variable: "--font-bebas",
+  subsets: ["latin"],
+  weight: "400",
 });
 
 export const metadata: Metadata = {
@@ -54,7 +60,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${inter.variable} ${geistSans.variable} ${geistMono.variable} ${playfair.variable} antialiased`}
+        className={`${inter.variable} ${geistSans.variable} ${geistMono.variable} ${playfair.variable} ${bebasNeue.variable} antialiased`}
       >
         {children}
       </body>
