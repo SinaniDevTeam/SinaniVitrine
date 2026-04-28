@@ -372,8 +372,7 @@ export default function Hero() {
           <div 
             className="w-full"
             style={{ 
-              backgroundColor: "rgba(255, 255, 255, 0.3)", 
-              backdropFilter: "blur(8px)", 
+              backgroundColor: "rgba(255, 255, 255, 0.95)", 
               padding: "16px",
               margin: "0 -8px",
               borderRadius: "12px",

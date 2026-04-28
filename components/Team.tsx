@@ -171,35 +171,35 @@ export default function Team() {
                   onHoverStart={() => setHoveredIndex(i)}
                   onHoverEnd={() => setHoveredIndex(null)}
                 >
-                  <div
-                    className="relative overflow-hidden rounded-3xl transition-all duration-500"
-                    style={{
-                      background: "linear-gradient(145deg, rgba(255,255,255,0.9) 0%, rgba(245,240,235,0.8) 100%)",
-                      backdropFilter: "blur(12px)",
-                      WebkitBackdropFilter: "blur(12px)",
-                      border: "1px solid rgba(255,255,255,0.7)",
-                      boxShadow: hoveredIndex === i
-                        ? "0 30px 60px rgba(232,64,16,0.15), 0 10px 30px rgba(0,0,0,0.1)"
-                        : "0 10px 40px rgba(0,0,0,0.06)",
-                    }}
-                  >
-                    {/* Photo area with better scaling */}
-                    <div className="relative w-full aspect-[3/4] overflow-hidden">
-                      <Image
-                        src={membre.photo}
-                        alt={membre.nom}
-                        fill
-                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                        className="object-contain transition-transform duration-700 ease-out"
-                        style={{ 
-                          objectFit: "contain", 
-                          objectPosition: "center center",
-                          transform: hoveredIndex === i 
-                            ? `scale(${(membre.scale || 1) * 1.05}) translate(${membre.translate || "0, 0"})` 
-                            : `scale(${membre.scale || 1}) translate(${membre.translate || "0, 0"})`,
-                        }}
-                      />
-                    </div>
+                    <div
+                      className="relative overflow-hidden rounded-3xl transition-all duration-500"
+                      style={{
+                        background: "linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(245,240,235,0.9) 100%)",
+                        border: "1px solid rgba(255,255,255,0.7)",
+                        boxShadow: hoveredIndex === i
+                          ? "0 30px 60px rgba(232,64,16,0.15), 0 10px 30px rgba(0,0,0,0.1)"
+                          : "0 10px 40px rgba(0,0,0,0.06)",
+                      }}
+                    >
+                      {/* Photo area with better scaling */}
+                      <div className="relative w-full aspect-[3/4] overflow-hidden">
+                        <Image
+                          src={membre.photo}
+                          alt={membre.nom}
+                          fill
+                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                          className="object-contain transition-transform duration-700 ease-out"
+                          priority={i < 2}
+                          quality={80}
+                          style={{ 
+                            objectFit: "contain", 
+                            objectPosition: "center center",
+                            transform: hoveredIndex === i 
+                              ? `scale(${(membre.scale || 1) * 1.05}) translate(${membre.translate || "0, 0"})` 
+                              : `scale(${membre.scale || 1}) translate(${membre.translate || "0, 0"})`,
+                          }}
+                        />
+                      </div>
 
                     {/* Information labels */}
                     <div className="p-6 pt-2 bg-gradient-to-t from-white/90 to-transparent">

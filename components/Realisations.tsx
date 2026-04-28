@@ -125,8 +125,8 @@ export default function Realisations() {
                   fill
                   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   className="object-cover object-center"
-                  priority={index < 2}
-                  quality={70}
+                  priority={index < 3}
+                  quality={75}
                 />
                 {/* Overlay au survol */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
