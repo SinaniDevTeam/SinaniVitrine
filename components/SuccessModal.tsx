@@ -110,7 +110,7 @@ export default function SuccessModal({
             key="modal"
             initial={{ opacity: 0, scale: 0.88, y: 24 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.92, y: 16 }}
+            exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ type: "spring", stiffness: 320, damping: 28 }}
             className="fixed inset-0 z-[101] flex items-center justify-center px-4"
             style={{ pointerEvents: "none" }}
@@ -123,6 +123,7 @@ export default function SuccessModal({
                 boxShadow: "0 32px 80px rgba(0,0,0,0.18)",
                 padding: "48px 40px 40px",
                 pointerEvents: "auto",
+                border: "1px solid rgba(255, 255, 255, 0.8)",
               }}
               onClick={(e) => e.stopPropagation()}
             >
@@ -194,7 +195,7 @@ export default function SuccessModal({
                   boxShadow: "0 4px 20px rgba(232,64,16,0.25)",
                 }}
               >
-                Continuer
+                OK
               </button>
             </div>
           </motion.div>

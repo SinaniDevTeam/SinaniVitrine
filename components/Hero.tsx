@@ -318,7 +318,7 @@ export default function Hero() {
             <h1
               style={{
                 fontFamily: "Inter, sans-serif",
-                fontWeight: "800",
+                fontWeight: "700",
                 lineHeight: "1.0",
                 color: "#111111",
                 letterSpacing: "-0.03em",

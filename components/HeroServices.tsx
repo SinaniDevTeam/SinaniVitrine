@@ -23,9 +23,9 @@ export default function HeroServices() {
               style={{
                 fontFamily: "Inter, sans-serif",
                 fontSize: "clamp(34px, 8vw, 60px)",
-                fontWeight: 800,
+                fontWeight: 700,
                 lineHeight: 1.05,
-                letterSpacing: "-0.03em",
+                letterSpacing: "-0.02em",
                 color: "#111111",
               }}
             >

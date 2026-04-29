@@ -74,18 +74,17 @@ export default function Team() {
           <h2
             style={{
               fontFamily: "Inter, sans-serif",
-              fontWeight: "300",
-              fontSize: "clamp(36px, 5.5vw, 72px)",
-              lineHeight: "1",
+              fontWeight: "700",
+              fontSize: "clamp(34px, 8vw, 60px)",
+              lineHeight: "1.05",
               color: "#111111",
-              letterSpacing: "-0.03em",
+              letterSpacing: "-0.02em",
             }}
           >
             Les cerveaux derrière{" "}
             <motion.span
               style={{
                 fontWeight: "700",
-                fontStyle: "italic",
                 background: "linear-gradient(135deg, #E84010 0%, #FF6B3D 100%)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
@@ -97,7 +96,7 @@ export default function Team() {
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.4 }}
             >
-              SINANI
+              Sinani
             </motion.span>
           </h2>
         </motion.div>
@@ -142,16 +141,12 @@ export default function Team() {
 
           <Swiper
             onSwiper={(swiper) => (swiperRef.current = swiper)}
-            modules={[Autoplay, Navigation]}
+            modules={[Navigation]}
             spaceBetween={24}
             slidesPerView={1.2}
             centeredSlides={false}
             grabCursor={true}
             speed={800}
-            autoplay={{
-              delay: 4000,
-              disableOnInteraction: true,
-            }}
             breakpoints={{
               640: { slidesPerView: 2.2, spaceBetween: 30 },
               1024: { slidesPerView: 3, spaceBetween: 40 },

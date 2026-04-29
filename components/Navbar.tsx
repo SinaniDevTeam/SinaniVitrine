@@ -4,7 +4,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
-import { FaFacebookF, FaTiktok } from "react-icons/fa";
+import { FaFacebookF, FaTiktok, FaInstagram } from "react-icons/fa";
+import { motion, AnimatePresence } from "framer-motion";
 
 const navLinks = [
   { label: "Accueil", href: "/" },
@@ -18,6 +19,7 @@ const navLinks = [
 
 const socialLinks = [
   { href: "https://www.facebook.com/share/16x35zh3ma/?mibextid=wwXIfr", label: "Facebook", Icon: FaFacebookF },
+  { href: "https://www.instagram.com/agencesinani?igsh=MW9kOTlhdzVheXJ1OA==", label: "Instagram", Icon: FaInstagram },
   { href: "https://www.tiktok.com/@sinani.studios?_r=1&_t=ZS-94k3pRDjuj2", label: "Tiktok", Icon: FaTiktok },
 ];
 
@@ -47,8 +49,21 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Bloquer le scroll quand le menu est ouvert
+  useEffect(() => {
+    if (menuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [menuOpen]);
+
   return (
-    <header
+    <>
+      <header
       className="fixed top-0 left-0 right-0 z-50 h-20 transition-all duration-500"
       style={
         scrolled
@@ -114,7 +129,7 @@ export default function Navbar() {
         </div>
 
         {/* Droite : icônes réseaux sociaux (mobile + desktop) */}
-        <div className="flex items-center gap-2 md:gap-3 justify-end md:w-1/3 z-10">
+        <div className="flex items-center gap-1 md:gap-3 justify-end md:w-1/3 z-10">
           {socialLinks.map(({ href, label, Icon }) => (
             <a
               key={label}
@@ -122,106 +137,117 @@ export default function Navbar() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label={label}
-              className="w-8 h-8 md:w-9 md:h-9 rounded-full border border-gray-400 flex items-center justify-center text-gray-700 hover:border-orange-500 hover:text-orange-500 transition-colors duration-200"
+              className="w-[30px] h-[30px] md:w-9 md:h-9 rounded-full border border-gray-400 flex items-center justify-center text-gray-700 hover:border-orange-500 hover:text-orange-500 transition-colors duration-200"
             >
-              <Icon size={13} className="md:text-base" />
+              <Icon size={12} className="md:size-[16px]" />
             </a>
           ))}
         </div>
       </div>
 
       {/* Menu mobile déroulant — glassmorphism */}
-      <div
-        className={`md:hidden fixed inset-0 z-[60] flex flex-col transition-all duration-300 ${
-          menuOpen ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 -translate-y-full pointer-events-none"
-        }`}
-        style={{
-          background: "rgba(255, 255, 255, 0.85)",
-          backdropFilter: "blur(20px)",
-          WebkitBackdropFilter: "blur(20px)",
-        }}
-      >
-        {/* Header */}
-        <div className="flex items-center justify-between h-20 px-6 border-b border-gray-100">
-          <div className="flex items-center gap-3">
-            <div className="w-1 h-4 rounded-full" style={{ background: "#E84010" }} />
-            <span
-              className="text-[10px] font-bold tracking-[0.25em] uppercase text-gray-400"
-              style={{ fontFamily: "Inter, sans-serif" }}
-            >
-              Navigation
-            </span>
-          </div>
-          <button onClick={() => setMenuOpen(false)} className="text-gray-800 p-2">
-            <CloseIcon />
-          </button>
-        </div>
-
-        {/* Nav links */}
-        <nav className="flex flex-col flex-1 justify-center px-6">
-          {navLinks.map((link, index) => {
-            const isActive =
-              link.href === "/"
-                ? pathname === "/"
-                : pathname.startsWith(link.href);
-            return (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={() => setMenuOpen(false)}
-                className="group flex items-center gap-4 py-4 border-b border-gray-100 last:border-0"
-              >
-                <span
-                  className="text-[11px] font-bold w-6 flex-shrink-0"
-                  style={{ fontFamily: "Inter, sans-serif", color: "#E84010" }}
-                >
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                <span
-                  className="text-[30px] font-bold flex-1 transition-colors duration-200"
-                  style={{
-                    fontFamily: "Inter, sans-serif",
-                    letterSpacing: "-0.02em",
-                    color: isActive ? "#E84010" : "#111111",
-                  }}
-                >
-                  {link.label}
-                </span>
-                <span
-                  className="text-lg transition-all duration-200 opacity-0 group-hover:opacity-100"
-                  style={{ color: "#E84010" }}
-                >
-                  →
-                </span>
-              </Link>
-            );
-          })}
-        </nav>
-
-        {/* Footer */}
-        <div className="px-6 pb-8 pt-4 flex items-center justify-between border-t border-gray-100">
-          <div className="flex gap-3">
-            {socialLinks.map(({ href, label, Icon }) => (
-              <a
-                key={label}
-                href={href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full flex items-center justify-center text-gray-600 hover:text-[#E84010] transition-colors duration-200"
-                style={{ border: "1px solid #E5E7EB" }}
-              >
-                <Icon size={16} />
-              </a>
-            ))}
-          </div>
-          <p
-            className="text-[9px] uppercase tracking-[0.2em] text-gray-300 font-bold"
-            style={{ fontFamily: "Inter, sans-serif" }}
-          >
-            Sinani © 2026
-          </p>
-        </div>
-      </div>
     </header>
+
+    {/* Menu mobile créatif — Centré (Déplacé hors du header pour corriger le positionnement au scroll) */}
+    <AnimatePresence>
+      {menuOpen && (
+        <>
+          {/* Backdrop Overlay */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setMenuOpen(false)}
+            className="md:hidden fixed inset-0 z-[60]"
+            style={{
+              background: "rgba(0, 0, 0, 0.7)",
+              backdropFilter: "blur(20px)",
+              WebkitBackdropFilter: "blur(20px)",
+            }}
+          />
+
+          {/* Modal Centrée */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 10 }}
+            transition={{ type: "spring", stiffness: 300, damping: 25 }}
+            className="md:hidden fixed inset-0 z-[70] flex items-center justify-center p-6 pointer-events-none"
+          >
+            <div
+              className="w-full max-w-[300px] pointer-events-auto"
+              style={{
+                backgroundColor: "#FFFFFF",
+                borderRadius: "40px",
+                boxShadow: "0 30px 70px rgba(0, 0, 0, 0.25)",
+                overflow: "hidden",
+                border: "1px solid rgba(255, 255, 255, 0.8)",
+              }}
+            >
+              {/* Header discret */}
+              <div className="flex justify-center pt-8 pb-4">
+                <div className="w-8 h-1 rounded-full" style={{ background: "#E84010", opacity: 0.2 }} />
+              </div>
+
+              <nav className="flex flex-col items-center gap-2 py-8 px-6">
+                {navLinks.map((link, index) => {
+                  const isActive =
+                    link.href === "/"
+                      ? pathname === "/"
+                      : pathname.startsWith(link.href);
+                  return (
+                    <motion.div
+                      key={link.href}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.1 + index * 0.05 }}
+                      className="w-full"
+                    >
+                      <Link
+                        href={link.href}
+                        onClick={() => setMenuOpen(false)}
+                        className="group relative flex items-center justify-center py-4 rounded-2xl transition-all duration-300"
+                        style={{
+                          background: isActive ? "rgba(232, 64, 16, 0.05)" : "transparent",
+                        }}
+                      >
+                        <span
+                          className="text-[22px] font-bold transition-all duration-300"
+                          style={{
+                            fontFamily: "Inter, sans-serif",
+                            letterSpacing: "-0.02em",
+                            color: isActive ? "#E84010" : "#111111",
+                            transform: isActive ? "scale(1.05)" : "scale(1)",
+                          }}
+                        >
+                          {link.label}
+                        </span>
+                        {isActive && (
+                          <motion.div
+                            layoutId="activeDot"
+                            className="absolute -bottom-1 w-1.5 h-1.5 rounded-full"
+                            style={{ background: "#E84010" }}
+                          />
+                        )}
+                      </Link>
+                    </motion.div>
+                  );
+                })}
+              </nav>
+
+              {/* Bouton Fermer */}
+              <button
+                onClick={() => setMenuOpen(false)}
+                className="w-full py-6 text-[13px] font-bold uppercase tracking-[0.2em] text-gray-400 hover:text-gray-900 transition-colors border-t border-gray-50"
+                style={{ fontFamily: "Inter, sans-serif" }}
+              >
+                Fermer
+              </button>
+            </div>
+          </motion.div>
+        </>
+      )}
+    </AnimatePresence>
+    </>
   );
 }

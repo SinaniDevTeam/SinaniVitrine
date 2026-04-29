@@ -52,8 +52,8 @@ export default function Realisations() {
             style={{
               fontFamily: "Inter, sans-serif",
               fontWeight: "700",
-              fontSize: "clamp(28px, 4.5vw, 46px)",
-              lineHeight: "1.1",
+              fontSize: "clamp(34px, 8vw, 60px)",
+              lineHeight: "1.05",
               letterSpacing: "-0.02em",
               color: "#111111",
               minHeight: "1.2em",
@@ -62,7 +62,17 @@ export default function Realisations() {
             {titleTyped ? (
               <>
                 Dans l&apos;œil de{" "}
-                <span style={{ color: "#E84010" }}>Sinani</span>
+                <span
+                  style={{
+                    fontWeight: "700",
+                    background: "linear-gradient(135deg, #E84010 0%, #FF6B3D 100%)",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                    backgroundClip: "text",
+                  }}
+                >
+                  Sinani
+                </span>
               </>
             ) : isInView ? (
               <TypeAnimation
