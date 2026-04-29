@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import SuccessModal from "@/components/SuccessModal";
 import { motion, AnimatePresence } from "framer-motion";
 
 // ── Design tokens ──────────────────────────────────────────────────
@@ -293,6 +294,7 @@ export function ActorForm() {
   const [referenceFile, setReferenceFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const [error, setError] = useState(false);
 
   const set = (key: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
@@ -334,6 +336,7 @@ export function ActorForm() {
       });
       if (res.ok) {
         setSubmitted(true);
+        setShowModal(true);
         setForm({ prenom: "", nom: "", email: "", telephone: "", age: "", genre: "", adresse: "", experience: "", bio: "", notes: "" });
         setLangues([]); setTalentTypes([]); setReferenceFile(null);
         setTimeout(() => setSubmitted(false), 6000);
@@ -367,7 +370,7 @@ export function ActorForm() {
     >
       {/* ── Talent type selector ───────────────────────── */}
       <div style={{ background: "#FAFAF9", borderTop: "1px solid #F0F0F0", borderBottom: "1px solid #F0F0F0", padding: "40px 0" }}>
-        <div style={{ maxWidth: "900px", margin: "0 auto", padding: "0 48px" }}>
+        <div className="px-4 sm:px-8 md:px-12" style={{ maxWidth: "900px", margin: "0 auto" }}>
           <p style={{
             fontSize: "11px", letterSpacing: "0.2em", textTransform: "uppercase" as const,
             color: ORANGE, fontWeight: 600, fontFamily: "Inter, sans-serif", marginBottom: "20px",
@@ -465,7 +468,7 @@ export function ActorForm() {
       </div>
 
       {/* ── Form ──────────────────────────────────────────── */}
-      <div style={{ maxWidth: "900px", margin: "0 auto", padding: "64px 48px 100px" }}>
+      <div className="px-4 sm:px-8 md:px-12 pt-16 pb-24" style={{ maxWidth: "900px", margin: "0 auto" }}>
         <form onSubmit={handleSubmit}>
 
           {/* ── 01 — Informations personnelles ─── */}
@@ -610,6 +613,12 @@ export function ActorForm() {
 
         </form>
       </div>
+      <SuccessModal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        title="Félicitations 🎉"
+        message="Votre profil a été soumis avec succès. Notre équipe examinera votre candidature et vous contactera dès qu'un projet correspond à votre profil."
+      />
     </motion.div>
   );
 }

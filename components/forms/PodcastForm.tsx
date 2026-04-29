@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import SuccessModal from "@/components/SuccessModal";
 import { motion, AnimatePresence } from "framer-motion";
 
 // ── Design tokens ──────────────────────────────────────────────────
@@ -137,6 +138,7 @@ export function PodcastForm() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const [error, setError] = useState(false);
 
   const set = (key: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
@@ -156,6 +158,7 @@ export function PodcastForm() {
       });
       if (res.ok) {
         setSubmitted(true);
+        setShowModal(true);
         setForm({ nom: "", email: "", telephone: "", adresse: "", titre: "", categorie: "", videoUrl: "", publicCible: "", notes: "" });
         setTimeout(() => setSubmitted(false), 6000);
       } else {
@@ -186,7 +189,7 @@ export function PodcastForm() {
       transition={{ duration: 0.4 }}
       style={{ background: "#FFFFFF" }}
     >
-      <div style={{ maxWidth: "900px", margin: "0 auto", padding: "64px 48px 100px" }}>
+      <div className="px-4 sm:px-8 md:px-12 pt-16 pb-24" style={{ maxWidth: "900px", margin: "0 auto" }}>
         <form onSubmit={handleSubmit}>
 
           {/* ── 01 — Vos coordonnées ─── */}
@@ -315,6 +318,12 @@ export function PodcastForm() {
 
         </form>
       </div>
+      <SuccessModal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        title="Félicitations 🎉"
+        message="Votre concept de podcast a été soumis avec succès. Un membre de l'équipe SINANI vous contactera dans les 5 jours ouvrables."
+      />
     </motion.div>
   );
 }

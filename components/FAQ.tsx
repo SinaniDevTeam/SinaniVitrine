@@ -167,7 +167,7 @@ export default function FAQ() {
 
   return (
     <section className="py-24" style={{ background: "#FAFAF9" }}>
-      <div className="max-w-3xl mx-auto px-8">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 md:px-8">
         <div className="text-center mb-16">
           <motion.h2
             ref={titleRef}
@@ -178,10 +178,11 @@ export default function FAQ() {
             custom={0}
             style={{
               fontFamily: "Inter, sans-serif",
-              fontSize: "clamp(28px, 4vw, 40px)",
+              fontSize: "clamp(28px, 4.5vw, 46px)",
               fontWeight: 700,
+              letterSpacing: "-0.02em",
               color: "#111111",
-              lineHeight: 1.15,
+              lineHeight: 1.1,
             }}
           >
             {titleInView ? (

@@ -169,11 +169,12 @@ export default function Hero() {
           >
             <p
               style={{
-                fontFamily: "Satoshi, sans-serif",
-                fontSize: "24px",
+                fontFamily: "Inter, sans-serif",
+                fontSize: "22px",
                 fontWeight: "400",
-                lineHeight: "1.4",
+                lineHeight: "1.6",
                 color: "#111111",
+                letterSpacing: "-0.01em",
               }}
             >
               Sinani est un incubateur audiovisuel et une agence de publicité qui
@@ -317,31 +318,31 @@ export default function Hero() {
             <h1
               style={{
                 fontFamily: "Inter, sans-serif",
-                fontWeight: "900",
-                lineHeight: "0.95",
+                fontWeight: "800",
+                lineHeight: "1.0",
                 color: "#111111",
-                letterSpacing: "-0.04em",
+                letterSpacing: "-0.03em",
                 minHeight: "140px",
-                textShadow: "0 2px 20px rgba(255,255,255,0.8)" // Ombre pour la lisibilité
+                textShadow: "0 2px 20px rgba(255,255,255,0.8)",
               }}
             >
               {mobileTyped ? (
                 <>
-                  <span style={{ fontSize: "clamp(48px, 12vw, 64px)" }}>Raconter</span>
+                  <span style={{ fontSize: "clamp(40px, 10vw, 60px)" }}>Raconter</span>
                   <br />
-                  <span style={{ fontSize: "clamp(48px, 12vw, 64px)" }}>
+                  <span style={{ fontSize: "clamp(40px, 10vw, 60px)" }}>
                     la <span style={{ color: "#E84010" }}>Guinée</span>,
                   </span>
                   <br />
-                  <motion.div 
-                    initial={{ opacity: 0 }} 
-                    animate={{ opacity: 1 }} 
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
                     transition={{ delay: 0.3 }}
                     style={{ marginTop: "8px" }}
                   >
-                    <span style={{ fontSize: "clamp(28px, 7vw, 36px)", fontWeight: 700, color: "#111111" }}>inspirer le</span>
+                    <span style={{ fontSize: "clamp(26px, 6vw, 36px)", fontWeight: 700, color: "#111111" }}>inspirer le</span>
                     <br />
-                    <span style={{ fontSize: "clamp(28px, 7vw, 36px)", fontWeight: 700, color: "#111111" }}>Monde.</span>
+                    <span style={{ fontSize: "clamp(26px, 6vw, 36px)", fontWeight: 700, color: "#111111" }}>Monde.</span>
                   </motion.div>
                 </>
               ) : (
@@ -353,7 +354,7 @@ export default function Hero() {
                   speed={50}
                   cursor={false}
                   wrapper="span"
-                  style={{ fontSize: "clamp(42px, 11vw, 56px)", whiteSpace: "pre-line" }}
+                  style={{ fontSize: "clamp(40px, 10vw, 60px)", whiteSpace: "pre-line" }}
                 />
               )}
             </h1>
@@ -382,13 +383,13 @@ export default function Hero() {
             <div className="w-12 h-1 bg-[#E84010] mb-4" />
             <p
               style={{
-                fontFamily: "Satoshi, sans-serif",
-                fontSize: "17px",
-                fontWeight: "500",
-                lineHeight: "1.6",
+                fontFamily: "Inter, sans-serif",
+                fontSize: "clamp(14px, 1.5vw, 17px)",
+                fontWeight: "400",
+                lineHeight: "1.75",
                 color: "#111111",
                 maxWidth: "100%",
-                textShadow: "0 2px 15px rgba(255,255,255,0.5)"
+                textShadow: "0 2px 15px rgba(255,255,255,0.5)",
               }}
             >
               Sinani est un <span style={{ color: "#E84010", fontWeight: "600" }}>incubateur audiovisuel</span> et une agence de publicité qui forme de jeunes talents à créer des contenus inspirants, valorisant la Guinée et ses richesses culturelles.

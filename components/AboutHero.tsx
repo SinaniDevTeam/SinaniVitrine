@@ -9,7 +9,7 @@ export default function AboutHero() {
 
   return (
     <section className="bg-white pb-20">
-      <div className="max-w-7xl mx-auto px-8 pt-36">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 pt-28 md:pt-36">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-14 items-start">
           {/* Colonne gauche — Texte */}
           <div>
@@ -20,9 +20,10 @@ export default function AboutHero() {
               transition={{ duration: 0.7, delay: 0.1 }}
               style={{
                 fontFamily: "Inter, sans-serif",
-                fontSize: "clamp(26px, 3.5vw, 44px)",
-                fontWeight: 700,
-                lineHeight: 1.1,
+                fontSize: "clamp(34px, 8vw, 60px)",
+                fontWeight: 800,
+                lineHeight: 1.05,
+                letterSpacing: "-0.03em",
                 color: "#111111",
                 minHeight: "135px",
               }}
@@ -53,8 +54,8 @@ export default function AboutHero() {
               style={{
                 fontFamily: "Inter, sans-serif",
                 fontWeight: 400,
-                fontSize: "clamp(16px, 1.6vw, 20px)",
-                lineHeight: 1.7,
+                fontSize: "clamp(15px, 1.5vw, 18px)",
+                lineHeight: 1.75,
                 color: "#4B5563",
                 maxWidth: "480px",
               }}

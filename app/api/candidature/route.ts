@@ -70,7 +70,7 @@ export async function POST(req: Request) {
 
     const data = await resend.emails.send({
       from: "Candidatures SINANI <onboarding@resend.dev>",
-      to: ["contact@agencesinani.com"],
+      to: ["halimad397@gmail.com"],
       subject,
       html,
       attachments,

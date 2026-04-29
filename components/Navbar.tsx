@@ -4,20 +4,19 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
-import { FaInstagram, FaFacebookF, FaTiktok } from "react-icons/fa";
+import { FaFacebookF, FaTiktok } from "react-icons/fa";
 
 const navLinks = [
   { label: "Accueil", href: "/" },
   { label: "À propos", href: "/about" },
   { label: "Services", href: "/services" },
-  { label: "Candidature", href: "/candidature" },
+  { label: "Postuler", href: "/candidature" },
   { label: "Contact", href: "/contact" },
 ];
 
 // Les icônes sont maintenant importées de react-icons/fa
 
 const socialLinks = [
-  { href: "https://www.instagram.com/agencesinani?igsh=MWdrZGp6ZmU5bzZ1Yw==", label: "Instagram", Icon: FaInstagram },
   { href: "https://www.facebook.com/share/16x35zh3ma/?mibextid=wwXIfr", label: "Facebook", Icon: FaFacebookF },
   { href: "https://www.tiktok.com/@sinani.studios?_r=1&_t=ZS-94k3pRDjuj2", label: "Tiktok", Icon: FaTiktok },
 ];
@@ -63,9 +62,18 @@ export default function Navbar() {
           : { background: "transparent" }
       }
     >
-      <div className="max-w-7xl mx-auto h-full px-8 flex items-center justify-between relative">
+      <div className="max-w-7xl mx-auto h-full px-4 md:px-8 flex items-center justify-between relative">
 
-        {/* Navigation gauche */}
+        {/* Gauche : hamburger mobile / nav desktop */}
+        <button
+          className="md:hidden text-gray-800 p-2 -ml-2 z-10"
+          onClick={() => setMenuOpen(!menuOpen)}
+          aria-label="Menu"
+          style={{ touchAction: "manipulation" }}
+        >
+          {menuOpen ? <CloseIcon /> : <MenuIcon />}
+        </button>
+
         <nav className="hidden md:flex items-center gap-5 lg:gap-7 w-1/3">
           {navLinks.map((link) => {
             const isActive =
@@ -105,8 +113,8 @@ export default function Navbar() {
           </Link>
         </div>
 
-        {/* Icônes réseaux sociaux à droite — dans des cercles */}
-        <div className="hidden md:flex items-center gap-3 w-1/3 justify-end">
+        {/* Droite : icônes réseaux sociaux (mobile + desktop) */}
+        <div className="flex items-center gap-2 md:gap-3 justify-end md:w-1/3 z-10">
           {socialLinks.map(({ href, label, Icon }) => (
             <a
               key={label}
@@ -114,49 +122,44 @@ export default function Navbar() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label={label}
-              className="w-9 h-9 rounded-full border border-gray-400 flex items-center justify-center text-gray-700 hover:border-orange-500 hover:text-orange-500 transition-colors duration-200"
+              className="w-8 h-8 md:w-9 md:h-9 rounded-full border border-gray-400 flex items-center justify-center text-gray-700 hover:border-orange-500 hover:text-orange-500 transition-colors duration-200"
             >
-              <Icon />
+              <Icon size={13} className="md:text-base" />
             </a>
           ))}
         </div>
-
-        {/* Bouton menu mobile */}
-        <button
-          className="md:hidden text-gray-800 ml-auto p-2 -mr-2"
-          onClick={() => setMenuOpen(!menuOpen)}
-          aria-label="Menu"
-          style={{ touchAction: "manipulation" }}
-        >
-          {menuOpen ? <CloseIcon /> : <MenuIcon />}
-        </button>
       </div>
 
       {/* Menu mobile déroulant — glassmorphism */}
       <div
         className={`md:hidden fixed inset-0 z-[60] flex flex-col transition-all duration-300 ${
-          menuOpen ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-full"
+          menuOpen ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 -translate-y-full pointer-events-none"
         }`}
         style={{
-          background: "rgba(255, 255, 255, 0.98)",
-          backdropFilter: "blur(12px)",
-          WebkitBackdropFilter: "blur(12px)",
+          background: "rgba(255, 255, 255, 0.85)",
+          backdropFilter: "blur(20px)",
+          WebkitBackdropFilter: "blur(20px)",
         }}
       >
-        <div className="flex items-center justify-between h-20 px-8 border-b border-gray-100">
-          <span 
-            className="text-[10px] font-bold tracking-[0.2em] uppercase text-gray-400"
-            style={{ fontFamily: "Inter, sans-serif" }}
-          >
-            Menu
-          </span>
+        {/* Header */}
+        <div className="flex items-center justify-between h-20 px-6 border-b border-gray-100">
+          <div className="flex items-center gap-3">
+            <div className="w-1 h-4 rounded-full" style={{ background: "#E84010" }} />
+            <span
+              className="text-[10px] font-bold tracking-[0.25em] uppercase text-gray-400"
+              style={{ fontFamily: "Inter, sans-serif" }}
+            >
+              Navigation
+            </span>
+          </div>
           <button onClick={() => setMenuOpen(false)} className="text-gray-800 p-2">
             <CloseIcon />
           </button>
         </div>
-        
-        <nav className="flex flex-col gap-6 p-10 pt-16">
-          {navLinks.map((link) => {
+
+        {/* Nav links */}
+        <nav className="flex flex-col flex-1 justify-center px-6">
+          {navLinks.map((link, index) => {
             const isActive =
               link.href === "/"
                 ? pathname === "/"
@@ -166,35 +169,52 @@ export default function Navbar() {
                 key={link.href}
                 href={link.href}
                 onClick={() => setMenuOpen(false)}
-                className={`text-4xl font-bold transition-colors ${
-                  isActive ? "text-orange-500" : "text-gray-900 hover:text-orange-500"
-                }`}
-                style={{
-                  fontFamily: "Inter, sans-serif",
-                  letterSpacing: "-0.02em",
-                }}
+                className="group flex items-center gap-4 py-4 border-b border-gray-100 last:border-0"
               >
-                {link.label}
+                <span
+                  className="text-[11px] font-bold w-6 flex-shrink-0"
+                  style={{ fontFamily: "Inter, sans-serif", color: "#E84010" }}
+                >
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <span
+                  className="text-[30px] font-bold flex-1 transition-colors duration-200"
+                  style={{
+                    fontFamily: "Inter, sans-serif",
+                    letterSpacing: "-0.02em",
+                    color: isActive ? "#E84010" : "#111111",
+                  }}
+                >
+                  {link.label}
+                </span>
+                <span
+                  className="text-lg transition-all duration-200 opacity-0 group-hover:opacity-100"
+                  style={{ color: "#E84010" }}
+                >
+                  →
+                </span>
               </Link>
             );
           })}
         </nav>
 
-        <div className="mt-auto p-10 border-t border-gray-100 flex items-center justify-between">
-          <div className="flex gap-4">
+        {/* Footer */}
+        <div className="px-6 pb-8 pt-4 flex items-center justify-between border-t border-gray-100">
+          <div className="flex gap-3">
             {socialLinks.map(({ href, label, Icon }) => (
               <a
                 key={label}
                 href={href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-12 h-12 rounded-full bg-gray-50 flex items-center justify-center text-gray-700 hover:text-orange-500 transition-colors"
+                className="w-10 h-10 rounded-full flex items-center justify-center text-gray-600 hover:text-[#E84010] transition-colors duration-200"
+                style={{ border: "1px solid #E5E7EB" }}
               >
-                <Icon size={20} />
+                <Icon size={16} />
               </a>
             ))}
           </div>
-          <p 
+          <p
             className="text-[9px] uppercase tracking-[0.2em] text-gray-300 font-bold"
             style={{ fontFamily: "Inter, sans-serif" }}
           >

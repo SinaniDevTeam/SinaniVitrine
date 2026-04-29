@@ -52,8 +52,9 @@ export default function Realisations() {
             style={{
               fontFamily: "Inter, sans-serif",
               fontWeight: "700",
-              fontSize: "clamp(30px, 8vw, 64px)",
+              fontSize: "clamp(28px, 4.5vw, 46px)",
               lineHeight: "1.1",
+              letterSpacing: "-0.02em",
               color: "#111111",
               minHeight: "1.2em",
             }}

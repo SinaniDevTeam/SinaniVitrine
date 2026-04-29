@@ -88,8 +88,9 @@ export default function WhoWeAre() {
             style={{
               fontFamily: "Inter, sans-serif",
               fontWeight: "700",
-              fontSize: "clamp(30px, 8vw, 64px)",
+              fontSize: "clamp(28px, 4.5vw, 46px)",
               lineHeight: "1.1",
+              letterSpacing: "-0.02em",
               color: "#111111",
               minHeight: "1.2em",
             }}
@@ -132,13 +133,13 @@ export default function WhoWeAre() {
                   <div className="p-3 bg-gray-50 rounded-xl">
                     <section.Icon active={true} />
                   </div>
-                  <h3 
-                    style={{ 
-                      fontFamily: "Inter, sans-serif", 
-                      fontSize: "28px", 
-                      fontWeight: "800", 
+                  <h3
+                    style={{
+                      fontFamily: "Inter, sans-serif",
+                      fontSize: "clamp(17px, 2vw, 22px)",
+                      fontWeight: "700",
                       color: "#E84010",
-                      letterSpacing: "-0.02em"
+                      letterSpacing: "-0.01em",
                     }}
                   >
                     {section.title}
@@ -146,13 +147,13 @@ export default function WhoWeAre() {
                 </div>
                 
                 <p 
-                  style={{ 
-                    fontFamily: "Inter, sans-serif", 
-                    fontSize: "18px", 
-                    lineHeight: "1.7", 
+                  style={{
+                    fontFamily: "Inter, sans-serif",
+                    fontSize: "clamp(15px, 1.5vw, 17px)",
+                    lineHeight: "1.75",
                     color: "#374151",
-                    fontWeight: "500",
-                    whiteSpace: "pre-line"
+                    fontWeight: "400",
+                    whiteSpace: "pre-line",
                   }}
                 >
                   {section.description}
@@ -230,10 +231,10 @@ export default function WhoWeAre() {
                   <p
                     style={{
                       fontFamily: "Inter, sans-serif",
-                      fontSize: "24px",
-                      fontWeight: "450",
-                      lineHeight: "1.7",
-                      color: "#111827",
+                      fontSize: "clamp(15px, 1.5vw, 18px)",
+                      fontWeight: "400",
+                      lineHeight: "1.75",
+                      color: "#374151",
                       letterSpacing: "-0.01em",
                       whiteSpace: "pre-line",
                     }}

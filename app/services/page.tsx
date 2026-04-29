@@ -175,7 +175,7 @@ function ServiceCard({ s, i }: { s: typeof allServices[0]; i: number }) {
         <h3 style={{ fontFamily: "Inter, sans-serif", fontSize: "17px", fontWeight: 700, color: "#111111", marginBottom: "8px" }}>
           {s.title}
         </h3>
-        <p style={{ fontFamily: "Inter, sans-serif", fontSize: "14px", color: "#6B7280", lineHeight: 1.65 }}>
+        <p style={{ fontFamily: "Inter, sans-serif", fontSize: "15px", color: "#6B7280", lineHeight: 1.7 }}>
           {s.desc}
         </p>
 
@@ -219,7 +219,7 @@ export default function ServicesPage() {
 
       {/* ── Services Grid ── */}
       <section className="py-20 bg-white">
-        <div className="max-w-6xl mx-auto px-8">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 md:px-8">
 
           {/* Header gauche */}
           <div className="mb-12">
@@ -231,7 +231,7 @@ export default function ServicesPage() {
             </motion.span>
             <motion.h2
               variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} custom={0.1}
-              style={{ fontFamily: "Inter, sans-serif", fontSize: "clamp(28px, 4vw, 46px)", fontWeight: 700, color: "#111111", lineHeight: 1.15, marginTop: "10px", maxWidth: "560px" }}
+              style={{ fontFamily: "Inter, sans-serif", fontSize: "clamp(28px, 4.5vw, 46px)", fontWeight: 700, letterSpacing: "-0.02em", color: "#111111", lineHeight: 1.1, marginTop: "10px", maxWidth: "560px" }}
             >
               Ce que nous faisons,<br />pour vous.
             </motion.h2>

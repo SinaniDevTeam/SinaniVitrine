@@ -24,8 +24,9 @@ export default function HeroContact() {
               style={{
                 fontFamily: "Inter, sans-serif",
                 fontSize: "clamp(34px, 8vw, 60px)",
-                fontWeight: 700,
-                lineHeight: 1.1,
+                fontWeight: 800,
+                lineHeight: 1.05,
+                letterSpacing: "-0.03em",
                 color: "#111111",
               }}
             >
@@ -59,7 +60,6 @@ export default function HeroContact() {
                 fontSize: "clamp(15px, 1.5vw, 18px)",
                 lineHeight: 1.75,
                 color: "#4B5563",
-                maxWidth: "100%",
               }}
             >
               Ici, à l'agence, nous avons un mur brut où talents, collaborateurs et 

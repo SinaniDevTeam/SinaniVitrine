@@ -36,7 +36,7 @@ export default function AboutTimeline() {
 
   return (
     <section className="py-24 bg-white">
-      <div className="max-w-7xl mx-auto px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
         <motion.h2
           ref={titleRef}
           initial={{ opacity: 0, y: 20 }}
@@ -45,10 +45,11 @@ export default function AboutTimeline() {
           transition={{ duration: 0.7, delay: 0.1 }}
           style={{
             fontFamily: "Inter, sans-serif",
-            fontSize: "clamp(28px, 4vw, 48px)",
+            fontSize: "clamp(28px, 4.5vw, 46px)",
             fontWeight: 700,
+            letterSpacing: "-0.02em",
             color: "#111111",
-            lineHeight: 1.15,
+            lineHeight: 1.1,
           }}
         >
           {titleTyped ? (
@@ -80,9 +81,10 @@ export default function AboutTimeline() {
           style={{
             fontFamily: "Inter, sans-serif",
             fontWeight: 500,
-            fontSize: "clamp(24px, 3.5vw, 48px)",
-            lineHeight: 1.2,
-            color: "#111111",
+            fontSize: "clamp(17px, 2vw, 22px)",
+            lineHeight: 1.6,
+            letterSpacing: "-0.01em",
+            color: "#4B5563",
           }}
         >
           On équipe les talents, produit des contenus authentiques

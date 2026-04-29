@@ -113,12 +113,13 @@ export default function Footer() {
       >
         <div>
           <p style={{
-            fontFamily: "'Playfair Display', Georgia, serif",
+            fontFamily: "Inter, sans-serif",
             fontSize: "clamp(16px, 2vw, 20px)",
             fontWeight: 700,
             color: "#f5ede0",
             lineHeight: 1.2,
             fontStyle: "italic",
+            letterSpacing: "-0.01em",
           }}>
             Votre projet mérite d&apos;être vu.
           </p>

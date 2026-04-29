@@ -1,26 +1,11 @@
 import type { Metadata } from "next";
-import { Inter, Geist, Geist_Mono, Playfair_Display, Bebas_Neue } from "next/font/google";
+import { Inter, Bebas_Neue } from "next/font/google";
 import "./globals.css";
 
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
-});
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-const playfair = Playfair_Display({
-  variable: "--font-playfair",
-  subsets: ["latin"],
-  weight: ["400", "600", "700"],
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
 });
 
 const bebasNeue = Bebas_Neue({
@@ -60,7 +45,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${inter.variable} ${geistSans.variable} ${geistMono.variable} ${playfair.variable} ${bebasNeue.variable} antialiased`}
+        className={`${inter.variable} ${bebasNeue.variable} antialiased`}
       >
         {children}
       </body>

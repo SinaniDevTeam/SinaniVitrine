@@ -233,8 +233,8 @@ export default function ContactPage() {
 
       {/* ── Formulaire + Infos ── */}
       <section id="contact-form" className="py-24 bg-white">
-        <div className="max-w-6xl mx-auto px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-16">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 md:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-10 lg:gap-16">
 
             {/* Colonne gauche — Infos */}
             <div className="lg:col-span-2">
@@ -242,7 +242,7 @@ export default function ContactPage() {
                 ref={titleRef}
                 className="mb-4"
                 variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} custom={0}
-                style={{ fontFamily: "Inter, sans-serif", fontSize: "clamp(24px, 3vw, 36px)", fontWeight: 700, color: "#111111", lineHeight: 1.2 }}
+                style={{ fontFamily: "Inter, sans-serif", fontSize: "clamp(28px, 4.5vw, 46px)", fontWeight: 700, letterSpacing: "-0.02em", color: "#111111", lineHeight: 1.1 }}
               >
                 {titleInView ? (
                   <TypeAnimation sequence={["Restons connectés"]} speed={50} cursor={false} />
@@ -253,7 +253,7 @@ export default function ContactPage() {
               <motion.p
                 className="mb-10"
                 variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} custom={0.1}
-                style={{ fontFamily: "Inter, sans-serif", fontSize: "16px", fontWeight: 400, color: "#6B7280", lineHeight: 1.7 }}
+                style={{ fontFamily: "Inter, sans-serif", fontSize: "clamp(15px, 1.5vw, 18px)", fontWeight: 400, color: "#6B7280", lineHeight: 1.75 }}
               >
                 Que vous soyez un jeune diplômé en audiovisuel, une entreprise qui cherche un partenaire créatif ou une institution intéressée par notre démarche — nous sommes à l&apos;écoute.
               </motion.p>
@@ -290,7 +290,7 @@ export default function ContactPage() {
 
             {/* Colonne droite — Formulaire */}
             <motion.div className="lg:col-span-3" variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} custom={0.2}>
-              <form onSubmit={handleSubmit} className="p-8 md:p-10 rounded-2xl"
+              <form onSubmit={handleSubmit} className="p-5 sm:p-8 md:p-10 rounded-2xl"
                 style={{ background: "#FFFFFF", border: "1px solid #F0F0F0", boxShadow: "0 4px 40px rgba(0,0,0,0.04)" }}>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">

@@ -27,8 +27,9 @@ export default function VisionSection() {
           style={{
             fontFamily: "Inter, sans-serif",
             fontWeight: "700",
-            fontSize: "clamp(30px, 8vw, 64px)",
+            fontSize: "clamp(28px, 4.5vw, 46px)",
             lineHeight: "1.1",
+            letterSpacing: "-0.02em",
             color: "#111111",
             minHeight: "1.2em",
           }}
@@ -60,9 +61,10 @@ export default function VisionSection() {
           style={{
             fontFamily: "Inter, sans-serif",
             fontWeight: "500",
-            fontSize: "clamp(24px, 3.5vw, 48px)",
-            lineHeight: "1.2",
-            color: "#111111",
+            fontSize: "clamp(17px, 2vw, 22px)",
+            lineHeight: "1.6",
+            letterSpacing: "-0.01em",
+            color: "#4B5563",
           }}
         >
           au service du récit guinéen
@@ -82,10 +84,10 @@ export default function VisionSection() {
             <p
               style={{
                 fontFamily: "Inter, sans-serif",
-                fontSize: "clamp(15px, 1.3vw, 17px)",
+                fontSize: "clamp(15px, 1.5vw, 18px)",
                 fontWeight: "400",
-                lineHeight: "1.7",
-                color: "#000000",
+                lineHeight: "1.75",
+                color: "#4B5563",
               }}
             >
               Pendant des décennies, d&apos;autres ont raconté notre Guinée.
