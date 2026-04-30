@@ -93,7 +93,7 @@ function CustomSelect({
         className="flex items-center justify-between cursor-pointer transition-all duration-200"
         style={{
           fontFamily: "Inter, sans-serif",
-          fontSize: "15px",
+          fontSize: "16px",
           fontWeight: 400,
           color: value ? "#111111" : "#9CA3AF",
           background: "#FAFAF9",
@@ -213,8 +213,9 @@ export default function ContactPage() {
 
   const inputStyle: React.CSSProperties = {
     fontFamily: "Inter, sans-serif",
-    fontSize: "15px",
+    fontSize: "16px",
     fontWeight: 400,
+    lineHeight: "1.5",
     color: "#111111",
     background: "#FAFAF9",
     border: "1px solid #E5E7EB",
