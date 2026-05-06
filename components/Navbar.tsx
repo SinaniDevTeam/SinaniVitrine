@@ -11,7 +11,7 @@ const navLinks = [
   { label: "Accueil", href: "/" },
   { label: "À propos", href: "/about" },
   { label: "Services", href: "/services" },
-  { label: "Postuler", href: "/candidature" },
+  { label: "Candidater", href: "/candidature" },
   { label: "Contact", href: "/contact" },
 ];
 

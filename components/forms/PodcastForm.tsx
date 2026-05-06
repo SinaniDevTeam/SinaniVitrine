@@ -133,21 +133,45 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 // ── Main component ─────────────────────────────────────────────────
 export function PodcastForm() {
   const [form, setForm] = useState({
-    nom: "", email: "", telephone: "", adresse: "",
+    prenom: "", nom: "", email: "", telephone: "",
+    age: "", genre: "", adresse: "",
     titre: "", categorie: "", videoUrl: "",
-    publicCible: "", notes: "",
+    synopsis: "", notes: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [error, setError] = useState(false);
+  const [videoMode, setVideoMode] = useState<"upload" | "url">("upload");
+  const [videoFile, setVideoFile] = useState<File | null>(null);
+  const [videoUploading, setVideoUploading] = useState(false);
+  const [videoUploadProgress, setVideoUploadProgress] = useState(0);
 
   const set = (key: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setForm(f => ({ ...f, [key]: e.target.value }));
 
+  const uploadToCloudinary = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("upload_preset", "sinani_videos");
+      const xhr = new XMLHttpRequest();
+      xhr.upload.addEventListener("progress", (ev) => {
+        if (ev.lengthComputable) setVideoUploadProgress(Math.round((ev.loaded / ev.total) * 100));
+      });
+      xhr.addEventListener("load", () => {
+        if (xhr.status === 200) resolve(JSON.parse(xhr.responseText).secure_url);
+        else reject(new Error("Upload échoué"));
+      });
+      xhr.addEventListener("error", () => reject(new Error("Erreur réseau")));
+      xhr.open("POST", "https://api.cloudinary.com/v1_1/dvod3wqc9/video/upload");
+      xhr.send(formData);
+    });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.categorie) return;
+    if (!form.categorie || !form.videoUrl) return;
     setIsSubmitting(true);
     setError(false);
 
@@ -160,7 +184,9 @@ export function PodcastForm() {
       if (res.ok) {
         setSubmitted(true);
         setShowModal(true);
-        setForm({ nom: "", email: "", telephone: "", adresse: "", titre: "", categorie: "", videoUrl: "", publicCible: "", notes: "" });
+        setForm({ prenom: "", nom: "", email: "", telephone: "", age: "", genre: "", adresse: "", titre: "", categorie: "", videoUrl: "", synopsis: "", notes: "" });
+        setVideoFile(null);
+        setVideoUploadProgress(0);
         setTimeout(() => setSubmitted(false), 6000);
       } else {
         setError(true);
@@ -197,16 +223,37 @@ export function PodcastForm() {
           <div style={{ marginBottom: "56px" }}>
             <SectionHeader num="01" title="Vos Coordonnées" sub="Qui êtes-vous ?" />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
-              <Field label="Nom complet *">
-                <input type="text" placeholder="Votre nom et prénom" value={form.nom} onChange={set("nom")} style={INPUT} onFocus={fi} onBlur={fo} required />
+              <Field label="Prénom *">
+                <input type="text" placeholder="Votre prénom" value={form.prenom} onChange={set("prenom")} style={INPUT} onFocus={fi} onBlur={fo} required />
               </Field>
+              <Field label="Nom *">
+                <input type="text" placeholder="Votre nom" value={form.nom} onChange={set("nom")} style={INPUT} onFocus={fi} onBlur={fo} required />
+              </Field>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
               <Field label="Email *">
                 <input type="email" placeholder="vous@exemple.com" value={form.email} onChange={set("email")} style={INPUT} onFocus={fi} onBlur={fo} required />
               </Field>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <Field label="Téléphone">
                 <input type="tel" placeholder="+224 ···" value={form.telephone} onChange={set("telephone")} style={INPUT} onFocus={fi} onBlur={fo} />
+              </Field>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+              <Field label="Âge">
+                <CustomSelect
+                  value={form.age}
+                  onChange={v => setForm(f => ({ ...f, age: v }))}
+                  options={Array.from({ length: 18 }, (_, i) => `${i + 18} ans`)}
+                  placeholder="Sélectionner"
+                />
+              </Field>
+              <Field label="Genre">
+                <CustomSelect
+                  value={form.genre}
+                  onChange={v => setForm(f => ({ ...f, genre: v }))}
+                  options={["Femme", "Homme"]}
+                  placeholder="Sélectionner"
+                />
               </Field>
               <Field label="Adresse">
                 <input type="text" placeholder="Quartier, ville" value={form.adresse} onChange={set("adresse")} style={INPUT} onFocus={fi} onBlur={fo} />
@@ -236,42 +283,115 @@ export function PodcastForm() {
             {/* Vidéo */}
             <div className="mb-5">
               <label style={LABEL}>Vidéo de présentation</label>
-              <div style={{
-                border: "1px solid #E5E7EB", borderRadius: "10px",
-                background: "#FAFAF9", overflow: "hidden",
-              }}>
-                <div style={{
-                  display: "flex", alignItems: "center", gap: "10px",
-                  padding: "10px 14px", borderBottom: "1px solid #F0F0F0",
-                }}>
-                  <div style={{
-                    width: "26px", height: "26px", borderRadius: "6px",
-                    background: "rgba(232,64,16,0.1)",
-                    display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+
+              {/* Tabs */}
+              <div style={{ display: "flex", borderBottom: "1px solid #F0F0F0", marginBottom: "12px" }}>
+                {(["upload", "url"] as const).map((mode) => (
+                  <button key={mode} type="button" onClick={() => setVideoMode(mode)} style={{
+                    padding: "8px 18px", fontSize: "12px", fontFamily: "Inter, sans-serif",
+                    border: "none", background: "transparent", cursor: "pointer",
+                    color: videoMode === mode ? ORANGE : "#9CA3AF",
+                    borderBottom: videoMode === mode ? `2px solid ${ORANGE}` : "2px solid transparent",
+                    fontWeight: videoMode === mode ? 600 : 400,
+                    transition: "color 0.2s",
                   }}>
-                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke={ORANGE} strokeWidth="2.5" strokeLinecap="round">
-                      <polygon points="5 3 19 12 5 21 5 3" />
-                    </svg>
-                  </div>
-                  <span style={{ fontSize: "11px", letterSpacing: "0.1em", textTransform: "uppercase" as const, color: "#9CA3AF", fontFamily: "Inter, sans-serif", fontWeight: 500 }}>
-                    YouTube · Google Drive · Dropbox
-                  </span>
-                </div>
-                <input
-                  type="url" placeholder="https://..."
-                  value={form.videoUrl} onChange={set("videoUrl")}
-                  style={{ ...INPUT, border: "none", background: "transparent", borderRadius: 0 }}
-                  onFocus={e => { const p = e.currentTarget.closest("div[style]") as HTMLElement; if (p) p.style.borderColor = ORANGE; }}
-                  onBlur={e => { const p = e.currentTarget.closest("div[style]") as HTMLElement; if (p) p.style.borderColor = "#E5E7EB"; }}
-                />
+                    {mode === "upload" ? "Uploader une vidéo" : "Lien URL"}
+                  </button>
+                ))}
               </div>
+
+              {videoMode === "upload" ? (
+                !videoFile ? (
+                  <label style={{
+                    display: "flex", flexDirection: "column" as const, alignItems: "center",
+                    justifyContent: "center", gap: "12px",
+                    border: "2px dashed #E5E7EB", borderRadius: "10px",
+                    padding: "32px", cursor: "pointer", background: "#FAFAF9",
+                    transition: "border-color 0.2s",
+                  }}
+                  onMouseEnter={e => (e.currentTarget.style.borderColor = ORANGE)}
+                  onMouseLeave={e => (e.currentTarget.style.borderColor = "#E5E7EB")}
+                  >
+                    <input type="file" accept="video/*" style={{ display: "none" }}
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        setVideoFile(file);
+                        setVideoUploading(true);
+                        setVideoUploadProgress(0);
+                        try {
+                          const url = await uploadToCloudinary(file);
+                          setForm(f => ({ ...f, videoUrl: url }));
+                        } catch {
+                          setVideoFile(null);
+                          setError(true);
+                        } finally {
+                          setVideoUploading(false);
+                        }
+                      }}
+                    />
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#C9CDD4" strokeWidth="1.5">
+                      <rect x="2" y="7" width="15" height="10" rx="2" />
+                      <path d="M17 9l5-3v12l-5-3" />
+                    </svg>
+                    <span style={{ fontSize: "13px", color: "#9CA3AF", fontFamily: "Inter, sans-serif", textAlign: "center" as const }}>
+                      Cliquez pour choisir une vidéo<br />
+                      <span style={{ fontSize: "11px" }}>MP4, MOV, AVI</span>
+                    </span>
+                  </label>
+                ) : videoUploading ? (
+                  <div style={{ border: "1px solid #E5E7EB", borderRadius: "10px", padding: "20px", background: "#FAFAF9" }}>
+                    <div style={{ fontSize: "13px", color: "#6B7280", fontFamily: "Inter, sans-serif", marginBottom: "10px" }}>
+                      Upload en cours… {videoUploadProgress}%
+                    </div>
+                    <div style={{ height: "4px", background: "#F0F0F0", borderRadius: "2px", overflow: "hidden" }}>
+                      <div style={{ height: "100%", width: `${videoUploadProgress}%`, background: ORANGE, transition: "width 0.3s", borderRadius: "2px" }} />
+                    </div>
+                  </div>
+                ) : (
+                  <div style={{
+                    display: "flex", alignItems: "center", gap: "12px",
+                    border: "1px solid #D1FAE5", borderRadius: "10px",
+                    padding: "14px 16px", background: "#F0FDF4",
+                  }}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#059669" strokeWidth="2.5">
+                      <path d="M20 6L9 17l-5-5" />
+                    </svg>
+                    <span style={{ fontSize: "13px", color: "#059669", fontFamily: "Inter, sans-serif", flex: 1 }}>
+                      {videoFile.name}
+                    </span>
+                    <button type="button" onClick={() => { setVideoFile(null); setForm(f => ({ ...f, videoUrl: "" })); }}
+                      style={{ background: "none", border: "none", cursor: "pointer", color: "#9CA3AF", fontSize: "20px", lineHeight: 1 }}>
+                      ×
+                    </button>
+                  </div>
+                )
+              ) : (
+                <div style={{ border: "1px solid #E5E7EB", borderRadius: "10px", background: "#FAFAF9", overflow: "hidden" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "10px", padding: "10px 14px", borderBottom: "1px solid #F0F0F0" }}>
+                    <div style={{ width: "26px", height: "26px", borderRadius: "6px", background: "rgba(232,64,16,0.1)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke={ORANGE} strokeWidth="2.5" strokeLinecap="round">
+                        <polygon points="5 3 19 12 5 21 5 3" />
+                      </svg>
+                    </div>
+                    <span style={{ fontSize: "11px", letterSpacing: "0.1em", textTransform: "uppercase" as const, color: "#9CA3AF", fontFamily: "Inter, sans-serif", fontWeight: 500 }}>
+                      YouTube · Google Drive · Dropbox
+                    </span>
+                  </div>
+                  <input type="url" placeholder="https://..." value={form.videoUrl} onChange={set("videoUrl")}
+                    style={{ ...INPUT, border: "none", background: "transparent", borderRadius: 0 }}
+                    onFocus={e => { const p = e.currentTarget.closest("div[style]") as HTMLElement; if (p) p.style.borderColor = ORANGE; }}
+                    onBlur={e => { const p = e.currentTarget.closest("div[style]") as HTMLElement; if (p) p.style.borderColor = "#E5E7EB"; }}
+                  />
+                </div>
+              )}
             </div>
 
             <div className="mb-5">
-              <Field label="Public cible *">
+              <Field label="Synopsis *">
                 <textarea
-                  placeholder="À qui s'adresse votre podcast ? Tranches d'âge, centres d'intérêt..."
-                  rows={3} value={form.publicCible} onChange={set("publicCible")}
+                  placeholder="Décrivez votre concept, le contenu et l'audience visée..."
+                  rows={3} value={form.synopsis} onChange={set("synopsis")}
                   style={{ ...INPUT, resize: "vertical" as const, lineHeight: 1.7 }}
                   onFocus={fi} onBlur={fo} required
                 />
@@ -299,7 +419,7 @@ export function PodcastForm() {
             {error && <p style={{ fontSize: "13px", color: "#ef4444", fontFamily: "Inter, sans-serif" }}>Une erreur s'est produite. Réessayez.</p>}
             <button
               type="submit"
-              disabled={isSubmitting || !form.categorie}
+              disabled={isSubmitting || !form.categorie || !form.videoUrl || videoUploading}
               style={{
                 background: submitted ? "#059669" : ORANGE,
                 color: "#FFFFFF", border: "none",

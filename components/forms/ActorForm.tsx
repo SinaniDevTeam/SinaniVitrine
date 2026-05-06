@@ -171,6 +171,7 @@ function CustomSelect({ value, onChange, options, placeholder }: {
               background: "#FFFFFF", border: "1px solid #F0F0F0",
               borderRadius: "12px", padding: "4px",
               boxShadow: "0 10px 40px rgba(0,0,0,0.08)",
+              maxHeight: "240px", overflowY: "auto",
             }}
           >
             {options.map(opt => (
@@ -293,6 +294,10 @@ export function ActorForm() {
   });
   const [langues, setLangues] = useState<string[]>([]);
   const [referenceFile, setReferenceFile] = useState<File | null>(null);
+  const [videoFile, setVideoFile] = useState<File | null>(null);
+  const [videoUploading, setVideoUploading] = useState(false);
+  const [videoUploadProgress, setVideoUploadProgress] = useState(0);
+  const [videoUrl, setVideoUrl] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -304,21 +309,48 @@ export function ActorForm() {
   const toggleTalent = (id: string) =>
     setTalentTypes(prev => prev.includes(id) ? prev.filter(t => t !== id) : [...prev, id]);
 
+  const uploadVideoToCloudinary = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("upload_preset", "sinani_videos");
+      const xhr = new XMLHttpRequest();
+      xhr.upload.addEventListener("progress", (ev) => {
+        if (ev.lengthComputable) setVideoUploadProgress(Math.round((ev.loaded / ev.total) * 100));
+      });
+      xhr.addEventListener("load", () => {
+        if (xhr.status === 200) resolve(JSON.parse(xhr.responseText).secure_url);
+        else reject(new Error("Upload échoué"));
+      });
+      xhr.addEventListener("error", () => reject(new Error("Erreur réseau")));
+      xhr.open("POST", "https://api.cloudinary.com/v1_1/dvod3wqc9/video/upload");
+      xhr.send(formData);
+    });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (talentTypes.length === 0 || !form.experience) return;
+    if (talentTypes.length === 0 || !form.experience || !form.age || !referenceFile) return;
     setIsSubmitting(true);
     setError(false);
 
     let fileData = null;
     if (referenceFile) {
-      fileData = await new Promise((resolve) => {
+      // Vérification de la taille (max 4.5MB pour rester sous la limite Vercel de 4.5MB-5MB)
+      if (referenceFile.size > 4.5 * 1024 * 1024) {
+        alert("Le fichier est trop lourd. Veuillez choisir un fichier de moins de 4.5 Mo.");
+        setIsSubmitting(false);
+        return;
+      }
+
+      fileData = await new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onload = (e) => resolve({
           name: referenceFile.name,
           type: referenceFile.type,
           content: e.target?.result?.toString().split(",")[1]
         });
+        reader.onerror = (e) => reject(new Error("Erreur lors de la lecture du fichier"));
         reader.readAsDataURL(referenceFile);
       });
     }
@@ -333,18 +365,22 @@ export function ActorForm() {
           langues: langues.join(", "),
           ...form,
           references: fileData,
+          videoUrl,
         }),
       });
       if (res.ok) {
         setSubmitted(true);
         setShowModal(true);
         setForm({ prenom: "", nom: "", email: "", telephone: "", age: "", genre: "", adresse: "", experience: "", bio: "", notes: "" });
-        setLangues([]); setTalentTypes([]); setReferenceFile(null);
+        setLangues([]); setTalentTypes([]); setReferenceFile(null); setVideoFile(null); setVideoUrl(""); setVideoUploadProgress(0);
         setTimeout(() => setSubmitted(false), 6000);
       } else {
+        const err = await res.json();
+        console.error("API Error:", err);
         setError(true);
       }
-    } catch {
+    } catch (err) {
+      console.error("Network/Submission Error:", err);
       setError(true);
     } finally {
       setIsSubmitting(false);
@@ -492,8 +528,13 @@ export function ActorForm() {
               </Field>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-5">
-              <Field label="Âge">
-                <input type="number" placeholder="ex. 24" min={16} max={99} value={form.age} onChange={set("age")} style={INPUT} onFocus={fi} onBlur={fo} />
+              <Field label="Âge *">
+                <CustomSelect
+                  value={form.age}
+                  onChange={v => setForm(f => ({ ...f, age: v }))}
+                  options={Array.from({ length: 18 }, (_, i) => `${i + 18} ans`)}
+                  placeholder="Sélectionner"
+                />
               </Field>
               <Field label="Genre">
                 <CustomSelect
@@ -555,31 +596,163 @@ export function ActorForm() {
                 />
               </Field>
             </div>
-            <Field label="Télécharger des références (Photos, Portfolio PDF...)">
-              <div style={{ position: "relative" }}>
-                <input
-                  type="file"
-                  onChange={e => setReferenceFile(e.target.files?.[0] || null)}
-                  style={{
-                    position: "absolute", inset: 0, opacity: 0, cursor: "pointer", zIndex: 2
-                  }}
-                />
+            <div>
+              <label style={LABEL}>Photos / Portfolio <span style={{ color: ORANGE }}>*</span></label>
+              {!referenceFile ? (
+                <label style={{
+                  display: "flex", flexDirection: "column" as const, alignItems: "center",
+                  justifyContent: "center", gap: "12px",
+                  border: "2px dashed #E5E7EB", borderRadius: "10px",
+                  padding: "32px", cursor: "pointer", background: "#FAFAF9",
+                  transition: "border-color 0.2s, background 0.2s",
+                }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = ORANGE; e.currentTarget.style.background = "rgba(232,64,16,0.02)"; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = "#E5E7EB"; e.currentTarget.style.background = "#FAFAF9"; }}
+                >
+                  <input
+                    type="file"
+                    accept="image/*,.pdf"
+                    style={{ display: "none" }}
+                    onChange={e => setReferenceFile(e.target.files?.[0] || null)}
+                  />
+                  <div style={{
+                    width: "48px", height: "48px", borderRadius: "12px",
+                    background: "rgba(232,64,16,0.08)",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                  }}>
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={ORANGE} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                      <polyline points="17 8 12 3 7 8" />
+                      <line x1="12" y1="3" x2="12" y2="15" />
+                    </svg>
+                  </div>
+                  <div style={{ textAlign: "center" as const }}>
+                    <span style={{ fontSize: "14px", fontFamily: "Inter, sans-serif", color: "#374151", fontWeight: 500 }}>
+                      Cliquez pour choisir un fichier
+                    </span>
+                    <br />
+                    <span style={{ fontSize: "12px", color: "#9CA3AF", fontFamily: "Inter, sans-serif" }}>
+                      Photos, PDF — max 4.5 MB
+                    </span>
+                  </div>
+                </label>
+              ) : (
                 <div style={{
-                  ...INPUT,
                   display: "flex", alignItems: "center", gap: "12px",
-                  color: referenceFile ? "#111111" : "#9CA3AF",
+                  border: "1px solid #D1FAE5", borderRadius: "10px",
+                  padding: "14px 16px", background: "#F0FDF4",
                 }}>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={ORANGE} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                    <polyline points="17 8 12 3 7 8" />
-                    <line x1="12" y1="3" x2="12" y2="15" />
-                  </svg>
-                  <span style={{ fontSize: "14px" }}>
-                    {referenceFile ? referenceFile.name : "Choisir un fichier..."}
-                  </span>
+                  <div style={{
+                    width: "36px", height: "36px", borderRadius: "8px",
+                    background: "#D1FAE5", flexShrink: 0,
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                  }}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#059669" strokeWidth="2.5">
+                      <path d="M20 6L9 17l-5-5" />
+                    </svg>
+                  </div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontSize: "13px", fontFamily: "Inter, sans-serif", color: "#059669", fontWeight: 600 }}>
+                      Fichier sélectionné
+                    </div>
+                    <div style={{ fontSize: "12px", color: "#6B7280", fontFamily: "Inter, sans-serif", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>
+                      {referenceFile.name}
+                    </div>
+                  </div>
+                  <button type="button"
+                    onClick={() => setReferenceFile(null)}
+                    style={{ background: "none", border: "none", cursor: "pointer", color: "#9CA3AF", fontSize: "20px", lineHeight: 1, flexShrink: 0 }}>
+                    ×
+                  </button>
                 </div>
-              </div>
-            </Field>
+              )}
+            </div>
+
+            {/* Vidéo de présentation */}
+            <div style={{ marginTop: "24px" }}>
+              <label style={LABEL}>
+                Vidéo de présentation <span style={{ color: "#9CA3AF", fontWeight: 400 }}>(optionnel — recommandé pour présentateurs et créateurs)</span>
+              </label>
+              {!videoFile ? (
+                <label style={{
+                  display: "flex", flexDirection: "column" as const, alignItems: "center",
+                  justifyContent: "center", gap: "12px",
+                  border: "2px dashed #E5E7EB", borderRadius: "10px",
+                  padding: "28px", cursor: "pointer", background: "#FAFAF9",
+                  transition: "border-color 0.2s, background 0.2s",
+                }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = ORANGE; e.currentTarget.style.background = "rgba(232,64,16,0.02)"; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = "#E5E7EB"; e.currentTarget.style.background = "#FAFAF9"; }}
+                >
+                  <input type="file" accept="video/*" style={{ display: "none" }}
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+                      setVideoFile(file);
+                      setVideoUploading(true);
+                      setVideoUploadProgress(0);
+                      try {
+                        const url = await uploadVideoToCloudinary(file);
+                        setVideoUrl(url);
+                      } catch {
+                        setVideoFile(null);
+                        setError(true);
+                      } finally {
+                        setVideoUploading(false);
+                      }
+                    }}
+                  />
+                  <div style={{
+                    width: "48px", height: "48px", borderRadius: "12px",
+                    background: "rgba(232,64,16,0.08)",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                  }}>
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={ORANGE} strokeWidth="2">
+                      <rect x="2" y="7" width="15" height="10" rx="2" />
+                      <path d="M17 9l5-3v12l-5-3" />
+                    </svg>
+                  </div>
+                  <div style={{ textAlign: "center" as const }}>
+                    <span style={{ fontSize: "14px", fontFamily: "Inter, sans-serif", color: "#374151", fontWeight: 500 }}>
+                      Cliquez pour uploader une vidéo
+                    </span>
+                    <br />
+                    <span style={{ fontSize: "12px", color: "#9CA3AF", fontFamily: "Inter, sans-serif" }}>
+                      MP4, MOV — max 1 min recommandé
+                    </span>
+                  </div>
+                </label>
+              ) : videoUploading ? (
+                <div style={{ border: "1px solid #E5E7EB", borderRadius: "10px", padding: "20px", background: "#FAFAF9" }}>
+                  <div style={{ fontSize: "13px", color: "#6B7280", fontFamily: "Inter, sans-serif", marginBottom: "10px" }}>
+                    Upload en cours… {videoUploadProgress}%
+                  </div>
+                  <div style={{ height: "4px", background: "#F0F0F0", borderRadius: "2px", overflow: "hidden" }}>
+                    <div style={{ height: "100%", width: `${videoUploadProgress}%`, background: ORANGE, transition: "width 0.3s", borderRadius: "2px" }} />
+                  </div>
+                </div>
+              ) : (
+                <div style={{
+                  display: "flex", alignItems: "center", gap: "12px",
+                  border: "1px solid #D1FAE5", borderRadius: "10px",
+                  padding: "14px 16px", background: "#F0FDF4",
+                }}>
+                  <div style={{ width: "36px", height: "36px", borderRadius: "8px", background: "#D1FAE5", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#059669" strokeWidth="2.5">
+                      <path d="M20 6L9 17l-5-5" />
+                    </svg>
+                  </div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontSize: "13px", fontFamily: "Inter, sans-serif", color: "#059669", fontWeight: 600 }}>Vidéo uploadée</div>
+                    <div style={{ fontSize: "12px", color: "#6B7280", fontFamily: "Inter, sans-serif", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>{videoFile.name}</div>
+                  </div>
+                  <button type="button" onClick={() => { setVideoFile(null); setVideoUrl(""); }}
+                    style={{ background: "none", border: "none", cursor: "pointer", color: "#9CA3AF", fontSize: "20px", lineHeight: 1, flexShrink: 0 }}>
+                    ×
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* ── Submit ─── */}
@@ -594,16 +767,16 @@ export function ActorForm() {
             {error && <p style={{ fontSize: "13px", color: "#ef4444", fontFamily: "Inter, sans-serif" }}>Une erreur s'est produite. Réessayez.</p>}
             <button
               type="submit"
-              disabled={isSubmitting || talentTypes.length === 0 || !form.experience}
+              disabled={isSubmitting || talentTypes.length === 0 || !form.experience || !form.age || !referenceFile}
               style={{
                 background: submitted ? "#059669" : ORANGE,
                 color: "#FFFFFF", border: "none",
                 padding: "16px 48px",
                 fontFamily: "var(--font-bebas), 'Impact', sans-serif",
                 fontSize: "18px", letterSpacing: "0.15em",
-                cursor: isSubmitting || talentTypes.length === 0 || !form.experience ? "not-allowed" : "pointer",
+                cursor: isSubmitting || talentTypes.length === 0 || !form.experience || !form.age ? "not-allowed" : "pointer",
                 whiteSpace: "nowrap" as const,
-                opacity: isSubmitting || talentTypes.length === 0 || !form.experience ? 0.5 : 1,
+                opacity: isSubmitting || talentTypes.length === 0 || !form.experience || !form.age ? 0.5 : 1,
                 transition: "background 0.2s, opacity 0.2s",
                 borderRadius: "4px",
               }}

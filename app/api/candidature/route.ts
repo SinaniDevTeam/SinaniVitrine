@@ -13,32 +13,26 @@ export async function POST(req: Request) {
     if (type === "actor") {
       subject = `Nouvelle candidature Talent — ${fields.prenom} ${fields.nom}`;
       html = `
-        <h2>Nouvelle candidature Talent</h2>
-        <p><strong>Type(s) de talent:</strong> ${fields.talentTypes || "—"}</p>
-        <hr>
-        <h3>Informations personnelles</h3>
-        <p><strong>Prénom:</strong> ${fields.prenom}</p>
-        <p><strong>Nom:</strong> ${fields.nom}</p>
-        <p><strong>Email:</strong> ${fields.email}</p>
-        <p><strong>Téléphone:</strong> ${fields.telephone || "—"}</p>
-        <p><strong>Âge:</strong> ${fields.age || "—"}</p>
-        <p><strong>Nationalité:</strong> ${fields.nationalite || "—"}</p>
-        <p><strong>Ville:</strong> ${fields.ville || "—"}</p>
-        <p><strong>Genre:</strong> ${fields.genre || "—"}</p>
-        <hr>
-        <h3>Profil</h3>
-        <p><strong>Expérience:</strong> ${fields.experience}</p>
-        <p><strong>Quartier:</strong> ${fields.quartier || "—"}</p>
-        <p><strong>Langues:</strong> ${fields.langues || "—"}</p>
-        <p><strong>Biographie:</strong></p>
-        <p style="white-space: pre-wrap;">${fields.bio}</p>
-        ${fields.notes ? `<hr><h3>Informations complémentaires</h3><p style="white-space: pre-wrap;">${fields.notes}</p>` : ""}
-        <hr>
-        <h3>Disponibilités & Présence</h3>
-        <p><strong>Disponible pour:</strong> ${fields.disponibilites || "—"}</p>
-        <p><strong>Instagram:</strong> ${fields.instagram || "—"}</p>
-        <p><strong>Facebook:</strong> ${fields.facebook || "—"}</p>
-        ${fields.portfolio ? `<p><strong>Portfolio:</strong> <a href="${fields.portfolio}">${fields.portfolio}</a></p>` : ""}
+        <div style="font-family: sans-serif; line-height: 1.6; color: #111;">
+          <h2>Nouvelle candidature Talent</h2>
+          <p><strong>Type(s) de talent:</strong> ${fields.talentTypes || "—"}</p>
+          <hr>
+          <h3>Informations personnelles</h3>
+          <p><strong>Prénom:</strong> ${fields.prenom}</p>
+          <p><strong>Nom:</strong> ${fields.nom}</p>
+          <p><strong>Email:</strong> ${fields.email}</p>
+          <p><strong>Téléphone:</strong> ${fields.telephone || "—"}</p>
+          <p><strong>Âge:</strong> ${fields.age || "—"}</p>
+          <p><strong>Genre:</strong> ${fields.genre || "—"}</p>
+          <p><strong>Adresse:</strong> ${fields.adresse || "—"}</p>
+          <hr>
+          <h3>Profil</h3>
+          <p><strong>Expérience:</strong> ${fields.experience}</p>
+          <p><strong>Langues:</strong> ${fields.langues || "—"}</p>
+          <p><strong>Biographie:</strong></p>
+          <p style="white-space: pre-wrap; background: #f9f9f9; padding: 15px; border-radius: 5px;">${fields.bio}</p>
+          ${fields.notes ? `<hr><h3>Informations complémentaires</h3><p style="white-space: pre-wrap;">${fields.notes}</p>` : ""}
+        </div>
       `;
     } else {
       subject = `Nouveau projet Podcast — ${fields.titre}`;
@@ -54,18 +48,22 @@ export async function POST(req: Request) {
         <p><strong>Titre:</strong> ${fields.titre}</p>
         <p><strong>Catégorie:</strong> ${fields.categorie}</p>
         ${fields.videoUrl ? `<p><strong>Vidéo de présentation:</strong> <a href="${fields.videoUrl}">${fields.videoUrl}</a></p>` : ""}
-        <p><strong>Public cible:</strong></p>
-        <p style="white-space: pre-wrap;">${fields.publicCible}</p>
+        <p><strong>Synopsis:</strong></p>
+        <p style="white-space: pre-wrap;">${fields.synopsis}</p>
         ${fields.notes ? `<hr><p><strong>Informations complémentaires:</strong></p><p style="white-space: pre-wrap;">${fields.notes}</p>` : ""}
       `;
     }
 
     const attachments = [];
     if (fields.references && fields.references.content) {
-      attachments.push({
-        filename: fields.references.name,
-        content: fields.references.content,
-      });
+      try {
+        attachments.push({
+          filename: fields.references.name,
+          content: Buffer.from(fields.references.content, 'base64'),
+        });
+      } catch (err) {
+        console.error("Error processing attachment:", err);
+      }
     }
 
     const data = await resend.emails.send({
@@ -76,9 +74,71 @@ export async function POST(req: Request) {
       attachments,
     });
 
+    if (data.error) {
+      console.error("Resend API Error:", data.error);
+      return NextResponse.json({ error: data.error }, { status: 400 });
+    }
+
+    const scriptUrl = process.env.GOOGLE_SHEETS_SCRIPT_URL;
+    if (scriptUrl) {
+      const sheetPayload =
+        type === "actor"
+          ? {
+              type,
+              prenom: fields.prenom || "",
+              nom: fields.nom || "",
+              email: fields.email || "",
+              telephone: fields.telephone || "",
+              age: fields.age || "",
+              genre: fields.genre || "",
+              adresse: fields.adresse || "",
+              experience: fields.experience || "",
+              langues: fields.langues || "",
+              bio: fields.bio || "",
+              notes: fields.notes || "",
+              talents: fields.talentTypes || "",
+              videoUrl: fields.videoUrl || "",
+              fichier: fields.references?.content
+                ? {
+                    name: fields.references.name || "portfolio",
+                    type: fields.references.type || "application/octet-stream",
+                    content: fields.references.content,
+                  }
+                : null,
+            }
+          : {
+              type,
+              prenom: fields.prenom || "",
+              nom: fields.nom || "",
+              email: fields.email || "",
+              telephone: fields.telephone || "",
+              age: fields.age || "",
+              genre: fields.genre || "",
+              adresse: fields.adresse || "",
+              titre: fields.titre || "",
+              categorie: fields.categorie || "",
+              synopsis: fields.synopsis || "",
+              videoUrl: fields.videoUrl || "",
+              notes: fields.notes || "",
+            };
+
+      try {
+        await fetch(scriptUrl, {
+          method: "POST",
+          redirect: "follow",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(sheetPayload),
+        });
+      } catch (sheetError) {
+        console.error("Google Sheets error:", sheetError);
+      }
+    }
+
     return NextResponse.json({ success: true, data });
   } catch (error) {
-    console.error("Resend Error:", error);
-    return NextResponse.json({ error }, { status: 500 });
+    console.error("Detailed API Error:", error);
+    return NextResponse.json({ 
+      error: error instanceof Error ? error.message : "Internal Server Error" 
+    }, { status: 500 });
   }
 }
