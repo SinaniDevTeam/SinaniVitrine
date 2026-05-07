@@ -217,6 +217,15 @@ export function PodcastForm() {
       style={{ background: "#FFFFFF" }}
     >
       <div className="px-4 sm:px-8 md:px-12 pt-16 pb-24" style={{ maxWidth: "900px", margin: "0 auto" }}>
+        <div style={{ marginBottom: "40px", textAlign: "center" as const }}>
+          <h2 style={{ fontFamily: "var(--font-bebas), 'Impact', sans-serif", fontSize: "40px", color: "#111111", letterSpacing: "0.02em" }}>
+            Soumettre un <span style={{ color: ORANGE }}>Podcast</span>
+          </h2>
+          <p style={{ fontFamily: "Inter, sans-serif", color: "#6B7280", fontSize: "16px", marginTop: "8px" }}>
+            Partagez votre concept avec notre équipe de production.
+          </p>
+        </div>
+
         <form onSubmit={handleSubmit}>
 
           {/* ── 01 — Vos coordonnées ─── */}
@@ -243,7 +252,7 @@ export function PodcastForm() {
                 <CustomSelect
                   value={form.age}
                   onChange={v => setForm(f => ({ ...f, age: v }))}
-                  options={Array.from({ length: 18 }, (_, i) => `${i + 18} ans`)}
+                  options={["18–24", "25–34", "35–44", "45+"]}
                   placeholder="Sélectionner"
                 />
               </Field>
@@ -282,7 +291,7 @@ export function PodcastForm() {
 
             {/* Vidéo */}
             <div className="mb-5">
-              <label style={LABEL}>Vidéo de présentation</label>
+              <label style={LABEL}>Vidéo de présentation *</label>
 
               {/* Tabs */}
               <div style={{ display: "flex", borderBottom: "1px solid #F0F0F0", marginBottom: "12px" }}>

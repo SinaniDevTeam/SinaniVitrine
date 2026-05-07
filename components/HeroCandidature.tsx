@@ -30,13 +30,13 @@ export default function HeroCandidature() {
             >
               {titleTyped ? (
                 <>
-                  Rejoignez la famille{" "}
+                  Rejoignez la team{" "}
                   <span style={{ color: "#E84010" }}>SINANI</span>.
                 </>
               ) : (
                 <TypeAnimation
                   sequence={[
-                    "Rejoignez la famille SINANI.",
+                    "Rejoignez la team SINANI.",
                     () => setTitleTyped(true),
                   ]}
                   speed={50}

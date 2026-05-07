@@ -34,25 +34,6 @@ const LABEL: React.CSSProperties = {
   display: "block",
 };
 
-// ── Data ───────────────────────────────────────────────────────────
-const TALENT_TYPES = [
-  {
-    id: "acteur", num: "01", label: "Acteurs/Actrices",
-    image: "/candidat/actor.jpg",
-    description: "Exprimez votre talent et participez à des productions audiovisuelles.",
-  },
-  {
-    id: "mannequin", num: "02", label: "Mannequin",
-    image: "/candidat/mannequin.jpg",
-    description: "Rejoignez notre réseau de mannequins pour des projets mode et publicitaires.",
-  },
-  {
-    id: "createur", num: "03", label: "Créateur de Contenu",
-    image: "/candidat/content%20creator.png",
-    description: "Créez, partagez et développez votre audience avec des contenus impactants.",
-  },
-];
-
 const LANGUES = ["Français", "Anglais", "Pular", "Malinké", "Soussou", "Autre"];
 
 // ── Sub-components ─────────────────────────────────────────────────
@@ -81,49 +62,6 @@ function SectionHeader({ num, title, sub }: { num: string; title: string; sub: s
   );
 }
 
-function PillMulti({ options, selected, onChange }: { options: string[]; selected: string[]; onChange: (v: string[]) => void }) {
-  const toggle = (opt: string) =>
-    onChange(selected.includes(opt) ? selected.filter(s => s !== opt) : [...selected, opt]);
-  return (
-    <div style={{ display: "flex", flexWrap: "wrap" as const, gap: "8px" }}>
-      {options.map(opt => (
-        <button key={opt} type="button" onClick={() => toggle(opt)} style={{
-          padding: "8px 16px",
-          borderRadius: "100px",
-          border: `1px solid ${selected.includes(opt) ? ORANGE : "#E5E7EB"}`,
-          background: selected.includes(opt) ? ORANGE : "#FFFFFF",
-          color: selected.includes(opt) ? "#FFFFFF" : "#6B7280",
-          fontSize: "12px", fontWeight: 500,
-          fontFamily: "Inter, sans-serif",
-          cursor: "pointer", transition: "all 0.15s",
-        }}>
-          {opt}
-        </button>
-      ))}
-    </div>
-  );
-}
-
-function PillRadio({ options, selected, onChange }: { options: string[]; selected: string; onChange: (v: string) => void }) {
-  return (
-    <div style={{ display: "flex", flexWrap: "wrap" as const, gap: "8px" }}>
-      {options.map(opt => (
-        <button key={opt} type="button" onClick={() => onChange(opt)} style={{
-          padding: "8px 16px",
-          borderRadius: "100px",
-          border: `1px solid ${selected === opt ? ORANGE : "#E5E7EB"}`,
-          background: selected === opt ? ORANGE : "#FFFFFF",
-          color: selected === opt ? "#FFFFFF" : "#6B7280",
-          fontSize: "12px", fontWeight: 500,
-          fontFamily: "Inter, sans-serif",
-          cursor: "pointer", transition: "all 0.15s",
-        }}>
-          {opt}
-        </button>
-      ))}
-    </div>
-  );
-}
 function CustomSelect({ value, onChange, options, placeholder }: {
   value: string; onChange: (v: string) => void; options: string[]; placeholder: string;
 }) {
@@ -189,7 +127,6 @@ function CustomSelect({ value, onChange, options, placeholder }: {
     </div>
   );
 }
-
 
 function MultiSelect({ value, onChange, options, placeholder }: {
   value: string[]; onChange: (v: string[]) => void; options: string[]; placeholder: string;
@@ -280,8 +217,7 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 }
 
 // ── Main component ─────────────────────────────────────────────────
-export function ActorForm() {
-  const [talentTypes, setTalentTypes] = useState<string[]>([]);
+export function PresenterForm() {
   const [form, setForm] = useState({
     prenom: "", nom: "", email: "", telephone: "",
     age: "", genre: "", adresse: "",
@@ -301,43 +237,19 @@ export function ActorForm() {
   const set = (key: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setForm(f => ({ ...f, [key]: e.target.value }));
 
-  const toggleTalent = (id: string) =>
-    setTalentTypes(prev => prev.includes(id) ? prev.filter(t => t !== id) : [...prev, id]);
-
-  const uploadVideoToCloudinary = (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("upload_preset", "sinani_videos");
-      const xhr = new XMLHttpRequest();
-      xhr.upload.addEventListener("progress", (ev) => {
-        if (ev.lengthComputable) setVideoUploadProgress(Math.round((ev.loaded / ev.total) * 100));
-      });
-      xhr.addEventListener("load", () => {
-        if (xhr.status === 200) resolve(JSON.parse(xhr.responseText).secure_url);
-        else reject(new Error("Upload échoué"));
-      });
-      xhr.addEventListener("error", () => reject(new Error("Erreur réseau")));
-      xhr.open("POST", "https://api.cloudinary.com/v1_1/dvod3wqc9/video/upload");
-      xhr.send(formData);
-    });
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (talentTypes.length === 0 || !form.experience || !form.age || !referenceFile) return;
+    if (!form.experience || !form.age || !referenceFile || !videoUrl) return;
     setIsSubmitting(true);
     setError(false);
 
     let fileData = null;
     if (referenceFile) {
-      // Vérification de la taille (max 4.5MB pour rester sous la limite Vercel de 4.5MB-5MB)
       if (referenceFile.size > 4.5 * 1024 * 1024) {
         alert("Le fichier est trop lourd. Veuillez choisir un fichier de moins de 4.5 Mo.");
         setIsSubmitting(false);
         return;
       }
-
       fileData = await new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onload = (e) => resolve({
@@ -355,8 +267,8 @@ export function ActorForm() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          type: "actor",
-          talentTypes: talentTypes.map(id => TALENT_TYPES.find(t => t.id === id)?.label).join(", "),
+          type: "presenter",
+          talentTypes: "Présentateur / Animateur",
           langues: langues.join(", "),
           ...form,
           references: fileData,
@@ -367,15 +279,12 @@ export function ActorForm() {
         setSubmitted(true);
         setShowModal(true);
         setForm({ prenom: "", nom: "", email: "", telephone: "", age: "", genre: "", adresse: "", experience: "", bio: "", notes: "" });
-        setLangues([]); setTalentTypes([]); setReferenceFile(null); setVideoFile(null); setVideoUrl(""); setVideoUploadProgress(0);
+        setLangues([]); setReferenceFile(null); setVideoFile(null); setVideoUrl(""); setVideoUploadProgress(0);
         setTimeout(() => setSubmitted(false), 6000);
       } else {
-        const err = await res.json();
-        console.error("API Error:", err);
         setError(true);
       }
-    } catch (err) {
-      console.error("Network/Submission Error:", err);
+    } catch {
       setError(true);
     } finally {
       setIsSubmitting(false);
@@ -400,108 +309,16 @@ export function ActorForm() {
       transition={{ duration: 0.4 }}
       style={{ background: "#FFFFFF" }}
     >
-      {/* ── Talent type selector ───────────────────────── */}
-      <div style={{ background: "#FAFAF9", borderTop: "1px solid #F0F0F0", borderBottom: "1px solid #F0F0F0", padding: "40px 0" }}>
-        <div className="px-4 sm:px-8 md:px-12" style={{ maxWidth: "900px", margin: "0 auto" }}>
-          <p style={{
-            fontSize: "11px", letterSpacing: "0.2em", textTransform: "uppercase" as const,
-            color: ORANGE, fontWeight: 600, fontFamily: "Inter, sans-serif", marginBottom: "20px",
-          }}>
-            Je suis un(e) — sélectionnez tout ce qui s'applique
-          </p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3" style={{ gap: "16px" }}>
-            {TALENT_TYPES.map(t => {
-              const selected = talentTypes.includes(t.id);
-              return (
-                <div
-                  key={t.id}
-                  onClick={() => toggleTalent(t.id)}
-                  style={{
-                    position: "relative",
-                    aspectRatio: "3/4",
-                    backgroundImage: `url(${t.image})`,
-                    backgroundSize: "cover",
-                    backgroundPosition: "center top",
-                    backgroundColor: "#1a1008",
-                    cursor: "pointer",
-                    userSelect: "none" as const,
-                    overflow: "hidden",
-                    borderRadius: "12px",
-                  }}
-                >
-                  {/* Gradient overlay */}
-                  <div style={{
-                    position: "absolute", inset: 0,
-                    background: "linear-gradient(to top, rgba(0,0,0,0.92) 40%, rgba(0,0,0,0.15) 100%)",
-                  }} />
-
-                  {/* Selection orange overlay */}
-                  <div style={{
-                    position: "absolute", inset: 0,
-                    background: selected ? "rgba(232,64,16,0.35)" : "transparent",
-                    transition: "background 0.2s",
-                  }} />
-
-                  {/* Orange border when selected */}
-                  {selected && (
-                    <div style={{
-                      position: "absolute", inset: 0,
-                      border: `3px solid ${ORANGE}`,
-                      pointerEvents: "none",
-                    }} />
-                  )}
-
-                  {/* Checkmark */}
-                  {selected && (
-                    <div style={{
-                      position: "absolute", top: "12px", right: "12px",
-                      width: "28px", height: "28px",
-                      background: ORANGE,
-                      display: "flex", alignItems: "center", justifyContent: "center",
-                    }}>
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                        <polyline points="20 6 9 17 4 12" />
-                      </svg>
-                    </div>
-                  )}
-
-                  {/* Content */}
-                  <div style={{
-                    position: "absolute", bottom: 0, left: 0, right: 0,
-                    padding: "20px 18px",
-                  }}>
-                    <span style={{
-                      fontFamily: "var(--font-bebas), 'Impact', sans-serif",
-                      fontSize: "28px", color: ORANGE, lineHeight: 1, display: "block",
-                    }}>
-                      {t.num}
-                    </span>
-                    <h3 style={{
-                      fontFamily: "Inter, sans-serif",
-                      fontSize: "clamp(14px, 2vw, 18px)", fontWeight: 700,
-                      color: "#FFFFFF", margin: "4px 0 8px", lineHeight: 1.2,
-                    }}>
-                      {t.label}
-                    </h3>
-                    <div style={{ borderLeft: `2px solid ${ORANGE}`, paddingLeft: "10px" }}>
-                      <p style={{
-                        fontFamily: "Inter, sans-serif",
-                        fontSize: "11px", fontWeight: 300,
-                        color: "rgba(255,255,255,0.7)", lineHeight: 1.5, margin: 0,
-                      }}>
-                        {t.description}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </div>
-
-      {/* ── Form ──────────────────────────────────────────── */}
       <div className="px-4 sm:px-8 md:px-12 pt-16 pb-24" style={{ maxWidth: "900px", margin: "0 auto" }}>
+        <div style={{ marginBottom: "40px", textAlign: "center" as const }}>
+          <h2 style={{ fontFamily: "var(--font-bebas), 'Impact', sans-serif", fontSize: "40px", color: "#111111", letterSpacing: "0.02em" }}>
+            Candidature <span style={{ color: ORANGE }}>Présentateur</span>
+          </h2>
+          <p style={{ fontFamily: "Inter, sans-serif", color: "#6B7280", fontSize: "16px", marginTop: "8px" }}>
+            Devenez le visage de nos prochaines émissions et productions.
+          </p>
+        </div>
+
         <form onSubmit={handleSubmit}>
 
           {/* ── 01 — Informations personnelles ─── */}
@@ -569,7 +386,7 @@ export function ActorForm() {
             </div>
             <Field label={`Biographie * (${form.bio.length}/300)`}>
               <textarea
-                placeholder="Parlez-nous de vous — votre parcours, vos réalisations et le type de projets que vous recherchez."
+                placeholder="Parlez-nous de votre expérience en animation, vos thèmes de prédilection..."
                 rows={5} maxLength={300}
                 value={form.bio} onChange={set("bio")}
                 style={{ ...INPUT, resize: "vertical" as const, lineHeight: 1.7 }}
@@ -579,20 +396,11 @@ export function ActorForm() {
             </Field>
           </div>
 
-          {/* ── 03 — Informations complémentaires ─── */}
+          {/* ── 03 — Documents & Vidéo ─── */}
           <div style={{ marginBottom: "56px" }}>
-            <SectionHeader num="03" title="Informations Complémentaires" sub="Documents et références" />
-            <div className="mb-5">
-              <Field label="Informations additionnelles">
-                <textarea
-                  placeholder="Autres compétences, liens portfolio, ou détails pertinents..."
-                  rows={3} value={form.notes} onChange={set("notes")}
-                  style={{ ...INPUT, resize: "vertical" as const, lineHeight: 1.7 }}
-                  onFocus={fi} onBlur={fo}
-                />
-              </Field>
-            </div>
-            <div>
+            <SectionHeader num="03" title="Documents & Vidéo" sub="Présentez-vous en image" />
+            
+            <div className="mb-8">
               <label style={LABEL}>Photos / Portfolio <span style={{ color: ORANGE }}>*</span></label>
               {!referenceFile ? (
                 <label style={{
@@ -605,17 +413,10 @@ export function ActorForm() {
                 onMouseEnter={e => { e.currentTarget.style.borderColor = ORANGE; e.currentTarget.style.background = "rgba(232,64,16,0.02)"; }}
                 onMouseLeave={e => { e.currentTarget.style.borderColor = "#E5E7EB"; e.currentTarget.style.background = "#FAFAF9"; }}
                 >
-                  <input
-                    type="file"
-                    accept="image/*,.pdf"
-                    style={{ display: "none" }}
+                  <input type="file" accept="image/*,.pdf" style={{ display: "none" }}
                     onChange={e => setReferenceFile(e.target.files?.[0] || null)}
                   />
-                  <div style={{
-                    width: "48px", height: "48px", borderRadius: "12px",
-                    background: "rgba(232,64,16,0.08)",
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                  }}>
+                  <div style={{ width: "48px", height: "48px", borderRadius: "12px", background: "rgba(232,64,16,0.08)", display: "flex", alignItems: "center", justifyContent: "center" }}>
                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={ORANGE} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
                       <polyline points="17 8 12 3 7 8" />
@@ -623,52 +424,26 @@ export function ActorForm() {
                     </svg>
                   </div>
                   <div style={{ textAlign: "center" as const }}>
-                    <span style={{ fontSize: "14px", fontFamily: "Inter, sans-serif", color: "#374151", fontWeight: 500 }}>
-                      Cliquez pour choisir un fichier
-                    </span>
-                    <br />
-                    <span style={{ fontSize: "12px", color: "#9CA3AF", fontFamily: "Inter, sans-serif" }}>
-                      Photos, PDF — max 4.5 MB
-                    </span>
+                    <span style={{ fontSize: "14px", fontFamily: "Inter, sans-serif", color: "#374151", fontWeight: 500 }}>Cliquez pour choisir un fichier</span>
+                    <br /><span style={{ fontSize: "12px", color: "#9CA3AF", fontFamily: "Inter, sans-serif" }}>Photos, PDF — max 4.5 MB</span>
                   </div>
                 </label>
               ) : (
-                <div style={{
-                  display: "flex", alignItems: "center", gap: "12px",
-                  border: "1px solid #D1FAE5", borderRadius: "10px",
-                  padding: "14px 16px", background: "#F0FDF4",
-                }}>
-                  <div style={{
-                    width: "36px", height: "36px", borderRadius: "8px",
-                    background: "#D1FAE5", flexShrink: 0,
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                  }}>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#059669" strokeWidth="2.5">
-                      <path d="M20 6L9 17l-5-5" />
-                    </svg>
+                <div style={{ display: "flex", alignItems: "center", gap: "12px", border: "1px solid #D1FAE5", borderRadius: "10px", padding: "14px 16px", background: "#F0FDF4" }}>
+                  <div style={{ width: "36px", height: "36px", borderRadius: "8px", background: "#D1FAE5", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#059669" strokeWidth="2.5"><path d="M20 6L9 17l-5-5" /></svg>
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: "13px", fontFamily: "Inter, sans-serif", color: "#059669", fontWeight: 600 }}>
-                      Fichier sélectionné
-                    </div>
-                    <div style={{ fontSize: "12px", color: "#6B7280", fontFamily: "Inter, sans-serif", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>
-                      {referenceFile.name}
-                    </div>
+                    <div style={{ fontSize: "13px", fontFamily: "Inter, sans-serif", color: "#059669", fontWeight: 600 }}>Fichier sélectionné</div>
+                    <div style={{ fontSize: "12px", color: "#6B7280", fontFamily: "Inter, sans-serif", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>{referenceFile.name}</div>
                   </div>
-                  <button type="button"
-                    onClick={() => setReferenceFile(null)}
-                    style={{ background: "none", border: "none", cursor: "pointer", color: "#9CA3AF", fontSize: "20px", lineHeight: 1, flexShrink: 0 }}>
-                    ×
-                  </button>
+                  <button type="button" onClick={() => setReferenceFile(null)} style={{ background: "none", border: "none", cursor: "pointer", color: "#9CA3AF", fontSize: "20px", lineHeight: 1, flexShrink: 0 }}>×</button>
                 </div>
               )}
             </div>
 
-            {/* Vidéo de présentation */}
-            <div style={{ marginTop: "24px" }}>
-              <label style={LABEL}>
-                Vidéo de présentation <span style={{ color: "#9CA3AF", fontWeight: 400 }}>(optionnel — recommandé pour présentateurs et créateurs)</span>
-              </label>
+            <div>
+              <label style={LABEL}>Vidéo de présentation <span style={{ color: ORANGE }}>*</span></label>
               {!videoFile ? (
                 <label style={{
                   display: "flex", flexDirection: "column" as const, alignItems: "center",
@@ -681,103 +456,84 @@ export function ActorForm() {
                 onMouseLeave={e => { e.currentTarget.style.borderColor = "#E5E7EB"; e.currentTarget.style.background = "#FAFAF9"; }}
                 >
                   <input type="file" accept="video/*" style={{ display: "none" }}
-                    onChange={async (e) => {
+                    onChange={(e) => {
                       const file = e.target.files?.[0];
                       if (!file) return;
                       setVideoFile(file);
                       setVideoUploading(true);
                       setVideoUploadProgress(0);
-                      try {
-                        const url = await uploadVideoToCloudinary(file);
-                        setVideoUrl(url);
-                      } catch {
-                        setVideoFile(null);
-                        setError(true);
-                      } finally {
+                      const formData = new FormData();
+                      formData.append("file", file);
+                      formData.append("upload_preset", "sinani_videos");
+                      const xhr = new XMLHttpRequest();
+                      xhr.upload.addEventListener("progress", (ev) => {
+                        if (ev.lengthComputable) setVideoUploadProgress(Math.round((ev.loaded / ev.total) * 100));
+                      });
+                      xhr.addEventListener("load", () => {
+                        if (xhr.status === 200) setVideoUrl(JSON.parse(xhr.responseText).secure_url);
+                        else { setVideoFile(null); setError(true); }
                         setVideoUploading(false);
-                      }
+                      });
+                      xhr.addEventListener("error", () => {
+                        setVideoFile(null); setError(true); setVideoUploading(false);
+                      });
+                      xhr.open("POST", "https://api.cloudinary.com/v1_1/dvod3wqc9/video/upload");
+                      xhr.send(formData);
                     }}
                   />
-                  <div style={{
-                    width: "48px", height: "48px", borderRadius: "12px",
-                    background: "rgba(232,64,16,0.08)",
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                  }}>
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={ORANGE} strokeWidth="2">
-                      <rect x="2" y="7" width="15" height="10" rx="2" />
-                      <path d="M17 9l5-3v12l-5-3" />
-                    </svg>
+                  <div style={{ width: "48px", height: "48px", borderRadius: "12px", background: "rgba(232,64,16,0.08)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={ORANGE} strokeWidth="2"><rect x="2" y="7" width="15" height="10" rx="2" /><path d="M17 9l5-3v12l-5-3" /></svg>
                   </div>
                   <div style={{ textAlign: "center" as const }}>
-                    <span style={{ fontSize: "14px", fontFamily: "Inter, sans-serif", color: "#374151", fontWeight: 500 }}>
-                      Cliquez pour uploader une vidéo
-                    </span>
-                    <br />
-                    <span style={{ fontSize: "12px", color: "#9CA3AF", fontFamily: "Inter, sans-serif" }}>
-                      MP4, MOV — max 1 min recommandé
-                    </span>
+                    <span style={{ fontSize: "14px", fontFamily: "Inter, sans-serif", color: "#374151", fontWeight: 500 }}>Cliquez pour uploader votre démo</span>
+                    <br /><span style={{ fontSize: "12px", color: "#9CA3AF", fontFamily: "Inter, sans-serif" }}>Obligatoire pour ce profil</span>
                   </div>
                 </label>
               ) : videoUploading ? (
                 <div style={{ border: "1px solid #E5E7EB", borderRadius: "10px", padding: "20px", background: "#FAFAF9" }}>
-                  <div style={{ fontSize: "13px", color: "#6B7280", fontFamily: "Inter, sans-serif", marginBottom: "10px" }}>
-                    Upload en cours… {videoUploadProgress}%
-                  </div>
+                  <div style={{ fontSize: "13px", color: "#6B7280", fontFamily: "Inter, sans-serif", marginBottom: "10px" }}>Upload en cours…</div>
                   <div style={{ height: "4px", background: "#F0F0F0", borderRadius: "2px", overflow: "hidden" }}>
-                    <div style={{ height: "100%", width: `${videoUploadProgress}%`, background: ORANGE, transition: "width 0.3s", borderRadius: "2px" }} />
+                    <div style={{ height: "100%", width: `${videoUploadProgress}%`, background: ORANGE, borderRadius: "2px" }} />
                   </div>
                 </div>
               ) : (
-                <div style={{
-                  display: "flex", alignItems: "center", gap: "12px",
-                  border: "1px solid #D1FAE5", borderRadius: "10px",
-                  padding: "14px 16px", background: "#F0FDF4",
-                }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "12px", border: "1px solid #D1FAE5", borderRadius: "10px", padding: "14px 16px", background: "#F0FDF4" }}>
                   <div style={{ width: "36px", height: "36px", borderRadius: "8px", background: "#D1FAE5", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#059669" strokeWidth="2.5">
-                      <path d="M20 6L9 17l-5-5" />
-                    </svg>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#059669" strokeWidth="2.5"><path d="M20 6L9 17l-5-5" /></svg>
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ fontSize: "13px", fontFamily: "Inter, sans-serif", color: "#059669", fontWeight: 600 }}>Vidéo uploadée</div>
                     <div style={{ fontSize: "12px", color: "#6B7280", fontFamily: "Inter, sans-serif", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>{videoFile.name}</div>
                   </div>
-                  <button type="button" onClick={() => { setVideoFile(null); setVideoUrl(""); }}
-                    style={{ background: "none", border: "none", cursor: "pointer", color: "#9CA3AF", fontSize: "20px", lineHeight: 1, flexShrink: 0 }}>
-                    ×
-                  </button>
+                  <button type="button" onClick={() => { setVideoFile(null); setVideoUrl(""); }} style={{ background: "none", border: "none", cursor: "pointer", color: "#9CA3AF", fontSize: "20px", lineHeight: 1, flexShrink: 0 }}>×</button>
                 </div>
               )}
             </div>
           </div>
 
           {/* ── Submit ─── */}
-          <div style={{
-            borderTop: "1px solid #F0F0F0", paddingTop: "40px",
-            display: "flex", alignItems: "center", justifyContent: "space-between",
-            flexWrap: "wrap" as const, gap: "24px",
-          }}>
+          <div style={{ borderTop: "1px solid #F0F0F0", paddingTop: "40px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap" as const, gap: "24px" }}>
             <p style={{ fontSize: "13px", color: "#9CA3AF", lineHeight: 1.7, maxWidth: "400px", fontFamily: "Inter, sans-serif" }}>
-              Tous les profils sont examinés par notre équipe. Nous vous contacterons dès qu'un projet correspondra à votre profil.
+              En tant que présentateur, votre aisance face caméra est primordiale. Nous examinerons votre vidéo avec attention.
             </p>
             {error && <p style={{ fontSize: "13px", color: "#ef4444", fontFamily: "Inter, sans-serif" }}>Une erreur s'est produite. Réessayez.</p>}
             <button
               type="submit"
-              disabled={isSubmitting || talentTypes.length === 0 || !form.experience || !form.age || !referenceFile}
+              disabled={isSubmitting || !form.experience || !form.age || !referenceFile || !videoUrl}
               style={{
                 background: submitted ? "#059669" : ORANGE,
                 color: "#FFFFFF", border: "none",
                 padding: "16px 48px",
                 fontFamily: "var(--font-bebas), 'Impact', sans-serif",
                 fontSize: "18px", letterSpacing: "0.15em",
-                cursor: isSubmitting || talentTypes.length === 0 || !form.experience || !form.age ? "not-allowed" : "pointer",
+                cursor: isSubmitting ? "not-allowed" : "pointer",
                 whiteSpace: "nowrap" as const,
-                opacity: isSubmitting || talentTypes.length === 0 || !form.experience || !form.age ? 0.5 : 1,
+                opacity: isSubmitting || !form.experience || !form.age || !referenceFile || !videoUrl ? 0.5 : 1,
                 transition: "background 0.2s, opacity 0.2s",
                 borderRadius: "4px",
               }}
             >
-              {submitted ? "PROFIL SOUMIS ✓" : isSubmitting ? "ENVOI EN COURS..." : "SOUMETTRE MON PROFIL →"}
+              {submitted ? "PROFIL SOUMIS ✓" : isSubmitting ? "ENVOI EN COURS..." : "SOUMETTRE MA CANDIDATURE →"}
             </button>
           </div>
 
@@ -786,8 +542,8 @@ export function ActorForm() {
       <SuccessModal
         isOpen={showModal}
         onClose={() => setShowModal(false)}
-        title="Félicitations 🎉"
-        message="Votre profil a été soumis avec succès. Notre équipe examinera votre candidature et vous contactera dès qu'un projet correspond à votre profil."
+        title="Candidature reçue ! 🎤"
+        message="Votre profil de présentateur a été soumis avec succès. Notre équipe reviendra vers vous après avoir visionné votre vidéo."
       />
     </motion.div>
   );

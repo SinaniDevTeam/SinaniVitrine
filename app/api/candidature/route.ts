@@ -34,6 +34,30 @@ export async function POST(req: Request) {
           ${fields.notes ? `<hr><h3>Informations complémentaires</h3><p style="white-space: pre-wrap;">${fields.notes}</p>` : ""}
         </div>
       `;
+    } else if (type === "presenter") {
+      subject = `Nouvelle candidature Présentateur — ${fields.prenom} ${fields.nom}`;
+      html = `
+        <div style="font-family: sans-serif; line-height: 1.6; color: #111;">
+          <h2>Nouvelle candidature Présentateur / Animateur</h2>
+          <hr>
+          <h3>Informations personnelles</h3>
+          <p><strong>Prénom:</strong> ${fields.prenom}</p>
+          <p><strong>Nom:</strong> ${fields.nom}</p>
+          <p><strong>Email:</strong> ${fields.email}</p>
+          <p><strong>Téléphone:</strong> ${fields.telephone || "—"}</p>
+          <p><strong>Âge:</strong> ${fields.age || "—"}</p>
+          <p><strong>Genre:</strong> ${fields.genre || "—"}</p>
+          <p><strong>Adresse:</strong> ${fields.adresse || "—"}</p>
+          <hr>
+          <h3>Profil</h3>
+          <p><strong>Expérience:</strong> ${fields.experience}</p>
+          <p><strong>Langues:</strong> ${fields.langues || "—"}</p>
+          <p><strong>Vidéo de présentation:</strong> <a href="${fields.videoUrl}">${fields.videoUrl}</a></p>
+          <p><strong>Biographie:</strong></p>
+          <p style="white-space: pre-wrap; background: #f9f9f9; padding: 15px; border-radius: 5px;">${fields.bio}</p>
+          ${fields.notes ? `<hr><h3>Informations complémentaires</h3><p style="white-space: pre-wrap;">${fields.notes}</p>` : ""}
+        </div>
+      `;
     } else {
       subject = `Nouveau projet Podcast — ${fields.titre}`;
       html = `
@@ -97,6 +121,29 @@ export async function POST(req: Request) {
               bio: fields.bio || "",
               notes: fields.notes || "",
               talents: fields.talentTypes || "",
+              videoUrl: fields.videoUrl || "",
+              fichier: fields.references?.content
+                ? {
+                    name: fields.references.name || "portfolio",
+                    type: fields.references.type || "application/octet-stream",
+                    content: fields.references.content,
+                  }
+                : null,
+            }
+          : type === "presenter"
+          ? {
+              type,
+              prenom: fields.prenom || "",
+              nom: fields.nom || "",
+              email: fields.email || "",
+              telephone: fields.telephone || "",
+              age: fields.age || "",
+              genre: fields.genre || "",
+              adresse: fields.adresse || "",
+              experience: fields.experience || "",
+              langues: fields.langues || "",
+              bio: fields.bio || "",
+              notes: fields.notes || "",
               videoUrl: fields.videoUrl || "",
               fichier: fields.references?.content
                 ? {
