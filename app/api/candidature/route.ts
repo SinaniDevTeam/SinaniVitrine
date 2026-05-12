@@ -91,8 +91,8 @@ export async function POST(req: Request) {
     }
 
     const data = await resend.emails.send({
-      from: "Candidatures SINANI <onboarding@resend.dev>",
-      to: ["halimad397@gmail.com"],
+      from: "Candidatures SINANI <contact@agencesinani.com>",
+      to: ["contact@agencesinani.com"],
       subject,
       html,
       attachments,
