@@ -29,6 +29,8 @@ export async function POST(req: Request) {
           <h3>Profil</h3>
           <p><strong>Expérience:</strong> ${fields.experience}</p>
           <p><strong>Langues:</strong> ${fields.langues || "—"}</p>
+          ${fields.videoUrl ? `<p><strong>Vidéo de présentation:</strong> <a href="${fields.videoUrl}">${fields.videoUrl}</a></p>` : ""}
+          ${fields.fichierUrl ? `<p><strong>Portfolio:</strong> <a href="${fields.fichierUrl}">${fields.fichierUrl}</a></p>` : ""}
           <p><strong>Biographie:</strong></p>
           <p style="white-space: pre-wrap; background: #f9f9f9; padding: 15px; border-radius: 5px;">${fields.bio}</p>
           ${fields.notes ? `<hr><h3>Informations complémentaires</h3><p style="white-space: pre-wrap;">${fields.notes}</p>` : ""}
@@ -53,6 +55,7 @@ export async function POST(req: Request) {
           <p><strong>Expérience:</strong> ${fields.experience}</p>
           <p><strong>Langues:</strong> ${fields.langues || "—"}</p>
           <p><strong>Vidéo de présentation:</strong> <a href="${fields.videoUrl}">${fields.videoUrl}</a></p>
+          ${fields.fichierUrl ? `<p><strong>Portfolio:</strong> <a href="${fields.fichierUrl}">${fields.fichierUrl}</a></p>` : ""}
           <p><strong>Biographie:</strong></p>
           <p style="white-space: pre-wrap; background: #f9f9f9; padding: 15px; border-radius: 5px;">${fields.bio}</p>
           ${fields.notes ? `<hr><h3>Informations complémentaires</h3><p style="white-space: pre-wrap;">${fields.notes}</p>` : ""}
@@ -78,24 +81,11 @@ export async function POST(req: Request) {
       `;
     }
 
-    const attachments = [];
-    if (fields.references && fields.references.content) {
-      try {
-        attachments.push({
-          filename: fields.references.name,
-          content: Buffer.from(fields.references.content, 'base64'),
-        });
-      } catch (err) {
-        console.error("Error processing attachment:", err);
-      }
-    }
-
     const data = await resend.emails.send({
       from: "Candidatures SINANI <onboarding@resend.dev>",
       to: ["agencesinani@gmail.com"],
       subject,
       html,
-      attachments,
     });
 
     if (data.error) {
@@ -122,13 +112,7 @@ export async function POST(req: Request) {
               notes: fields.notes || "",
               talents: fields.talentTypes || "",
               videoUrl: fields.videoUrl || "",
-              fichier: fields.references?.content
-                ? {
-                    name: fields.references.name || "portfolio",
-                    type: fields.references.type || "application/octet-stream",
-                    content: fields.references.content,
-                  }
-                : null,
+              fichierUrl: fields.fichierUrl || "",
             }
           : type === "presenter"
           ? {
@@ -145,13 +129,7 @@ export async function POST(req: Request) {
               bio: fields.bio || "",
               notes: fields.notes || "",
               videoUrl: fields.videoUrl || "",
-              fichier: fields.references?.content
-                ? {
-                    name: fields.references.name || "portfolio",
-                    type: fields.references.type || "application/octet-stream",
-                    content: fields.references.content,
-                  }
-                : null,
+              fichierUrl: fields.fichierUrl || "",
             }
           : {
               type,

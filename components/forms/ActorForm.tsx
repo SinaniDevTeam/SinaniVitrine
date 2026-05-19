@@ -293,6 +293,9 @@ export function ActorForm() {
   const [videoUploading, setVideoUploading] = useState(false);
   const [videoUploadProgress, setVideoUploadProgress] = useState(0);
   const [videoUrl, setVideoUrl] = useState("");
+  const [fileUploading, setFileUploading] = useState(false);
+  const [fileUploadProgress, setFileUploadProgress] = useState(0);
+  const [fichierUrl, setFichierUrl] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -325,30 +328,9 @@ export function ActorForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (talentTypes.length === 0 || !form.experience || !form.age || !referenceFile) return;
+    if (talentTypes.length === 0 || !form.experience || !form.age || !fichierUrl) return;
     setIsSubmitting(true);
     setError(false);
-
-    let fileData = null;
-    if (referenceFile) {
-      // Vérification de la taille (max 4.5MB pour rester sous la limite Vercel de 4.5MB-5MB)
-      if (referenceFile.size > 4.5 * 1024 * 1024) {
-        alert("Le fichier est trop lourd. Veuillez choisir un fichier de moins de 4.5 Mo.");
-        setIsSubmitting(false);
-        return;
-      }
-
-      fileData = await new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = (e) => resolve({
-          name: referenceFile.name,
-          type: referenceFile.type,
-          content: e.target?.result?.toString().split(",")[1]
-        });
-        reader.onerror = (e) => reject(new Error("Erreur lors de la lecture du fichier"));
-        reader.readAsDataURL(referenceFile);
-      });
-    }
 
     try {
       const res = await fetch("/api/candidature", {
@@ -359,7 +341,7 @@ export function ActorForm() {
           talentTypes: talentTypes.map(id => TALENT_TYPES.find(t => t.id === id)?.label).join(", "),
           langues: langues.join(", "),
           ...form,
-          references: fileData,
+          fichierUrl,
           videoUrl,
         }),
       });
@@ -367,7 +349,7 @@ export function ActorForm() {
         setSubmitted(true);
         setShowModal(true);
         setForm({ prenom: "", nom: "", email: "", telephone: "", age: "", genre: "", adresse: "", experience: "", bio: "", notes: "" });
-        setLangues([]); setTalentTypes([]); setReferenceFile(null); setVideoFile(null); setVideoUrl(""); setVideoUploadProgress(0);
+        setLangues([]); setTalentTypes([]); setReferenceFile(null); setFichierUrl(""); setFileUploadProgress(0); setVideoFile(null); setVideoUrl(""); setVideoUploadProgress(0);
         setTimeout(() => setSubmitted(false), 6000);
       } else {
         const err = await res.json();
@@ -605,11 +587,35 @@ export function ActorForm() {
                 onMouseEnter={e => { e.currentTarget.style.borderColor = ORANGE; e.currentTarget.style.background = "rgba(232,64,16,0.02)"; }}
                 onMouseLeave={e => { e.currentTarget.style.borderColor = "#E5E7EB"; e.currentTarget.style.background = "#FAFAF9"; }}
                 >
+
                   <input
                     type="file"
                     accept="image/*,.pdf"
                     style={{ display: "none" }}
-                    onChange={e => setReferenceFile(e.target.files?.[0] || null)}
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+                      setReferenceFile(file);
+                      setFileUploading(true);
+                      setFileUploadProgress(0);
+                      const formData = new FormData();
+                      formData.append("file", file);
+                      formData.append("upload_preset", "sinani_videos");
+                      const xhr = new XMLHttpRequest();
+                      xhr.upload.addEventListener("progress", (ev) => {
+                        if (ev.lengthComputable) setFileUploadProgress(Math.round((ev.loaded / ev.total) * 100));
+                      });
+                      xhr.addEventListener("load", () => {
+                        if (xhr.status === 200) setFichierUrl(JSON.parse(xhr.responseText).secure_url);
+                        else { setReferenceFile(null); setError(true); }
+                        setFileUploading(false);
+                      });
+                      xhr.addEventListener("error", () => {
+                        setReferenceFile(null); setError(true); setFileUploading(false);
+                      });
+                      xhr.open("POST", "https://api.cloudinary.com/v1_1/dvod3wqc9/auto/upload");
+                      xhr.send(formData);
+                    }}
                   />
                   <div style={{
                     width: "48px", height: "48px", borderRadius: "12px",
@@ -628,10 +634,17 @@ export function ActorForm() {
                     </span>
                     <br />
                     <span style={{ fontSize: "12px", color: "#9CA3AF", fontFamily: "Inter, sans-serif" }}>
-                      Photos, PDF — max 4.5 MB
+                      Photos, PDF
                     </span>
                   </div>
                 </label>
+              ) : fileUploading ? (
+                <div style={{ border: "1px solid #E5E7EB", borderRadius: "10px", padding: "20px", background: "#FAFAF9" }}>
+                  <div style={{ fontSize: "13px", color: "#6B7280", fontFamily: "Inter, sans-serif", marginBottom: "10px" }}>Upload en cours…</div>
+                  <div style={{ height: "4px", background: "#F0F0F0", borderRadius: "2px", overflow: "hidden" }}>
+                    <div style={{ height: "100%", width: `${fileUploadProgress}%`, background: ORANGE, borderRadius: "2px" }} />
+                  </div>
+                </div>
               ) : (
                 <div style={{
                   display: "flex", alignItems: "center", gap: "12px",
@@ -649,14 +662,14 @@ export function ActorForm() {
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ fontSize: "13px", fontFamily: "Inter, sans-serif", color: "#059669", fontWeight: 600 }}>
-                      Fichier sélectionné
+                      Fichier uploadé
                     </div>
                     <div style={{ fontSize: "12px", color: "#6B7280", fontFamily: "Inter, sans-serif", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>
                       {referenceFile.name}
                     </div>
                   </div>
                   <button type="button"
-                    onClick={() => setReferenceFile(null)}
+                    onClick={() => { setReferenceFile(null); setFichierUrl(""); setFileUploadProgress(0); }}
                     style={{ background: "none", border: "none", cursor: "pointer", color: "#9CA3AF", fontSize: "20px", lineHeight: 1, flexShrink: 0 }}>
                     ×
                   </button>
@@ -763,7 +776,7 @@ export function ActorForm() {
             {error && <p style={{ fontSize: "13px", color: "#ef4444", fontFamily: "Inter, sans-serif" }}>Une erreur s'est produite. Réessayez.</p>}
             <button
               type="submit"
-              disabled={isSubmitting || talentTypes.length === 0 || !form.experience || !form.age || !referenceFile}
+              disabled={isSubmitting || fileUploading || talentTypes.length === 0 || !form.experience || !form.age || !fichierUrl}
               style={{
                 background: submitted ? "#059669" : ORANGE,
                 color: "#FFFFFF", border: "none",
@@ -772,7 +785,7 @@ export function ActorForm() {
                 fontSize: "18px", letterSpacing: "0.15em",
                 cursor: isSubmitting || talentTypes.length === 0 || !form.experience || !form.age ? "not-allowed" : "pointer",
                 whiteSpace: "nowrap" as const,
-                opacity: isSubmitting || talentTypes.length === 0 || !form.experience || !form.age ? 0.5 : 1,
+                opacity: isSubmitting || fileUploading || talentTypes.length === 0 || !form.experience || !form.age || !fichierUrl ? 0.5 : 1,
                 transition: "background 0.2s, opacity 0.2s",
                 borderRadius: "4px",
               }}
