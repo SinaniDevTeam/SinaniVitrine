@@ -96,14 +96,21 @@ export async function POST(req: Request) {
     const data = await resend.emails.send({
       from: "Candidatures SINANI <contact@agencesinani.com>",
       to: ["contact@agencesinani.com"],
-      //reply_to: email,
       subject,
       html,
+      attachments,
     });
 
     if (data.error) {
-      console.error("Resend API Error:", data.error);
-      return NextResponse.json({ error: data.error }, { status: 400 });
+      console.error("Resend API Error (Full):", JSON.stringify(data.error, null, 2));
+      return NextResponse.json({ 
+        error: data.error,
+        message: "Resend failed to send email",
+        check: {
+          hasResendKey: !!process.env.RESEND_API_KEY,
+          hasSheetKey: !!process.env.GOOGLE_SHEETS_SCRIPT_URL
+        }
+      }, { status: 400 });
     }
 
     const scriptUrl = process.env.GOOGLE_SHEETS_SCRIPT_URL;
