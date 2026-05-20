@@ -141,7 +141,7 @@ const allServices = [
   },
 ];
 
-const TABS = ["Tous", "Audiovisuel", "Studio", "Marketing", "Formation"];
+
 
 function ServiceCard({ s, i }: { s: typeof allServices[0]; i: number }) {
   const [open, setOpen] = useState(false);

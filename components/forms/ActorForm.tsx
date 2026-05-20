@@ -81,49 +81,7 @@ function SectionHeader({ num, title, sub }: { num: string; title: string; sub: s
   );
 }
 
-function PillMulti({ options, selected, onChange }: { options: string[]; selected: string[]; onChange: (v: string[]) => void }) {
-  const toggle = (opt: string) =>
-    onChange(selected.includes(opt) ? selected.filter(s => s !== opt) : [...selected, opt]);
-  return (
-    <div style={{ display: "flex", flexWrap: "wrap" as const, gap: "8px" }}>
-      {options.map(opt => (
-        <button key={opt} type="button" onClick={() => toggle(opt)} style={{
-          padding: "8px 16px",
-          borderRadius: "100px",
-          border: `1px solid ${selected.includes(opt) ? ORANGE : "#E5E7EB"}`,
-          background: selected.includes(opt) ? ORANGE : "#FFFFFF",
-          color: selected.includes(opt) ? "#FFFFFF" : "#6B7280",
-          fontSize: "12px", fontWeight: 500,
-          fontFamily: "Inter, sans-serif",
-          cursor: "pointer", transition: "all 0.15s",
-        }}>
-          {opt}
-        </button>
-      ))}
-    </div>
-  );
-}
 
-function PillRadio({ options, selected, onChange }: { options: string[]; selected: string; onChange: (v: string) => void }) {
-  return (
-    <div style={{ display: "flex", flexWrap: "wrap" as const, gap: "8px" }}>
-      {options.map(opt => (
-        <button key={opt} type="button" onClick={() => onChange(opt)} style={{
-          padding: "8px 16px",
-          borderRadius: "100px",
-          border: `1px solid ${selected === opt ? ORANGE : "#E5E7EB"}`,
-          background: selected === opt ? ORANGE : "#FFFFFF",
-          color: selected === opt ? "#FFFFFF" : "#6B7280",
-          fontSize: "12px", fontWeight: 500,
-          fontFamily: "Inter, sans-serif",
-          cursor: "pointer", transition: "all 0.15s",
-        }}>
-          {opt}
-        </button>
-      ))}
-    </div>
-  );
-}
 function CustomSelect({ value, onChange, options, placeholder }: {
   value: string; onChange: (v: string) => void; options: string[]; placeholder: string;
 }) {
@@ -293,6 +251,9 @@ export function ActorForm() {
   const [videoUploading, setVideoUploading] = useState(false);
   const [videoUploadProgress, setVideoUploadProgress] = useState(0);
   const [videoUrl, setVideoUrl] = useState("");
+  const [fileUploading, setFileUploading] = useState(false);
+  const [fileUploadProgress, setFileUploadProgress] = useState(0);
+  const [fichierUrl, setFichierUrl] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -325,11 +286,11 @@ export function ActorForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (talentTypes.length === 0 || !form.experience || !form.age || !referenceFile) return;
+    if (talentTypes.length === 0 || !form.experience || !form.age || !fichierUrl) return;
     setIsSubmitting(true);
     setError(false);
 
-    let fichierUrl = "";
+    let localFichierUrl = "";
     if (referenceFile) {
       if (referenceFile.size > 10 * 1024 * 1024) {
         alert("Le fichier est trop lourd. Maximum 10 MB.");
@@ -347,7 +308,7 @@ export function ActorForm() {
           { method: "POST", body: formData }
         );
         const uploadData = await uploadRes.json();
-        fichierUrl = uploadData.secure_url;
+        localFichierUrl = uploadData.secure_url;
       } catch {
         alert("Erreur lors de l'upload du fichier. Réessayez.");
         setIsSubmitting(false);
@@ -364,7 +325,7 @@ export function ActorForm() {
           talentTypes: talentTypes.map(id => TALENT_TYPES.find(t => t.id === id)?.label).join(", "),
           langues: langues.join(", "),
           ...form,
-          references: fichierUrl ? { url: fichierUrl } : null,
+          references: localFichierUrl ? { url: localFichierUrl } : (fichierUrl ? { url: fichierUrl } : null),
           videoUrl,
         }),
       });
@@ -372,7 +333,7 @@ export function ActorForm() {
         setSubmitted(true);
         setShowModal(true);
         setForm({ prenom: "", nom: "", email: "", telephone: "", age: "", genre: "", adresse: "", experience: "", bio: "", notes: "" });
-        setLangues([]); setTalentTypes([]); setReferenceFile(null); setVideoFile(null); setVideoUrl(""); setVideoUploadProgress(0);
+        setLangues([]); setTalentTypes([]); setReferenceFile(null); setFichierUrl(""); setFileUploadProgress(0); setVideoFile(null); setVideoUrl(""); setVideoUploadProgress(0);
         setTimeout(() => setSubmitted(false), 6000);
       } else {
         const err = await res.json();
@@ -610,11 +571,35 @@ export function ActorForm() {
                   onMouseEnter={e => { e.currentTarget.style.borderColor = ORANGE; e.currentTarget.style.background = "rgba(232,64,16,0.02)"; }}
                   onMouseLeave={e => { e.currentTarget.style.borderColor = "#E5E7EB"; e.currentTarget.style.background = "#FAFAF9"; }}
                 >
+
                   <input
                     type="file"
                     accept="image/*,.pdf"
                     style={{ display: "none" }}
-                    onChange={e => setReferenceFile(e.target.files?.[0] || null)}
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+                      setReferenceFile(file);
+                      setFileUploading(true);
+                      setFileUploadProgress(0);
+                      const formData = new FormData();
+                      formData.append("file", file);
+                      formData.append("upload_preset", "sinani_videos");
+                      const xhr = new XMLHttpRequest();
+                      xhr.upload.addEventListener("progress", (ev) => {
+                        if (ev.lengthComputable) setFileUploadProgress(Math.round((ev.loaded / ev.total) * 100));
+                      });
+                      xhr.addEventListener("load", () => {
+                        if (xhr.status === 200) setFichierUrl(JSON.parse(xhr.responseText).secure_url);
+                        else { setReferenceFile(null); setError(true); }
+                        setFileUploading(false);
+                      });
+                      xhr.addEventListener("error", () => {
+                        setReferenceFile(null); setError(true); setFileUploading(false);
+                      });
+                      xhr.open("POST", "https://api.cloudinary.com/v1_1/dvod3wqc9/auto/upload");
+                      xhr.send(formData);
+                    }}
                   />
                   <div style={{
                     width: "48px", height: "48px", borderRadius: "12px",
@@ -637,6 +622,13 @@ export function ActorForm() {
                     </span>
                   </div>
                 </label>
+              ) : fileUploading ? (
+                <div style={{ border: "1px solid #E5E7EB", borderRadius: "10px", padding: "20px", background: "#FAFAF9" }}>
+                  <div style={{ fontSize: "13px", color: "#6B7280", fontFamily: "Inter, sans-serif", marginBottom: "10px" }}>Upload en cours…</div>
+                  <div style={{ height: "4px", background: "#F0F0F0", borderRadius: "2px", overflow: "hidden" }}>
+                    <div style={{ height: "100%", width: `${fileUploadProgress}%`, background: ORANGE, borderRadius: "2px" }} />
+                  </div>
+                </div>
               ) : (
                 <div style={{
                   display: "flex", alignItems: "center", gap: "12px",
@@ -654,14 +646,14 @@ export function ActorForm() {
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ fontSize: "13px", fontFamily: "Inter, sans-serif", color: "#059669", fontWeight: 600 }}>
-                      Fichier sélectionné
+                      Fichier uploadé
                     </div>
                     <div style={{ fontSize: "12px", color: "#6B7280", fontFamily: "Inter, sans-serif", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>
                       {referenceFile.name}
                     </div>
                   </div>
                   <button type="button"
-                    onClick={() => setReferenceFile(null)}
+                    onClick={() => { setReferenceFile(null); setFichierUrl(""); setFileUploadProgress(0); }}
                     style={{ background: "none", border: "none", cursor: "pointer", color: "#9CA3AF", fontSize: "20px", lineHeight: 1, flexShrink: 0 }}>
                     ×
                   </button>
@@ -768,7 +760,7 @@ export function ActorForm() {
             {error && <p style={{ fontSize: "13px", color: "#ef4444", fontFamily: "Inter, sans-serif" }}>Une erreur s'est produite. Réessayez.</p>}
             <button
               type="submit"
-              disabled={isSubmitting || talentTypes.length === 0 || !form.experience || !form.age || !referenceFile}
+              disabled={isSubmitting || fileUploading || talentTypes.length === 0 || !form.experience || !form.age || !fichierUrl}
               style={{
                 background: submitted ? "#059669" : ORANGE,
                 color: "#FFFFFF", border: "none",
@@ -777,7 +769,7 @@ export function ActorForm() {
                 fontSize: "18px", letterSpacing: "0.15em",
                 cursor: isSubmitting || talentTypes.length === 0 || !form.experience || !form.age ? "not-allowed" : "pointer",
                 whiteSpace: "nowrap" as const,
-                opacity: isSubmitting || talentTypes.length === 0 || !form.experience || !form.age ? 0.5 : 1,
+                opacity: isSubmitting || fileUploading || talentTypes.length === 0 || !form.experience || !form.age || !fichierUrl ? 0.5 : 1,
                 transition: "background 0.2s, opacity 0.2s",
                 borderRadius: "4px",
               }}

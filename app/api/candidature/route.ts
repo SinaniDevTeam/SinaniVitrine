@@ -99,7 +99,6 @@ export async function POST(req: Request) {
       //reply_to: email,
       subject,
       html,
-      attachments,
     });
 
     if (data.error) {
@@ -152,6 +151,7 @@ export async function POST(req: Request) {
               bio: fields.bio || "",
               notes: fields.notes || "",
               videoUrl: fields.videoUrl || "",
+              fichierUrl: fields.references?.url || "",
               Fichier: fields.references?.url
                 ? fields.references.url
                 : fields.references?.content
@@ -161,7 +161,7 @@ export async function POST(req: Request) {
                     content: fields.references.content,
                   }
                   : null,
-              fichierUrl: fields.references?.url || "",
+
             }
             : {
               type,
@@ -180,7 +180,7 @@ export async function POST(req: Request) {
             };
 
       try {
-        const response = await fetch(scriptUrl, {
+        await fetch(scriptUrl, {
           method: "POST",
           redirect: "follow",
           headers: { "Content-Type": "application/json" },

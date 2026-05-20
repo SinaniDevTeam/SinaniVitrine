@@ -60,8 +60,8 @@ export default function AboutHero() {
                 maxWidth: "480px",
               }}
             >
-              Plus qu'une agence, SINANI est un collectif de professionnels 
-              passionnés par l'image, le son et la stratégie digitale, 
+              Plus qu&apos;une agence, SINANI est un collectif de professionnels 
+              passionnés par l&apos;image, le son et la stratégie digitale, 
               engagés à propulser la créativité locale.
             </motion.p>
 
