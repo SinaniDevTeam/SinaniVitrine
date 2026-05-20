@@ -156,7 +156,7 @@ export default function Footer() {
       {/* ── Logo centré ── */}
       <div className="flex justify-center py-4">
         <Link href="/">
-          <Image src="/images/Blanc.png" alt="SINANI" width={130} height={52} style={{ objectFit: "contain" }} />
+          <Image src="/images/Blanc.png" alt="SINANI" width={130} height={52} className="w-[130px] h-auto" style={{ objectFit: "contain" }} />
         </Link>
       </div>
 

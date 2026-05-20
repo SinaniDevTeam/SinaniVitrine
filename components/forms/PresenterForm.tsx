@@ -34,7 +34,7 @@ const LABEL: React.CSSProperties = {
   display: "block",
 };
 
-const LANGUES = ["Français", "Anglais", "Pular", "Malinké", "Soussou", "Autre"];
+const LANGUES = ["Français", "Anglais", "Pular", "Malinké", "Soussou", "Kissi", "Guerzé", "Thoma", "Autre"];
 
 // ── Sub-components ─────────────────────────────────────────────────
 function SectionHeader({ num, title, sub }: { num: string; title: string; sub: string }) {
@@ -243,23 +243,30 @@ export function PresenterForm() {
     setIsSubmitting(true);
     setError(false);
 
-    let fileData = null;
+    let fichierUrl = "";
     if (referenceFile) {
-      if (referenceFile.size > 4.5 * 1024 * 1024) {
-        alert("Le fichier est trop lourd. Veuillez choisir un fichier de moins de 4.5 Mo.");
+      if (referenceFile.size > 10 * 1024 * 1024) {
+        alert("Le fichier est trop lourd. Maximum 10 MB.");
         setIsSubmitting(false);
         return;
       }
-      fileData = await new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = (e) => resolve({
-          name: referenceFile.name,
-          type: referenceFile.type,
-          content: e.target?.result?.toString().split(",")[1]
-        });
-        reader.onerror = (e) => reject(new Error("Erreur lors de la lecture du fichier"));
-        reader.readAsDataURL(referenceFile);
-      });
+
+      try {
+        const formData = new FormData();
+        formData.append("file", referenceFile);
+        formData.append("upload_preset", "sinani_videos");
+
+        const uploadRes = await fetch(
+          "https://api.cloudinary.com/v1_1/dvod3wqc9/auto/upload",
+          { method: "POST", body: formData }
+        );
+        const uploadData = await uploadRes.json();
+        fichierUrl = uploadData.secure_url;
+      } catch {
+        alert("Erreur lors de l'upload du fichier. Réessayez.");
+        setIsSubmitting(false);
+        return;
+      }
     }
 
     try {
@@ -271,7 +278,7 @@ export function PresenterForm() {
           talentTypes: "Présentateur / Animateur",
           langues: langues.join(", "),
           ...form,
-          references: fileData,
+          references: fichierUrl ? { url: fichierUrl } : null,
           videoUrl,
         }),
       });
@@ -399,7 +406,7 @@ export function PresenterForm() {
           {/* ── 03 — Documents & Vidéo ─── */}
           <div style={{ marginBottom: "56px" }}>
             <SectionHeader num="03" title="Documents & Vidéo" sub="Présentez-vous en image" />
-            
+
             <div className="mb-8">
               <label style={LABEL}>Photos / Portfolio <span style={{ color: ORANGE }}>*</span></label>
               {!referenceFile ? (
@@ -410,8 +417,8 @@ export function PresenterForm() {
                   padding: "32px", cursor: "pointer", background: "#FAFAF9",
                   transition: "border-color 0.2s, background 0.2s",
                 }}
-                onMouseEnter={e => { e.currentTarget.style.borderColor = ORANGE; e.currentTarget.style.background = "rgba(232,64,16,0.02)"; }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = "#E5E7EB"; e.currentTarget.style.background = "#FAFAF9"; }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = ORANGE; e.currentTarget.style.background = "rgba(232,64,16,0.02)"; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = "#E5E7EB"; e.currentTarget.style.background = "#FAFAF9"; }}
                 >
                   <input type="file" accept="image/*,.pdf" style={{ display: "none" }}
                     onChange={e => setReferenceFile(e.target.files?.[0] || null)}
@@ -425,7 +432,7 @@ export function PresenterForm() {
                   </div>
                   <div style={{ textAlign: "center" as const }}>
                     <span style={{ fontSize: "14px", fontFamily: "Inter, sans-serif", color: "#374151", fontWeight: 500 }}>Cliquez pour choisir un fichier</span>
-                    <br /><span style={{ fontSize: "12px", color: "#9CA3AF", fontFamily: "Inter, sans-serif" }}>Photos, PDF — max 4.5 MB</span>
+                    <br /><span style={{ fontSize: "12px", color: "#9CA3AF", fontFamily: "Inter, sans-serif" }}>Photos, PDF — max 10 MB</span>
                   </div>
                 </label>
               ) : (
@@ -452,8 +459,8 @@ export function PresenterForm() {
                   padding: "28px", cursor: "pointer", background: "#FAFAF9",
                   transition: "border-color 0.2s, background 0.2s",
                 }}
-                onMouseEnter={e => { e.currentTarget.style.borderColor = ORANGE; e.currentTarget.style.background = "rgba(232,64,16,0.02)"; }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = "#E5E7EB"; e.currentTarget.style.background = "#FAFAF9"; }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = ORANGE; e.currentTarget.style.background = "rgba(232,64,16,0.02)"; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = "#E5E7EB"; e.currentTarget.style.background = "#FAFAF9"; }}
                 >
                   <input type="file" accept="video/*" style={{ display: "none" }}
                     onChange={(e) => {

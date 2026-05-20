@@ -8,8 +8,9 @@ export async function POST(req: Request) {
     const { name, email, subject, message } = await req.json();
 
     const data = await resend.emails.send({
-      from: "Contact SINANI <onboarding@resend.dev>",
-      to: ["agencesinani@gmail.com"],
+      from: "Contact SINANI <contact@agencesinani.com>",
+      to: ["contact@agencesinani.com"],
+      //reply_to: email,
       subject: `Nouveau message : ${subject || "Contact depuis le site"}`,
       html: `
         <h2>Nouveau message de contact</h2>

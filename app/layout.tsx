@@ -118,6 +118,7 @@ export default function RootLayout({
       </head>
       <body
         className={`${inter.variable} ${bebasNeue.variable} antialiased`}
+        suppressHydrationWarning={true}
       >
         {children}
       </body>

@@ -318,8 +318,8 @@ export function PodcastForm() {
                     padding: "32px", cursor: "pointer", background: "#FAFAF9",
                     transition: "border-color 0.2s",
                   }}
-                  onMouseEnter={e => (e.currentTarget.style.borderColor = ORANGE)}
-                  onMouseLeave={e => (e.currentTarget.style.borderColor = "#E5E7EB")}
+                    onMouseEnter={e => (e.currentTarget.style.borderColor = ORANGE)}
+                    onMouseLeave={e => (e.currentTarget.style.borderColor = "#E5E7EB")}
                   >
                     <input type="file" accept="video/*" style={{ display: "none" }}
                       onChange={async (e) => {
@@ -423,7 +423,7 @@ export function PodcastForm() {
             flexWrap: "wrap" as const, gap: "24px",
           }}>
             <p style={{ fontSize: "13px", color: "#9CA3AF", lineHeight: 1.7, maxWidth: "400px", fontFamily: "Inter, sans-serif" }}>
-              Toutes les soumissions sont examinées dans un délai de 5 jours ouvrables. Un membre de l'équipe SINANI vous contactera pour discuter de votre projet.
+              Toutes les soumissions sont examinées et traitées. Un membre de l'équipe SINANI vous contactera pour discuter de votre projet.
             </p>
             {error && <p style={{ fontSize: "13px", color: "#ef4444", fontFamily: "Inter, sans-serif" }}>Une erreur s'est produite. Réessayez.</p>}
             <button
@@ -452,7 +452,7 @@ export function PodcastForm() {
         isOpen={showModal}
         onClose={() => setShowModal(false)}
         title="Félicitations 🎉"
-        message="Votre concept de podcast a été soumis avec succès. Un membre de l'équipe SINANI vous contactera dans les 5 jours ouvrables."
+        message="Votre concept de podcast a été soumis avec succès. Un membre de l'équipe SINANI vous contactera."
       />
     </motion.div>
   );

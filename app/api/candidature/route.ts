@@ -29,6 +29,8 @@ export async function POST(req: Request) {
           <h3>Profil</h3>
           <p><strong>Expérience:</strong> ${fields.experience}</p>
           <p><strong>Langues:</strong> ${fields.langues || "—"}</p>
+          ${fields.videoUrl ? `<p><strong>Vidéo de présentation:</strong> <a href="${fields.videoUrl}">${fields.videoUrl}</a></p>` : ""}
+          ${fields.references?.url ? `<p><strong>Portfolio / Photos:</strong> <a href="${fields.references.url}">${fields.references.url}</a></p>` : ""}
           <p><strong>Biographie:</strong></p>
           <p style="white-space: pre-wrap; background: #f9f9f9; padding: 15px; border-radius: 5px;">${fields.bio}</p>
           ${fields.notes ? `<hr><h3>Informations complémentaires</h3><p style="white-space: pre-wrap;">${fields.notes}</p>` : ""}
@@ -53,6 +55,7 @@ export async function POST(req: Request) {
           <p><strong>Expérience:</strong> ${fields.experience}</p>
           <p><strong>Langues:</strong> ${fields.langues || "—"}</p>
           <p><strong>Vidéo de présentation:</strong> <a href="${fields.videoUrl}">${fields.videoUrl}</a></p>
+          ${fields.references?.url ? `<p><strong>Portfolio / Photos:</strong> <a href="${fields.references.url}">${fields.references.url}</a></p>` : ""}
           <p><strong>Biographie:</strong></p>
           <p style="white-space: pre-wrap; background: #f9f9f9; padding: 15px; border-radius: 5px;">${fields.bio}</p>
           ${fields.notes ? `<hr><h3>Informations complémentaires</h3><p style="white-space: pre-wrap;">${fields.notes}</p>` : ""}
@@ -82,7 +85,7 @@ export async function POST(req: Request) {
     if (fields.references && fields.references.content) {
       try {
         attachments.push({
-          filename: fields.references.name,
+          filename: fields.references.name || "portfolio",
           content: Buffer.from(fields.references.content, 'base64'),
         });
       } catch (err) {
@@ -91,8 +94,9 @@ export async function POST(req: Request) {
     }
 
     const data = await resend.emails.send({
-      from: "Candidatures SINANI <onboarding@resend.dev>",
-      to: ["agencesinani@gmail.com"],
+      from: "Candidatures SINANI <contact@agencesinani.com>",
+      to: ["contact@agencesinani.com"],
+      //reply_to: email,
       subject,
       html,
       attachments,
@@ -108,30 +112,33 @@ export async function POST(req: Request) {
       const sheetPayload =
         type === "actor"
           ? {
-              type,
-              prenom: fields.prenom || "",
-              nom: fields.nom || "",
-              email: fields.email || "",
-              telephone: fields.telephone || "",
-              age: fields.age || "",
-              genre: fields.genre || "",
-              adresse: fields.adresse || "",
-              experience: fields.experience || "",
-              langues: fields.langues || "",
-              bio: fields.bio || "",
-              notes: fields.notes || "",
-              talents: fields.talentTypes || "",
-              videoUrl: fields.videoUrl || "",
-              fichier: fields.references?.content
+            type,
+            prenom: fields.prenom || "",
+            nom: fields.nom || "",
+            email: fields.email || "",
+            telephone: fields.telephone || "",
+            age: fields.age || "",
+            genre: fields.genre || "",
+            adresse: fields.adresse || "",
+            experience: fields.experience || "",
+            langues: fields.langues || "",
+            bio: fields.bio || "",
+            notes: fields.notes || "",
+            talents: fields.talentTypes || "",
+            videoUrl: fields.videoUrl || "",
+            Fichier: fields.references?.url
+              ? fields.references.url
+              : fields.references?.content
                 ? {
-                    name: fields.references.name || "portfolio",
-                    type: fields.references.type || "application/octet-stream",
-                    content: fields.references.content,
-                  }
+                  name: fields.references.name || "portfolio",
+                  type: fields.references.type || "application/octet-stream",
+                  content: fields.references.content,
+                }
                 : null,
-            }
+            fichierUrl: fields.references?.url || "",
+          }
           : type === "presenter"
-          ? {
+            ? {
               type,
               prenom: fields.prenom || "",
               nom: fields.nom || "",
@@ -145,15 +152,18 @@ export async function POST(req: Request) {
               bio: fields.bio || "",
               notes: fields.notes || "",
               videoUrl: fields.videoUrl || "",
-              fichier: fields.references?.content
-                ? {
+              Fichier: fields.references?.url
+                ? fields.references.url
+                : fields.references?.content
+                  ? {
                     name: fields.references.name || "portfolio",
                     type: fields.references.type || "application/octet-stream",
                     content: fields.references.content,
                   }
-                : null,
+                  : null,
+              fichierUrl: fields.references?.url || "",
             }
-          : {
+            : {
               type,
               prenom: fields.prenom || "",
               nom: fields.nom || "",
@@ -170,7 +180,7 @@ export async function POST(req: Request) {
             };
 
       try {
-        await fetch(scriptUrl, {
+        const response = await fetch(scriptUrl, {
           method: "POST",
           redirect: "follow",
           headers: { "Content-Type": "application/json" },
@@ -184,8 +194,8 @@ export async function POST(req: Request) {
     return NextResponse.json({ success: true, data });
   } catch (error) {
     console.error("Detailed API Error:", error);
-    return NextResponse.json({ 
-      error: error instanceof Error ? error.message : "Internal Server Error" 
+    return NextResponse.json({
+      error: error instanceof Error ? error.message : "Internal Server Error"
     }, { status: 500 });
   }
 }

@@ -53,7 +53,7 @@ const TALENT_TYPES = [
   },
 ];
 
-const LANGUES = ["Français", "Anglais", "Pular", "Malinké", "Soussou", "Autre"];
+const LANGUES = ["Français", "Anglais", "Pular", "Malinké", "Soussou", "Kissi", "Guerzé", "Thoma", "Autre"];
 
 // ── Sub-components ─────────────────────────────────────────────────
 function SectionHeader({ num, title, sub }: { num: string; title: string; sub: string }) {
@@ -329,25 +329,30 @@ export function ActorForm() {
     setIsSubmitting(true);
     setError(false);
 
-    let fileData = null;
+    let fichierUrl = "";
     if (referenceFile) {
-      // Vérification de la taille (max 4.5MB pour rester sous la limite Vercel de 4.5MB-5MB)
-      if (referenceFile.size > 4.5 * 1024 * 1024) {
-        alert("Le fichier est trop lourd. Veuillez choisir un fichier de moins de 4.5 Mo.");
+      if (referenceFile.size > 10 * 1024 * 1024) {
+        alert("Le fichier est trop lourd. Maximum 10 MB.");
         setIsSubmitting(false);
         return;
       }
 
-      fileData = await new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = (e) => resolve({
-          name: referenceFile.name,
-          type: referenceFile.type,
-          content: e.target?.result?.toString().split(",")[1]
-        });
-        reader.onerror = (e) => reject(new Error("Erreur lors de la lecture du fichier"));
-        reader.readAsDataURL(referenceFile);
-      });
+      try {
+        const formData = new FormData();
+        formData.append("file", referenceFile);
+        formData.append("upload_preset", "sinani_videos");
+
+        const uploadRes = await fetch(
+          "https://api.cloudinary.com/v1_1/dvod3wqc9/auto/upload",
+          { method: "POST", body: formData }
+        );
+        const uploadData = await uploadRes.json();
+        fichierUrl = uploadData.secure_url;
+      } catch {
+        alert("Erreur lors de l'upload du fichier. Réessayez.");
+        setIsSubmitting(false);
+        return;
+      }
     }
 
     try {
@@ -359,7 +364,7 @@ export function ActorForm() {
           talentTypes: talentTypes.map(id => TALENT_TYPES.find(t => t.id === id)?.label).join(", "),
           langues: langues.join(", "),
           ...form,
-          references: fileData,
+          references: fichierUrl ? { url: fichierUrl } : null,
           videoUrl,
         }),
       });
@@ -602,8 +607,8 @@ export function ActorForm() {
                   padding: "32px", cursor: "pointer", background: "#FAFAF9",
                   transition: "border-color 0.2s, background 0.2s",
                 }}
-                onMouseEnter={e => { e.currentTarget.style.borderColor = ORANGE; e.currentTarget.style.background = "rgba(232,64,16,0.02)"; }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = "#E5E7EB"; e.currentTarget.style.background = "#FAFAF9"; }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = ORANGE; e.currentTarget.style.background = "rgba(232,64,16,0.02)"; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = "#E5E7EB"; e.currentTarget.style.background = "#FAFAF9"; }}
                 >
                   <input
                     type="file"
@@ -628,7 +633,7 @@ export function ActorForm() {
                     </span>
                     <br />
                     <span style={{ fontSize: "12px", color: "#9CA3AF", fontFamily: "Inter, sans-serif" }}>
-                      Photos, PDF — max 4.5 MB
+                      Photos, PDF — max 10 MB
                     </span>
                   </div>
                 </label>
@@ -677,8 +682,8 @@ export function ActorForm() {
                   padding: "28px", cursor: "pointer", background: "#FAFAF9",
                   transition: "border-color 0.2s, background 0.2s",
                 }}
-                onMouseEnter={e => { e.currentTarget.style.borderColor = ORANGE; e.currentTarget.style.background = "rgba(232,64,16,0.02)"; }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = "#E5E7EB"; e.currentTarget.style.background = "#FAFAF9"; }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = ORANGE; e.currentTarget.style.background = "rgba(232,64,16,0.02)"; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = "#E5E7EB"; e.currentTarget.style.background = "#FAFAF9"; }}
                 >
                   <input type="file" accept="video/*" style={{ display: "none" }}
                     onChange={async (e) => {
